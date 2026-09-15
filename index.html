@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Cápsula de Recuerdos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-cream: #f7f3ed;
+      --card-bg: #ffffff;
+      --text-main: #2b231f;
+      --text-muted: #82786f;
+      --text-brown: #3d2c22;
+      --red-heart: #e63946;
+      --red-seal: #d62828;
+      --red-highlight: #b52c2c;
+      --envelope-bg: #eddccb;
+      --envelope-flap: #dec7b1;
+      --paper-bg: #fdfbf7;
+      --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    /* ══════════════════════════════════════════════
+       1. PANTALLA DE REVELADO (TAP / HOLD)
+    ══════════════════════════════════════════════ */
+    #reveal-screen {
+      position: fixed;
+      inset: 0;
+      background-color: var(--bg-cream);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 24px 70px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #reveal-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .reveal-header {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .reveal-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 8vw, 3.2rem);
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .reveal-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .heart-button {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease;
+    }
+
+    .heart-button:active {
+      transform: scale(0.92);
+    }
+
+    .heart-button svg {
+      width: 84px;
+      height: 84px;
+      fill: var(--red-heart);
+      filter: drop-shadow(0 6px 14px rgba(230, 57, 70, 0.28));
+      transition: transform 0.15s ease;
+    }
+
+    .heart-button.bump svg {
+      animation: heartBump 0.35s ease-out;
+    }
+
+    @keyframes heartBump {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    .reveal-status {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-align: center;
+      min-height: 26px;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .reveal-status.pop {
+      animation: statusPop 0.25s ease;
+    }
+
+    @keyframes statusPop {
+      0% { transform: translateY(4px); opacity: 0.6; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .reveal-footer {
+      width: 100%;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 7px;
+      background-color: rgba(0, 0, 0, 0.06);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #e63946, #f26a76);
+      border-radius: 10px;
+      transition: width 0.12s ease;
+    }
+
+    /* ══════════════════════════════════════════════
+       2. EXPERIENCIA PRINCIPAL (SCROLL VERTICAL)
+    ══════════════════════════════════════════════ */
+    #main-content {
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 52px;
+      opacity: 0;
+      transition: opacity 0.8s ease 0.2s;
+    }
+
+    #main-content.visible {
+      opacity: 1;
+    }
+
+    /* --- PORTADA / POLAROID --- */
+    .polaroid-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.45rem, 5vw, 1.85rem);
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text-main);
+      white-space: pre-line;
+      margin-bottom: 8px;
+    }
+
+    .header-date {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      text-transform: capitalize;
+    }
+
+    .polaroid-card {
+      background: var(--card-bg);
+      padding: 12px 12px 28px;
+      border-radius: 4px;
+      box-shadow: var(--shadow-subtle);
+      width: 100%;
+      max-width: 340px;
+      position: relative;
+    }
+
+    .carousel-viewport {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 2px;
+      overflow: hidden;
+      background-color: #ede7dd;
+      position: relative;
+      touch-action: pan-y pinch-zoom;
+    }
+
+    .carousel-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      flex-shrink: 0;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: background-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .dot.active {
+      background-color: var(--text-main);
+      transform: scale(1.2);
+    }
+
+    .festive-emojis {
+      margin-top: 18px;
+      font-size: 1.15rem;
+      letter-spacing: 0.25em;
+    }
+
+    /* --- SOBRE INTERACTIVO Y CARTA --- */
+    .envelope-section {
+      width: 100%;
+      max-width: 350px;
+      position: relative;
+    }
+
+    .envelope-card {
+      background-color: var(--envelope-bg);
+      border-radius: 12px;
+      padding: 50px 20px;
+      box-shadow: var(--shadow-subtle);
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .envelope-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background-color: var(--envelope-flap);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      opacity: 0.9;
+    }
+
+    .envelope-seal {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #e63946, #c1121f);
+      box-shadow: 0 6px 18px rgba(193, 18, 31, 0.36);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.2s ease;
+    }
+
+    .envelope-seal:active {
+      transform: scale(0.94);
+    }
+
+    .seal-text {
+      color: #ffffff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .envelope-hint {
+      margin-top: 18px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-brown);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* --- CARTA DESPLEGADA --- */
+    .letter-card {
+      background-color: var(--paper-bg);
+      border-radius: 12px;
+      padding: 34px 26px;
+      box-shadow: var(--shadow-subtle);
+      text-align: center;
+      display: none;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .letter-card.visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-top-emojis {
+      font-size: 1.35rem;
+      letter-spacing: 0.3em;
+      margin-bottom: 20px;
+    }
+
+    .letter-content {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--text-brown);
+      text-align: left;
+    }
+
+    .letter-content p {
+      margin-bottom: 14px;
+    }
+
+    .letter-highlight {
+      display: block;
+      font-style: italic;
+      color: var(--red-highlight);
+      margin-top: 18px;
+      font-size: 1.06rem;
+      line-height: 1.7;
+    }
+
+    .letter-bottom-emojis {
+      margin-top: 24px;
+      font-size: 1.25rem;
+      letter-spacing: 0.25em;
+      text-align: center;
+    }
+
+    /* --- CIERRE DE PÁGINA --- */
+    .closing-section {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 22px;
+    }
+
+    .closing-phrase {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .closing-photo {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .btn-save {
+      background-color: var(--text-main);
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 34px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(43, 35, 31, 0.18);
+      transition: transform 0.15s ease, background-color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-save:active {
+      transform: scale(0.96);
+    }
+
+    .brand-footer {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       AUDIO ELEMENT (LOOP)
+  ══════════════════════════════════════════════ -->
+  <audio id="bg-music" loop preload="auto"></audio>
+
+  <!-- ══════════════════════════════════════════════
+       1. PANTALLA DE REVELADO
+  ══════════════════════════════════════════════ -->
+  <div id="reveal-screen">
+    <div class="reveal-header">
+      <h1 class="reveal-name" id="reveal-name">Cris</h1>
+    </div>
+
+    <div class="reveal-center">
+      <div class="heart-button" id="heart-btn">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <div class="reveal-status" id="reveal-status">Toca el corazón</div>
+    </div>
+
+    <div class="reveal-footer">
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       2. EXPERIENCIA PRINCIPAL (SCROLL VERTICAL)
+  ══════════════════════════════════════════════ -->
+  <main id="main-content">
+    
+    <!-- PORTADA / CARRUSEL POLAROID -->
+    <section class="polaroid-section">
+      <h2 class="header-title" id="header-title"></h2>
+      <div class="header-date" id="header-date"></div>
+
+      <div class="polaroid-card">
+        <div class="carousel-viewport" id="carousel-viewport">
+          <div class="carousel-track" id="carousel-track"></div>
+        </div>
+        <div class="carousel-dots" id="carousel-dots"></div>
+      </div>
+
+      <div class="festive-emojis">🎉✨🎉</div>
+    </section>
+
+    <!-- SOBRE Y CARTA -->
+    <section class="envelope-section">
+      <div class="envelope-card" id="envelope-card" onclick="openEnvelope()">
+        <div class="envelope-seal">
+          <span class="seal-text">Descúbrelo</span>
+        </div>
+        <div class="envelope-hint">Hay algo dentro para ti</div>
+      </div>
+
+      <div class="letter-card" id="letter-card">
+        <div class="letter-top-emojis">🎈🎂🎈</div>
+        <div class="letter-content" id="letter-content"></div>
+        <div class="letter-bottom-emojis">🥂🥂</div>
+      </div>
+    </section>
+
+    <!-- CIERRE DE PÁGINA -->
+    <section class="closing-section">
+      <div class="closing-phrase" id="closing-phrase"></div>
+      <img class="closing-photo" id="closing-photo" src="" alt="Foto final" />
+      <button class="btn-save" onclick="handleSaveMoment()">Guardar este momento</button>
+      <div class="brand-footer">HECHO CON AMOR</div>
+    </section>
+
+  </main>
+
+  <script>
+    'use strict';
+
+    /* ============================================================
+       ESTADO & CONFIGURACIÓN
+    ============================================================ */
+    var clientData = null;
+    var progress = 0;
+    var audioStarted = false;
+    var holdTimer = null;
+    var currentSlide = 0;
+    var totalSlides = 0;
+
+    var STATUS_STEPS = [
+      { min: 0,  max: 18, text: 'Toca el corazón' },
+      { min: 19, max: 38, text: 'Otra vez' },
+      { min: 39, max: 58, text: 'Algo se está encendiendo...' },
+      { min: 59, max: 78, text: 'Sigue, que esto se calienta' },
+      { min: 79, max: 94, text: 'Un poquito más' },
+      { min: 95, max: 100, text: 'No pares ahora' }
+    ];
+
+    /* ============================================================
+       CARGA DE DATOS (MULTI-TENANT / DEMO POR DEFECTO)
+    ============================================================ */
+    window.addEventListener('DOMContentLoaded', function () {
+      var urlParams = new URLSearchParams(window.location.search);
+      var clientId = urlParams.get('id') || 'demo';
+
+      fetch('datos.json')
+        .then(function (res) {
+          if (!res.ok) throw new Error('No se pudo cargar datos.json');
+          return res.json();
+        })
+        .then(function (allData) {
+          clientData = allData[clientId] || allData['demo'];
+          if (!clientData) throw new Error('No se encontraron datos para: ' + clientId);
+          renderData();
+        })
+        .catch(function (err) {
+          console.error(err);
+          // Fallback seguro en caso de visualización directa sin servidor
+          clientData = {
+            nombre: 'Cris',
+            titulo: 'Hoy es el cumpleaños\nde mi persona favorita',
+            fecha: '18 de junio',
+            fotos: ['paginas/demo/1.jpg', 'paginas/demo/10.jpg', 'paginas/demo/11.jpg'],
+            foto_final: 'paginas/demo/10.jpg',
+            cancion_url: 'paginas/demo/musica.mp3',
+            carta: "<p>Hay personas que llegan y lo cambian todo.</p><p>Pienso que ni el destino escribiendo la mejor de las historias habría creado a alguien tan especial como tú.</p><p>Hoy celebro tu risa, tu luz y tu forma de hacerme sentir en casa.</p><span class='letter-highlight'>Cada año tuyo es un capítulo nuevo, y pienso estar en todos y cada uno de ellos.</span>",
+            frase_cierre: 'Por muchos cumpleaños más juntos'
+          };
+          renderData();
+        });
+
+      setupHeartEvents();
+    });
+
+    function renderData() {
+      // 1. Pantalla de revelado
+      document.getElementById('reveal-name').textContent = clientData.nombre || 'Cris';
+
+      // 2. Portada & Carrusel
+      document.getElementById('header-title').textContent = clientData.titulo || '';
+      document.getElementById('header-date').textContent = clientData.fecha || '';
+      buildCarousel(clientData.fotos || []);
+
+      // 3. Carta
+      document.getElementById('letter-content').innerHTML = clientData.carta || '';
+
+      // 4. Cierre
+      document.getElementById('closing-phrase').textContent = clientData.frase_cierre || '';
+      var photoEl = document.getElementById('closing-photo');
+      if (clientData.foto_final) {
+        photoEl.src = clientData.foto_final;
+      } else if (clientData.fotos && clientData.fotos.length) {
+        photoEl.src = clientData.fotos[0];
+      }
+
+      // Audio
+      if (clientData.cancion_url) {
+        document.getElementById('bg-music').src = clientData.cancion_url;
+      }
+    }
+
+    /* ============================================================
+       INTERACCIÓN DEL CORAZÓN (TAP / HOLD + DESBLOQUEO DE AUDIO)
+    ============================================================ */
+    function setupHeartEvents() {
+      var btn = document.getElementById('heart-btn');
+
+      // Tap / Click
+      btn.addEventListener('click', function () {
+        triggerInteraction(17);
+      });
+
+      // Hold (Táctil y Ratón)
+      function startHold(e) {
+        unlockAudio();
+        if (holdTimer) clearInterval(holdTimer);
+        holdTimer = setInterval(function () {
+          triggerInteraction(4, true);
+        }, 70);
+      }
+
+      function stopHold() {
+        if (holdTimer) {
+          clearInterval(holdTimer);
+          holdTimer = null;
+        }
+      }
+
+      btn.addEventListener('touchstart', startHold, { passive: true });
+      btn.addEventListener('touchend', stopHold, { passive: true });
+      btn.addEventListener('touchcancel', stopHold, { passive: true });
+
+      btn.addEventListener('mousedown', startHold);
+      btn.addEventListener('mouseup', stopHold);
+      btn.addEventListener('mouseleave', stopHold);
+    }
+
+    function unlockAudio() {
+      if (audioStarted) return;
+      var audio = document.getElementById('bg-music');
+      if (audio && audio.src) {
+        audio.play().then(function () {
+          audioStarted = true;
+        }).catch(function () {
+          // Autoplay policy retry
+        });
+      }
+    }
+
+    function triggerInteraction(amount, isHold) {
+      unlockAudio();
+      progress = Math.min(100, progress + amount);
+      updateProgressBar(progress);
+
+      var btn = document.getElementById('heart-btn');
+      if (!isHold) {
+        btn.classList.remove('bump');
+        void btn.offsetWidth; // Reflow para reiniciar animación
+        btn.classList.add('bump');
+      }
+
+      updateStatusText(progress);
+
+      if (progress >= 100) {
+        if (holdTimer) clearInterval(holdTimer);
+        finishReveal();
+      }
+    }
+
+    function updateProgressBar(val) {
+      document.getElementById('progress-fill').style.width = val + '%';
+    }
+
+    function updateStatusText(val) {
+      var statusEl = document.getElementById('reveal-status');
+      for (var i = 0; i < STATUS_STEPS.length; i++) {
+        var step = STATUS_STEPS[i];
+        if (val >= step.min && val <= step.max) {
+          if (statusEl.textContent !== step.text) {
+            statusEl.textContent = step.text;
+            statusEl.classList.remove('pop');
+            void statusEl.offsetWidth;
+            statusEl.classList.add('pop');
+          }
+          break;
+        }
+      }
+    }
+
+    function finishReveal() {
+      var screen = document.getElementById('reveal-screen');
+      var main = document.getElementById('main-content');
+
+      setTimeout(function () {
+        screen.classList.add('hidden');
+        main.classList.add('visible');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 350);
+    }
+
+    /* ============================================================
+       CARRUSEL POLAROID (SWIPE + PUNTOS)
+    ============================================================ */
+    function buildCarousel(photos) {
+      var track = document.getElementById('carousel-track');
+      var dotsContainer = document.getElementById('carousel-dots');
+      track.innerHTML = '';
+      dotsContainer.innerHTML = '';
+
+      totalSlides = photos.length;
+      if (totalSlides === 0) return;
+
+      photos.forEach(function (url, idx) {
+        var slide = document.createElement('div');
+        slide.className = 'carousel-slide';
+        var img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Recuerdo ' + (idx + 1);
+        img.onerror = function () {
+          // Fallback elegante si la imagen local aún no está colocada
+          this.style.backgroundColor = '#e8dfd3';
+        };
+        slide.appendChild(img);
+        track.appendChild(slide);
+
+        var dot = document.createElement('div');
+        dot.className = 'dot' + (idx === 0 ? ' active' : '');
+        dot.onclick = function () { goToSlide(idx); };
+        dotsContainer.appendChild(dot);
+      });
+
+      setupCarouselSwipe();
+    }
+
+    function goToSlide(idx) {
+      if (idx < 0 || idx >= totalSlides) return;
+      currentSlide = idx;
+      document.getElementById('carousel-track').style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+      var dots = document.querySelectorAll('.carousel-dots .dot');
+      dots.forEach(function (d, i) {
+        d.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    function setupCarouselSwipe() {
+      var viewport = document.getElementById('carousel-viewport');
+      var startX = 0;
+
+      viewport.addEventListener('touchstart', function (e) {
+        startX = e.changedTouches[0].clientX;
+      }, { passive: true });
+
+      viewport.addEventListener('touchend', function (e) {
+        var diffX = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diffX) > 40) {
+          if (diffX > 0 && currentSlide < totalSlides - 1) {
+            goToSlide(currentSlide + 1);
+          } else if (diffX < 0 && currentSlide > 0) {
+            goToSlide(currentSlide - 1);
+          }
+        }
+      }, { passive: true });
+    }
+
+    /* ============================================================
+       SOBRE & CARTA INTERACTIVA
+    ============================================================ */
+    function openEnvelope() {
+      var card = document.getElementById('envelope-card');
+      var letter = document.getElementById('letter-card');
+
+      card.style.transform = 'scale(0.96)';
+      card.style.opacity = '0';
+
+      setTimeout(function () {
+        card.style.display = 'none';
+        letter.classList.add('visible');
+      }, 350);
+    }
+
+    /* ============================================================
+       GUARDAR ESTE MOMENTO (NAVIGATOR.SHARE CON FALLBACK)
+    ============================================================ */
+    function handleSaveMoment() {
+      var shareData = {
+        title: clientData ? clientData.titulo : 'Cápsula de Recuerdos',
+        text: clientData ? clientData.frase_cierre : 'Un momento para siempre',
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData).catch(function () {});
+      } else {
+        navigator.clipboard.writeText(window.location.href)
+          .then(function () {
+            alert('¡Enlace guardado en el portapapeles! 💛');
+          })
+          .catch(function () {
+            alert('¡Momento guardado con éxito! 💛');
+          });
+      }
+    }
+  </script>
+</body>
+</html>
