@@ -6,7 +6,7 @@
   <title>Cámara Polaroid - Revelado Químico</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
   <style>
     /* ═══════════════════════════════════════════════════════
        PREFIJO ESTRICTO .pc- (POLAROID CAMERA) - AISLAMIENTO TOTAL
@@ -29,7 +29,7 @@
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      padding: 20px 10px;
+      padding: 16px 8px;
     }
 
     /* ESCENARIO DE REFERENCIA: 380 x 620 px ESCALADO */
@@ -38,9 +38,9 @@
       max-width: 380px;
       height: 620px;
       position: relative;
-      background: radial-gradient(ellipse at 50% 40%, #fbf9f5 0%, #ede6dc 100%);
-      border-radius: 28px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 2px 10px rgba(0, 0, 0, 0.05);
+      background: radial-gradient(ellipse at 50% 35%, #faf8f5 0%, #ede5da 100%);
+      border-radius: 32px;
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.14), 0 2px 10px rgba(0, 0, 0, 0.05);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -55,7 +55,7 @@
       opacity: 0;
       pointer-events: none;
       z-index: 9999;
-      transition: opacity 0.05s ease-out;
+      transition: opacity 0.06s ease-out;
     }
 
     .pc-flash.pc-active {
@@ -66,16 +66,16 @@
     /* ENCABEZADO DISCRETO */
     .pc-header {
       width: 100%;
-      padding: 16px 20px 0;
+      padding: 16px 20px 4px;
       text-align: center;
       z-index: 10;
     }
 
     .pc-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.18rem;
-      font-weight: 600;
-      color: #3d2f26;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #352820;
       letter-spacing: -0.01em;
     }
 
@@ -88,15 +88,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      margin-top: 10px;
+      margin-top: 6px;
     }
 
     /* CONTENEDOR DE CÁMARA (TIENE EL SHAKE) */
     .pc-camera-wrap {
       position: relative;
-      width: 330px;
-      height: 230px;
-      z-index: 30; /* La cámara está por encima de la foto */
+      width: 324px;
+      height: 268px;
+      z-index: 30; /* La cámara cubre completamente la foto escondida */
       transition: transform 0.1s ease;
     }
 
@@ -105,9 +105,9 @@
     }
 
     @keyframes pcCameraShake {
-      10%, 90% { transform: translate3d(-2px, 1px, 0) rotate(-0.5deg); }
-      20%, 80% { transform: translate3d(3px, -2px, 0) rotate(0.8deg); }
-      30%, 50%, 70% { transform: translate3d(-4px, 2px, 0) rotate(-1deg); }
+      10%, 90% { transform: translate3d(-2px, 1px, 0) rotate(-0.6deg); }
+      20%, 80% { transform: translate3d(3px, -2px, 0) rotate(0.9deg); }
+      30%, 50%, 70% { transform: translate3d(-4px, 2px, 0) rotate(-1.2deg); }
       40%, 60% { transform: translate3d(4px, -1px, 0) rotate(1deg); }
     }
 
@@ -115,17 +115,17 @@
     .pc-camera-body {
       position: absolute;
       inset: 0;
-      background: linear-gradient(175deg, #f5efe6 0%, #e8decb 100%);
-      border-radius: 24px 24px 16px 16px;
-      box-shadow: 0 14px 32px rgba(45, 30, 20, 0.22), inset 0 2px 3px rgba(255, 255, 255, 0.8), inset 0 -3px 6px rgba(0, 0, 0, 0.15);
-      border: 1px solid #dfd4c0;
+      background: linear-gradient(175deg, #f5efe6 0%, #e7dcce 100%);
+      border-radius: 28px 28px 18px 18px;
+      box-shadow: 0 16px 36px rgba(45, 30, 20, 0.24), inset 0 2px 4px rgba(255, 255, 255, 0.85), inset 0 -3px 6px rgba(0, 0, 0, 0.16);
+      border: 1px solid #ded3bf;
       overflow: hidden;
     }
 
     /* FRANJA POLAROID COLOR / TEXTURA */
     .pc-camera-strip {
       position: absolute;
-      bottom: 38px;
+      bottom: 44px;
       left: 0;
       right: 0;
       height: 7px;
@@ -141,26 +141,26 @@
     /* LENTE CENTRAL */
     .pc-lens-outer {
       position: absolute;
-      top: 36px;
+      top: 50px;
       left: 50%;
       transform: translateX(-50%);
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
       background: linear-gradient(135deg, #2d2522 0%, #151110 100%);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35), inset 0 3px 5px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.38), inset 0 3px 5px rgba(255, 255, 255, 0.22);
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 4px solid #d9ccb6;
+      border: 4px solid #dbcfbd;
     }
 
     .pc-lens-ring {
-      width: 86px;
-      height: 86px;
+      width: 94px;
+      height: 94px;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #423833 0%, #120e0d 75%);
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.92);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -168,8 +168,8 @@
     }
 
     .pc-lens-glass {
-      width: 54px;
-      height: 54px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #304a5e 0%, #0d151c 65%, #05080b 100%);
       position: relative;
@@ -179,10 +179,10 @@
     .pc-lens-glass::after {
       content: '';
       position: absolute;
-      top: 6px;
-      left: 10px;
-      width: 20px;
-      height: 10px;
+      top: 8px;
+      left: 12px;
+      width: 22px;
+      height: 12px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.35);
       transform: rotate(-35deg);
@@ -191,11 +191,11 @@
     /* FLASH UNIT & VIEWFINDER */
     .pc-flash-unit {
       position: absolute;
-      top: 20px;
+      top: 24px;
       left: 24px;
-      width: 44px;
-      height: 32px;
-      background: #3a322c;
+      width: 46px;
+      height: 34px;
+      background: #38302a;
       border-radius: 6px;
       border: 2px solid #c8baa4;
       box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
@@ -205,16 +205,16 @@
     }
 
     .pc-flash-grid {
-      width: 32px;
-      height: 20px;
+      width: 34px;
+      height: 22px;
       background: repeating-linear-gradient(90deg, #d8d0c0, #d8d0c0 2px, #423832 2px, #423832 4px);
       border-radius: 3px;
     }
 
     .pc-viewfinder {
       position: absolute;
-      top: 20px;
-      right: 26px;
+      top: 24px;
+      right: 28px;
       width: 24px;
       height: 24px;
       background: #1e1917;
@@ -226,22 +226,22 @@
     /* BOTÓN FÍSICO ROJO DE DISPARO */
     .pc-shutter-wrap {
       position: absolute;
-      top: 65px;
+      top: 76px;
       right: 20px;
-      width: 46px;
-      height: 46px;
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .pc-shutter-btn {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #ff4b5a 0%, #d81b2a 70%, #990c17 100%);
       border: 3px solid #f5efe6;
-      box-shadow: 0 4px 10px rgba(180, 20, 30, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 12px rgba(180, 20, 30, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.4);
       cursor: pointer;
       outline: none;
       transition: transform 0.08s ease, box-shadow 0.08s ease;
@@ -259,8 +259,8 @@
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 270px;
-      height: 18px;
+      width: 260px;
+      height: 20px;
       background: #181311;
       border-radius: 8px 8px 0 0;
       box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.9), 0 3px 6px rgba(0,0,0,0.2);
@@ -272,16 +272,16 @@
        ═══════════════════════════════════════════════════════ */
     .pc-photo {
       position: absolute;
-      top: 140px; /* Escondida detrás del cuerpo de la cámara */
+      top: 2px; /* Completamente escondida detrás del cuerpo de la cámara (alto 268px) */
       left: 50%;
       transform: translateX(-50%);
-      width: 248px;
-      height: 300px;
+      width: 226px;
+      height: 264px;
       background-color: #ffffff;
-      padding: 12px 12px 36px 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+      padding: 10px 10px 32px 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
       border-radius: 3px;
-      z-index: 20; /* Está detrás del labio de la cámara (z-index 35) */
+      z-index: 20; /* Detrás del cuerpo de la cámara */
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -297,45 +297,45 @@
 
     @keyframes pcEjectMotor {
       0% {
-        top: 130px;
-        transform: translateX(-50%) scale(0.96);
+        top: 2px;
+        transform: translateX(-50%) scale(0.97);
       }
       /* Micro-traba 1: agarre de rodillos */
       14% {
-        top: 175px;
-        transform: translateX(-50.5%) scale(0.97);
+        top: 60px;
+        transform: translateX(-50.4%) scale(0.98);
       }
       18% {
-        top: 174px;
-        transform: translateX(-50%) scale(0.97);
+        top: 59px;
+        transform: translateX(-50%) scale(0.98);
       }
       /* Micro-traba 2: paso de engranaje */
       38% {
-        top: 228px;
-        transform: translateX(-49.7%) scale(0.98);
+        top: 135px;
+        transform: translateX(-49.6%) scale(0.99);
       }
       42% {
-        top: 227px;
-        transform: translateX(-50%) scale(0.98);
+        top: 134px;
+        transform: translateX(-50%) scale(0.99);
       }
       /* Micro-traba 3: salida final */
       68% {
-        top: 278px;
-        transform: translateX(-50.2%) scale(0.99);
+        top: 225px;
+        transform: translateX(-50.2%) scale(0.995);
       }
       72% {
-        top: 277px;
-        transform: translateX(-50%) scale(0.99);
+        top: 224px;
+        transform: translateX(-50%) scale(0.995);
       }
       100% {
-        top: 285px;
+        top: 278px;
         transform: translateX(-50%) scale(1) rotate(0.4deg);
       }
     }
 
     /* Cuando la foto está liberada y lista para sacudir */
     .pc-photo.pc-ejected {
-      top: 285px;
+      top: 278px;
       transform: translateX(-50%) rotate(0.4deg);
       z-index: 45; /* Pasa al frente para ser interactiva */
     }
@@ -364,7 +364,7 @@
     /* PIE DE FOTO / MICROCOPY DINÁMICO */
     .pc-hint-wrap {
       position: absolute;
-      bottom: 22px;
+      bottom: 20px;
       left: 0;
       right: 0;
       text-align: center;
@@ -375,14 +375,15 @@
 
     .pc-hint {
       display: inline-block;
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      color: #635345;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(6px);
-      padding: 6px 18px;
-      border-radius: 20px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      color: #35271e;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 7px 20px;
+      border-radius: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
       opacity: 0;
       transform: translateY(8px);
       transition: opacity 0.3s ease, transform 0.3s ease;
@@ -400,7 +401,7 @@
       font-size: 0.88rem;
       color: #5c4e43;
       text-align: center;
-      opacity: 0.8;
+      opacity: 0.85;
     }
   </style>
 </head>
@@ -507,7 +508,6 @@
         var ctx = getAudioContext();
         if (!ctx) return;
         var now = ctx.currentTime;
-        // 1. Shutter snap (noise burst)
         var bufferSize = ctx.sampleRate * 0.05;
         var noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
         var output = noiseBuffer.getChannelData(0);
@@ -525,7 +525,6 @@
         gainNode.connect(ctx.destination);
         whiteNoise.start(now);
 
-        // 2. Low mechanical thud
         var osc = ctx.createOscillator();
         var oscGain = ctx.createGain();
         osc.type = 'triangle';
@@ -547,7 +546,6 @@
         var gain = ctx.createGain();
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(85, now);
-        // Modulación para simular rodillo
         var lfo = ctx.createOscillator();
         var lfoGain = ctx.createGain();
         lfo.frequency.setValueAtTime(14, now);
@@ -642,6 +640,7 @@
         var img = state.sourceImage;
         if (!img || !img.width || !img.height) return;
 
+        // Cálculo dinámico de cover exacto sin deformar: max(S/w, S/h) y centrado
         var scale = Math.max(S / img.width, S / img.height);
         var drawW = img.width * scale;
         var drawH = img.height * scale;
@@ -655,19 +654,19 @@
         pCanvas.width = 600; pCanvas.height = 600;
         var pCtx = pCanvas.getContext('2d');
         var grad = pCtx.createLinearGradient(0, 0, 600, 600);
-        grad.addColorStop(0, '#f9d5bb');
-        grad.addColorStop(0.5, '#e0a38b');
+        grad.addColorStop(0, '#fce4db');
+        grad.addColorStop(0.5, '#e5a894');
         grad.addColorStop(1, '#9b5d6b');
         pCtx.fillStyle = grad;
         pCtx.fillRect(0, 0, 600, 600);
 
         pCtx.fillStyle = '#ffffff';
-        pCtx.font = 'italic 38px "Playfair Display", Georgia, serif';
+        pCtx.font = 'italic 42px "Playfair Display", Georgia, serif';
         pCtx.textAlign = 'center';
         pCtx.fillText('Recuerdo Especial', 300, 290);
-        pCtx.font = '22px "Plus Jakarta Sans", sans-serif';
-        pCtx.fillStyle = 'rgba(255,255,255,0.85)';
-        pCtx.fillText('Momentos que quedan grabados', 300, 340);
+        pCtx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+        pCtx.fillStyle = 'rgba(255,255,255,0.9)';
+        pCtx.fillText('Momentos que quedan grabados 💛', 300, 340);
         return pCanvas;
       }
 
@@ -800,7 +799,6 @@
             }
           }
 
-          // Deriva química mínima (tope 0.62)
           if (state.energy > 0.06 && state.energy < 0.62) {
             state.energy += 0.018 * dt;
           }
@@ -1055,14 +1053,39 @@
         var dataPhoto = viewportEl ? viewportEl.getAttribute('data-photo') : null;
         var urlParams = new URLSearchParams(window.location.search);
         var queryPhoto = urlParams.get('photo');
+        var testState = urlParams.get('state');
+        var testProgress = urlParams.get('progress');
 
         var finalPhotoSrc = dataPhoto || queryPhoto;
         setPhoto(finalPhotoSrc);
 
-        renderPhoto(true);
-        setTimeout(function () {
-          showHint('Tocá el botón rojo');
-        }, 400);
+        // Soporte para captura de estados específicos vía URL
+        if (testState === 'developing' || testProgress !== null) {
+          var pVal = testProgress !== null ? parseFloat(testProgress) : 0.55;
+          state.hasShot = true;
+          state.isEjected = true;
+          state.energy = pVal;
+          state.progress = pVal;
+          var photoEl = document.getElementById('pc-photo');
+          photoEl.classList.add('pc-ejected');
+          showHint('Sacudí la foto con el dedo');
+          renderPhoto(true);
+        } else if (testState === 'final') {
+          state.hasShot = true;
+          state.isEjected = true;
+          state.isDeveloped = true;
+          state.energy = 1.0;
+          state.progress = 1.0;
+          var photoEl = document.getElementById('pc-photo');
+          photoEl.classList.add('pc-ejected');
+          showHint('✨ Foto revelada');
+          renderPhoto(true);
+        } else {
+          renderPhoto(true);
+          setTimeout(function () {
+            showHint('Tocá el botón rojo');
+          }, 350);
+        }
 
         requestAnimationFrame(animationLoop);
       }
@@ -1072,6 +1095,11 @@
       window.PolaroidCamera = {
         setPhoto: setPhoto,
         shoot: triggerShutter,
+        setProgress: function (val) {
+          state.energy = val;
+          state.progress = val;
+          renderPhoto(true);
+        },
         reset: function () {
           state.hasShot = false;
           state.isEjecting = false;
