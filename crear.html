@@ -1009,9 +1009,7 @@
         .then(function() {
           setProgress(100, '¡Cápsula guardada con éxito!');
 
-          var baseUrl = window.location.origin
-            + window.location.pathname.replace('crear.html', '').replace(/\/$/, '')
-            + '/index.html';
+          var baseUrl = window.location.origin + '/';
           generatedUrl = baseUrl + '?id=' + capsuleId;
 
           setTimeout(function() {
