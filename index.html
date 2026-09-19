@@ -6,7 +6,7 @@
   <title>Cápsula de Recuerdos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -15,22 +15,24 @@
     }
 
     :root {
-      --bg-cream: #f7f3ed;
-      --card-bg: #ffffff;
-      --text-main: #2b231f;
-      --text-muted: #82786f;
-      --text-brown: #3d2c22;
-      --red-heart: #e63946;
-      --red-seal: #d62828;
-      --red-highlight: #b52c2c;
+      --bg-pastel: #f6efe7;
+      --bg-pastel-card: #f9f5ef;
+      --card-white: #ffffff;
+      --text-main: #2c231e;
+      --text-muted: #7d7168;
+      --text-brown: #3e2f24;
+      --accent-red: #d9383a;
+      --accent-gold: #c59b58;
       --envelope-bg: #eddccb;
-      --envelope-flap: #dec7b1;
+      --envelope-flap: #dfcbb8;
       --paper-bg: #fdfbf7;
-      --shadow-subtle: 0 12px 32px rgba(0, 0, 0, 0.07);
+      --shadow-polaroid: 0 14px 34px rgba(45, 30, 20, 0.12), 0 2px 8px rgba(45, 30, 20, 0.05);
+      --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.06);
     }
 
     body {
-      background-color: var(--bg-cream);
+      background-color: var(--bg-pastel);
+      background-image: radial-gradient(ellipse at 50% 20%, #fdf9f4 0%, #f4eae0 100%);
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
@@ -54,43 +56,44 @@
     }
 
     .pc-flash.pc-active {
-      opacity: 0.96;
+      opacity: 0.98;
       transition: none;
     }
 
-    /* CONTENEDOR PRINCIPAL VERTICAL */
+    /* CONTENEDOR PRINCIPAL */
     .capsule-main {
       width: 100%;
       max-width: 440px;
       margin: 0 auto;
-      padding: 24px 16px 60px;
+      padding: 24px 16px 70px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 48px;
+      gap: 46px;
     }
 
-    /* ═══════════════════════════════════════════════════════
-       1. SECCIÓN CÁMARA POLAROID (.pc-)
-       ═══════════════════════════════════════════════════════ */
-    .pc-section {
+    /* ENCABEZADO */
+    .capsule-header {
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       text-align: center;
-      position: relative;
+      padding: 6px 12px 0;
     }
 
-    .pc-header {
-      margin-bottom: 12px;
+    .header-badge {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
     }
 
     .header-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.45rem, 5vw, 1.85rem);
+      font-size: clamp(1.48rem, 5.2vw, 1.9rem);
       font-weight: 700;
-      line-height: 1.35;
+      line-height: 1.32;
       color: var(--text-main);
       white-space: pre-line;
       margin-bottom: 6px;
@@ -103,15 +106,25 @@
       text-transform: capitalize;
     }
 
-    /* ESCENARIO DE LA CÁMARA (ALTO 560px PARA ALBERGAR CÁMARA Y FOTO EXPULSADA) */
+    /* ═══════════════════════════════════════════════════════
+       1. CÁMARA POLAROID RETRO
+       ═══════════════════════════════════════════════════════ */
+    .pc-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
     .pc-viewport {
       width: 100%;
       max-width: 380px;
       height: 560px;
       position: relative;
       background: radial-gradient(ellipse at 50% 30%, #faf8f5 0%, #eee6dc 100%);
-      border-radius: 28px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
+      border-radius: 30px;
+      box-shadow: 0 16px 42px rgba(45, 30, 20, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -122,13 +135,13 @@
       position: relative;
       width: 324px;
       height: 268px;
-      z-index: 30; /* Cubre completamente la foto escondida */
+      z-index: 30;
       margin-top: 10px;
       transition: transform 0.1s ease;
     }
 
     .pc-camera-wrap.pc-shaking {
-      animation: pcCameraShake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      animation: pcCameraShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     }
 
     @keyframes pcCameraShake {
@@ -288,17 +301,17 @@
       z-index: 35;
     }
 
-    /* FOTO FÍSICA */
+    /* FOTO FÍSICA QUE EMERGE */
     .pc-photo {
       position: absolute;
-      top: 12px; /* Oculta detrás de la cámara */
+      top: 12px;
       left: 50%;
       transform: translateX(-50%);
       width: 226px;
-      height: 264px;
+      height: 266px;
       background-color: #ffffff;
       padding: 10px 10px 32px 10px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+      box-shadow: var(--shadow-polaroid);
       border-radius: 3px;
       z-index: 20;
       cursor: pointer;
@@ -310,7 +323,7 @@
     }
 
     .pc-photo.pc-ejecting {
-      animation: pcEjectMotor 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: pcEjectMotor 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
     @keyframes pcEjectMotor {
@@ -331,7 +344,7 @@
     }
 
     .pc-photo.pc-dragging {
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      box-shadow: 0 18px 45px rgba(45, 30, 20, 0.28);
       transition: none !important;
     }
 
@@ -350,14 +363,15 @@
       display: block;
     }
 
-    .pc-signature {
+    .pc-imprint {
       margin-top: 6px;
       font-family: 'Playfair Display', serif;
       font-style: italic;
-      font-size: 0.88rem;
-      color: #5c4e43;
+      font-size: 0.82rem;
+      color: #55483f;
       text-align: center;
       opacity: 0.85;
+      letter-spacing: 0.02em;
     }
 
     .pc-hint-wrap {
@@ -373,14 +387,14 @@
 
     .pc-hint {
       display: inline-block;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 600;
       color: #35271e;
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
       padding: 7px 20px;
       border-radius: 24px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       border: 1px solid rgba(0,0,0,0.06);
       opacity: 0;
       transform: translateY(8px);
@@ -392,26 +406,137 @@
       transform: translateY(0);
     }
 
-    .festive-emojis {
-      margin-top: 14px;
-      font-size: 1.15rem;
-      letter-spacing: 0.25em;
+    /* ═══════════════════════════════════════════════════════
+       2. REPRODUCTOR DE MÚSICA ESTILO STREAMING
+       ═══════════════════════════════════════════════════════ */
+    .music-player-card {
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .player-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .player-cover {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      background-color: #eee7de;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+    }
+
+    .player-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .player-song {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-artist {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .player-play-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--text-main);
+      color: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(44, 35, 30, 0.2);
+      transition: transform 0.15s ease, background-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .player-play-btn:active {
+      transform: scale(0.92);
+    }
+
+    .player-play-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* BARRA DE PROGRESO DE LA MÚSICA */
+    .player-timeline-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .player-progress-bar {
+      width: 100%;
+      height: 5px;
+      background-color: rgba(0, 0, 0, 0.08);
+      border-radius: 6px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .player-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #d9383a, #e86365);
+      border-radius: 6px;
+      transition: width 0.1s linear;
+    }
+
+    .player-time-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-muted);
     }
 
     /* ═══════════════════════════════════════════════════════
-       2. SOBRE INTERACTIVO Y CARTA
+       3. SOBRE INTERACTIVO Y CARTA
        ═══════════════════════════════════════════════════════ */
     .envelope-section {
       width: 100%;
-      max-width: 350px;
+      max-width: 360px;
       position: relative;
     }
 
     .envelope-card {
       background-color: var(--envelope-bg);
-      border-radius: 12px;
-      padding: 48px 20px;
-      box-shadow: var(--shadow-subtle);
+      border-radius: 14px;
+      padding: 50px 20px;
+      box-shadow: var(--shadow-card);
       text-align: center;
       cursor: pointer;
       position: relative;
@@ -428,7 +553,7 @@
       height: 50%;
       background-color: var(--envelope-flap);
       clip-path: polygon(0 0, 100% 0, 50% 100%);
-      opacity: 0.9;
+      opacity: 0.92;
     }
 
     .envelope-seal {
@@ -470,9 +595,9 @@
 
     .letter-card {
       background-color: var(--paper-bg);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 34px 26px;
-      box-shadow: var(--shadow-subtle);
+      box-shadow: var(--shadow-card);
       text-align: center;
       display: none;
       opacity: 0;
@@ -494,7 +619,7 @@
 
     .letter-content {
       font-family: 'Playfair Display', serif;
-      font-size: 1.02rem;
+      font-size: 1.04rem;
       line-height: 1.85;
       color: var(--text-brown);
       text-align: left;
@@ -507,9 +632,9 @@
     .letter-highlight {
       display: block;
       font-style: italic;
-      color: var(--red-highlight);
+      color: var(--accent-red);
       margin-top: 18px;
-      font-size: 1.06rem;
+      font-size: 1.08rem;
       line-height: 1.7;
     }
 
@@ -521,16 +646,129 @@
     }
 
     /* ═══════════════════════════════════════════════════════
-       3. CIERRE DE PÁGINA
+       4. PILA DESORDENADA DE POLAROIDS INTERACTIVAS (SCATTER STACK)
+       ═══════════════════════════════════════════════════════ */
+    .stack-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .stack-header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .stack-subtitle {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    /* CONTENEDOR DE LA PILA */
+    .polaroid-stack-box {
+      position: relative;
+      width: 250px;
+      height: 310px;
+      margin: 10px auto 26px;
+      perspective: 1000px;
+    }
+
+    /* TARJETA INDIVIDUAL DE LA PILA */
+    .stack-card {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      padding: 10px 10px 34px 10px;
+      border-radius: 4px;
+      box-shadow: var(--shadow-polaroid);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: grab;
+      touch-action: none;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, opacity 0.3s ease;
+      user-select: none;
+    }
+
+    .stack-card:active {
+      cursor: grabbing;
+    }
+
+    .stack-card.swiping {
+      transition: none !important;
+      box-shadow: 0 20px 50px rgba(45, 30, 20, 0.26);
+    }
+
+    .stack-canvas-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background-color: #0e0b09;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .stack-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .stack-imprint {
+      margin-top: 8px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.8rem;
+      color: #55483f;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    .stack-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      padding: 6px 16px;
+      border-radius: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .stack-next-btn {
+      background: none;
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent-red);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       5. CIERRE DE PÁGINA
        ═══════════════════════════════════════════════════════ */
     .closing-section {
       width: 100%;
-      max-width: 340px;
+      max-width: 360px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       gap: 22px;
+      margin-top: 10px;
     }
 
     .closing-phrase {
@@ -539,15 +777,6 @@
       font-weight: 700;
       color: var(--text-main);
       line-height: 1.4;
-    }
-
-    .closing-photo {
-      width: 100%;
-      max-width: 320px;
-      aspect-ratio: 1 / 1;
-      border-radius: 14px;
-      object-fit: cover;
-      box-shadow: var(--shadow-subtle);
     }
 
     .btn-save {
@@ -577,7 +806,7 @@
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-top: 14px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -586,20 +815,22 @@
   <!-- FLASH OVERLAY -->
   <div class="pc-flash" id="pc-flash"></div>
 
-  <!-- AUDIO ELEMENT (LOOP) -->
+  <!-- AUDIO ELEMENT -->
   <audio id="bg-music" loop preload="auto"></audio>
 
-  <!-- CONTENEDOR PRINCIPAL DE LA CÁPSULA -->
+  <!-- CONTENEDOR PRINCIPAL -->
   <main class="capsule-main">
 
-    <!-- 1. SECCIÓN CÁMARA POLAROID -->
-    <section class="pc-section">
-      <div class="pc-header">
-        <h1 class="header-title" id="header-title"></h1>
-        <div class="header-date" id="header-date"></div>
-      </div>
+    <!-- ENCABEZADO -->
+    <header class="capsule-header">
+      <div class="header-badge">✨ Cápsula de Recuerdos</div>
+      <h1 class="header-title" id="header-title"></h1>
+      <div class="header-date" id="header-date"></div>
+    </header>
 
-      <div class="pc-viewport" id="pc-viewport" data-photo="">
+    <!-- 1. CÁMARA POLAROID -->
+    <section class="pc-section">
+      <div class="pc-viewport" id="pc-viewport">
         <!-- CÁMARA RETRO -->
         <div class="pc-camera-wrap" id="pc-camera-wrap">
           <div class="pc-camera-body">
@@ -633,7 +864,7 @@
           <div class="pc-canvas-wrap">
             <canvas class="pc-canvas" id="pc-canvas"></canvas>
           </div>
-          <div class="pc-signature" id="pc-signature">Polaroid &trade;</div>
+          <div class="pc-imprint" id="pc-imprint"></div>
         </div>
 
         <!-- HINT DINÁMICO -->
@@ -641,11 +872,33 @@
           <div class="pc-hint" id="pc-hint">Tocá el botón rojo</div>
         </div>
       </div>
-
-      <div class="festive-emojis">🎉✨🎉</div>
     </section>
 
-    <!-- 2. SOBRE INTERACTIVO Y CARTA -->
+    <!-- 2. REPRODUCTOR DE MÚSICA ESTILO STREAMING -->
+    <section class="music-player-card" id="music-player-card">
+      <div class="player-top">
+        <img class="player-cover" id="player-cover" src="paginas/demo/1.jpg" alt="Portada de canción" />
+        <div class="player-info">
+          <div class="player-song" id="player-song">Cargando canción...</div>
+          <div class="player-artist" id="player-artist">Artista</div>
+        </div>
+        <button class="player-play-btn" id="player-play-btn" aria-label="Reproducir / Pausar">
+          <svg id="play-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <svg id="pause-icon" viewBox="0 0 24 24" style="display: none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+      </div>
+      <div class="player-timeline-wrap">
+        <div class="player-progress-bar" id="player-progress-bar">
+          <div class="player-progress-fill" id="player-progress-fill"></div>
+        </div>
+        <div class="player-time-labels">
+          <span id="player-current-time">0:00</span>
+          <span id="player-total-time">--:--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SOBRE INTERACTIVO Y CARTA -->
     <section class="envelope-section">
       <div class="envelope-card" id="envelope-card" onclick="openEnvelope()">
         <div class="envelope-seal">
@@ -661,11 +914,25 @@
       </div>
     </section>
 
-    <!-- 3. CIERRE DE PÁGINA -->
+    <!-- 4. PILA DESORDENADA DE POLAROIDS INTERACTIVAS -->
+    <section class="stack-section">
+      <h2 class="stack-header-title">Galería de Recuerdos</h2>
+      <div class="stack-subtitle">Agitá la foto para revelarla · Deslizá para pasar a la siguiente</div>
+
+      <div class="polaroid-stack-box" id="polaroid-stack-box">
+        <!-- Tarjetas dinámicas inyectadas por JS -->
+      </div>
+
+      <div class="stack-controls">
+        <span id="stack-counter">Foto 1 de 5</span>
+        <button class="stack-next-btn" id="stack-next-btn" onclick="cycleStackNext()">Siguiente &rarr;</button>
+      </div>
+    </section>
+
+    <!-- 5. CIERRE DE PÁGINA -->
     <section class="closing-section">
       <div class="closing-phrase" id="closing-phrase"></div>
-      <img class="closing-photo" id="closing-photo" src="" alt="Foto final" />
-      <button class="btn-save" onclick="handleSaveMoment()">Guardar este momento</button>
+      <button class="btn-save" onclick="handleSaveMoment()">Guardar este momento 💛</button>
       <div class="brand-footer">HECHO CON AMOR</div>
     </section>
 
@@ -675,648 +942,845 @@
     'use strict';
 
     /* ============================================================
-       ESTADO GLOBAL & DATOS DEL CLIENTE
+       FECHA DINÁMICA ACTUALIZADA EN ESPAÑOL
     ============================================================ */
-    var clientData = null;
-    var audioStarted = false;
+    var todayFormatted = (function () {
+      var d = new Date();
+      var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+      return d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+    })();
 
-    function unlockAudio() {
-      if (audioStarted) return;
-      var audio = document.getElementById('bg-music');
-      if (audio && audio.src) {
-        audio.play().then(function () {
-          audioStarted = true;
+    /* ============================================================
+       SÍNTESIS DE SONIDO: FLASH ELECTRÓNICO REALISTA
+    ============================================================ */
+    var audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) {
+        var AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playCameraFlashSound() {
+      var ctx = getAudioCtx();
+      if (!ctx) return;
+      var now = ctx.currentTime;
+
+      // 1. Pop / descarga de condensador instantáneo (flash discharge)
+      var bufferSize = Math.floor(ctx.sampleRate * 0.025);
+      var noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      var output = noiseBuffer.getChannelData(0);
+      for (var i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+
+      var noiseNode = ctx.createBufferSource();
+      noiseNode.buffer = noiseBuffer;
+      var filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2800, now);
+      filter.Q.setValueAtTime(3.0, now);
+
+      var gainNode = ctx.createGain();
+      gainNode.gain.setValueAtTime(0.9, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.024);
+
+      noiseNode.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      noiseNode.start(now);
+
+      // 2. Silbido sutil del condensador cargando (charging whine)
+      var whineOsc = ctx.createOscillator();
+      var whineGain = ctx.createGain();
+      whineOsc.type = 'sine';
+      whineOsc.frequency.setValueAtTime(3400, now + 0.02);
+      whineOsc.frequency.exponentialRampToValueAtTime(6800, now + 0.65);
+
+      whineGain.gain.setValueAtTime(0.001, now);
+      whineGain.gain.linearRampToValueAtTime(0.12, now + 0.08);
+      whineGain.gain.exponentialRampToValueAtTime(0.001, now + 0.68);
+
+      whineOsc.connect(whineGain);
+      whineGain.connect(ctx.destination);
+      whineOsc.start(now + 0.02);
+      whineOsc.stop(now + 0.7);
+    }
+
+    /* ============================================================
+       FBM NOISE & MÁSCARA QUÍMICA REUTILIZABLE
+    ============================================================ */
+    var FBM_SIZE = 112;
+    var globalFbmNoise = (function () {
+      var grid = new Float32Array(FBM_SIZE * FBM_SIZE);
+      var cx = FBM_SIZE / 2, cy = FBM_SIZE / 2;
+      var maxDist = Math.sqrt(cx * cx + cy * cy);
+      var perm = new Uint8Array(512);
+      for (var i = 0; i < 256; i++) perm[i] = perm[256 + i] = Math.floor(Math.random() * 256);
+
+      function noise2D(x, y) {
+        var X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
+        var xf = x - Math.floor(x), yf = y - Math.floor(y);
+        var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+        var g00 = perm[perm[X] + Y], g10 = perm[perm[X + 1] + Y];
+        var g01 = perm[perm[X] + Y + 1], g11 = perm[perm[X + 1] + Y + 1];
+        var x1 = ((g00 & 1) ? xf : -xf) + ((g00 & 2) ? yf : -yf);
+        var x2 = ((g10 & 1) ? (xf - 1) : -(xf - 1)) + ((g10 & 2) ? yf : -yf);
+        var y1 = ((g01 & 1) ? xf : -xf) + ((g01 & 2) ? (yf - 1) : -(yf - 1));
+        var y2 = ((g11 & 1) ? (xf - 1) : -(xf - 1)) + ((g11 & 2) ? (yf - 1) : -(yf - 1));
+        var a = x1 + u * (x2 - x1), b = y1 + u * (y2 - y1);
+        return a + v * (b - a);
+      }
+
+      for (var y = 0; y < FBM_SIZE; y++) {
+        for (var x = 0; x < FBM_SIZE; x++) {
+          var val = 0, amp = 0.5, freq = 0.055;
+          for (var o = 0; o < 4; o++) {
+            val += noise2D(x * freq, y * freq) * amp;
+            amp *= 0.5; freq *= 2.0;
+          }
+          var dx = x - cx, dy = y - cy;
+          var dist = Math.sqrt(dx * dx + dy * dy) / maxDist;
+          val = (val + 0.5) * 0.72 + (1.0 - dist) * 0.28;
+          grid[y * FBM_SIZE + x] = Math.max(0, Math.min(1, val));
+        }
+      }
+      return grid;
+    })();
+
+    function smoothstep(min, max, value) {
+      var x = Math.max(0, Math.min(1, (value - min) / (max - min)));
+      return x * x * (3 - 2 * x);
+    }
+
+    /* ============================================================
+       MOTOR DE REVELADO EN CANVAS
+    ============================================================ */
+    function renderChemicalCanvas(canvas, offscreenCover, progress, maskCanvas, maskCtx) {
+      var S = canvas.width;
+      if (!S) return;
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, S, S);
+
+      if (progress <= 0.001) {
+        ctx.fillStyle = '#0e0a09';
+        ctx.fillRect(0, 0, S, S);
+        return;
+      }
+
+      var blurPx = Math.round((1 - progress) * 10);
+      var brightness = 0.35 + 0.65 * progress;
+      var contrast = 0.65 + 0.35 * progress;
+      var saturate = 0.2 + 0.8 * progress;
+      var sepia = Math.max(0, (1 - progress) * 0.45);
+
+      ctx.save();
+      if (progress < 0.999) {
+        ctx.filter = 'blur(' + blurPx + 'px) brightness(' + brightness + ') contrast(' + contrast + ') saturate(' + saturate + ') sepia(' + sepia + ')';
+      }
+      ctx.drawImage(offscreenCover, 0, 0, S, S);
+      ctx.restore();
+
+      if (progress < 0.995 && globalFbmNoise) {
+        var imgData = maskCtx.createImageData(FBM_SIZE, FBM_SIZE);
+        var data = imgData.data;
+        var threshold = progress;
+        var edge = 0.16;
+
+        for (var i = 0; i < globalFbmNoise.length; i++) {
+          var n = globalFbmNoise[i];
+          var factor = smoothstep(threshold - edge, threshold + edge, n);
+          var v = Math.round(factor * 255);
+          var idx = i * 4;
+          data[idx] = v; data[idx + 1] = v; data[idx + 2] = v; data[idx + 3] = 255;
+        }
+        maskCtx.putImageData(imgData, 0, 0);
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(maskCanvas, 0, 0, S, S);
+        ctx.restore();
+
+        var veilAlpha = (1 - progress) * 0.38 * (1 - progress * 0.8);
+        if (veilAlpha > 0.01) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.fillStyle = 'rgba(25, 45, 65, ' + veilAlpha + ')';
+          ctx.fillRect(0, 0, S, S);
+          ctx.restore();
+        }
+
+        var grainAlpha = (1 - progress) * 0.14;
+        if (grainAlpha > 0.01) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'overlay';
+          ctx.fillStyle = 'rgba(180, 160, 140, ' + grainAlpha + ')';
+          ctx.fillRect(0, 0, S, S);
+          ctx.restore();
+        }
+      }
+    }
+
+    /* ============================================================
+       1. CÁMARA POLAROID (PRIMERA ESCENA)
+    ============================================================ */
+    var pcState = {
+      hasShot: false,
+      isEjecting: false,
+      isEjected: false,
+      isDeveloped: false,
+      energy: 0,
+      progress: 0,
+      renderedProgress: -1,
+      sourceImage: null,
+      instantIntensity: 0,
+      hasRealMovementStarted: false,
+      usesDeviceMotion: false,
+      motionPermissionRequested: false,
+      lastFrameTime: performance.now()
+    };
+
+    var pcCanvas = document.getElementById('pc-canvas');
+    var pcOffscreen = document.createElement('canvas');
+    var pcMaskCanvas = document.createElement('canvas');
+    pcMaskCanvas.width = FBM_SIZE; pcMaskCanvas.height = FBM_SIZE;
+    var pcMaskCtx = pcMaskCanvas.getContext('2d');
+
+    function resizePcCanvasBuffer() {
+      var rect = pcCanvas.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      var w = Math.round(rect.width * dpr);
+      var h = Math.round(rect.height * dpr);
+      if (w > 0 && h > 0 && (pcCanvas.width !== w || pcCanvas.height !== h)) {
+        pcCanvas.width = w; pcCanvas.height = h;
+        pcOffscreen.width = w; pcOffscreen.height = h;
+        if (pcState.sourceImage) drawCoverToCanvas(pcState.sourceImage, pcOffscreen);
+        renderChemicalCanvas(pcCanvas, pcOffscreen, pcState.progress, pcMaskCanvas, pcMaskCtx);
+      }
+    }
+
+    function drawCoverToCanvas(img, targetCanvas) {
+      var S = targetCanvas.width;
+      if (!S || !img || !img.width || !img.height) return;
+      var ctx = targetCanvas.getContext('2d');
+      ctx.clearRect(0, 0, S, S);
+      var scale = Math.max(S / img.width, S / img.height);
+      var drawW = img.width * scale;
+      var drawH = img.height * scale;
+      var dx = (S - drawW) / 2;
+      var dy = (S - drawH) / 2;
+      ctx.drawImage(img, dx, dy, drawW, drawH);
+    }
+
+    function setPcPhoto(src) {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function () {
+        pcState.sourceImage = img;
+        drawCoverToCanvas(img, pcOffscreen);
+        renderChemicalCanvas(pcCanvas, pcOffscreen, pcState.progress, pcMaskCanvas, pcMaskCtx);
+      };
+      img.onerror = function () {
+        // Fallback artístico
+        var pC = document.createElement('canvas');
+        pC.width = 600; pC.height = 600;
+        var pCtx = pC.getContext('2d');
+        var grad = pCtx.createLinearGradient(0, 0, 600, 600);
+        grad.addColorStop(0, '#fce4db'); grad.addColorStop(1, '#9b5d6b');
+        pCtx.fillStyle = grad; pCtx.fillRect(0, 0, 600, 600);
+        pCtx.fillStyle = '#ffffff'; pCtx.font = 'italic 42px "Playfair Display", Georgia, serif';
+        pCtx.textAlign = 'center'; pCtx.fillText('Recuerdo Especial', 300, 310);
+        pcState.sourceImage = pC;
+        drawCoverToCanvas(pC, pcOffscreen);
+        renderChemicalCanvas(pcCanvas, pcOffscreen, pcState.progress, pcMaskCanvas, pcMaskCtx);
+      };
+      img.src = src;
+    }
+
+    function triggerShutter() {
+      if (pcState.hasShot) return;
+      pcState.hasShot = true;
+      startMusicPlayback();
+
+      var shutterBtn = document.getElementById('pc-shutter');
+      var cameraWrap = document.getElementById('pc-camera-wrap');
+      var flashEl = document.getElementById('pc-flash');
+      var photoEl = document.getElementById('pc-photo');
+
+      shutterBtn.classList.add('pc-pressed');
+
+      // SONIDO DE FLASH ELECTRÓNICO REALISTA
+      playCameraFlashSound();
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate(40); } catch(e) {}
+      }
+
+      flashEl.classList.add('pc-active');
+      setTimeout(function () { flashEl.classList.remove('pc-active'); }, 75);
+
+      cameraWrap.classList.add('pc-shaking');
+      setTimeout(function () {
+        cameraWrap.classList.remove('pc-shaking');
+        shutterBtn.classList.remove('pc-pressed');
+      }, 420);
+
+      hidePcHint();
+
+      setTimeout(function () {
+        pcState.isEjecting = true;
+        photoEl.classList.add('pc-ejecting');
+
+        setTimeout(function () {
+          photoEl.classList.remove('pc-ejecting');
+          photoEl.classList.add('pc-ejected');
+          pcState.isEjecting = false;
+          pcState.isEjected = true;
+          renderChemicalCanvas(pcCanvas, pcOffscreen, 0, pcMaskCanvas, pcMaskCtx);
+          showPcHint('Tocá la foto');
+        }, 2400);
+      }, 150);
+    }
+
+    var pcHintEl = document.getElementById('pc-hint');
+    function showPcHint(text) {
+      pcHintEl.textContent = text;
+      pcHintEl.classList.add('pc-show');
+    }
+    function hidePcHint() {
+      pcHintEl.classList.remove('pc-show');
+    }
+
+    /* DETECCIÓN DE MOVIMIENTO DE LA CÁMARA (DEVICEMOTION + POINTER) */
+    var smoothX = 0, lastSmoothX = 0, lastReversalTime = 0;
+    var lastAccel = { x: 0, y: 0, z: 0, set: false };
+
+    function handleMotionGlobal(e) {
+      var a = e.accelerationIncludingGravity || e.acceleration;
+      if (!a || a.x === null) return;
+      if (!lastAccel.set) { lastAccel = { x: a.x, y: a.y, z: a.z, set: true }; return; }
+
+      var dx = a.x - lastAccel.x;
+      var dy = a.y - lastAccel.y;
+      var dz = a.z - lastAccel.z;
+      lastAccel.x = a.x; lastAccel.y = a.y; lastAccel.z = a.z;
+
+      smoothX = 0.72 * smoothX + 0.28 * dx;
+      var now = performance.now();
+      var bonus = 1.0;
+      if ((smoothX > 0 && lastSmoothX < 0) || (smoothX < 0 && lastSmoothX > 0)) {
+        if (now - lastReversalTime < 420) bonus = 1.7;
+        lastReversalTime = now;
+      }
+      lastSmoothX = smoothX;
+
+      var mag = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (mag > 1.8) {
+        var intens = Math.min(3.6, (mag - 1.8) * bonus * 0.45);
+        if (pcState.isEjected && !pcState.isDeveloped) pcState.instantIntensity = intens;
+        // También aplica a la tarjeta activa del mazo
+        if (activeStackCard && !activeStackCard.isDeveloped) activeStackCard.instantIntensity = intens;
+      }
+    }
+
+    function setupPcPointer() {
+      var photoEl = document.getElementById('pc-photo');
+      var pDown = false, lastX = 0, lastY = 0, lastT = 0, lastSign = 0, lastRevT = 0;
+
+      photoEl.addEventListener('pointerdown', function (e) {
+        if (!pcState.isEjected || pcState.isDeveloped) return;
+        startMusicPlayback();
+        requestMotionPerm();
+
+        pDown = true;
+        lastX = e.clientX; lastY = e.clientY; lastT = performance.now();
+        photoEl.setPointerCapture(e.pointerId);
+        photoEl.classList.add('pc-dragging');
+
+        if (!pcState.hasRealMovementStarted) {
+          showPcHint(window.DeviceMotionEvent ? 'Sacudí el teléfono' : 'Sacudí la foto con el dedo');
+        }
+      });
+
+      photoEl.addEventListener('pointermove', function (e) {
+        if (!pDown || !pcState.isEjected || pcState.isDeveloped) return;
+        var now = performance.now();
+        var dt = (now - lastT) || 16;
+        var dx = e.clientX - lastX;
+        var dy = e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY; lastT = now;
+
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var speed = dist / (dt / 16.66);
+
+        var curSign = dx > 0 ? 1 : (dx < 0 ? -1 : 0);
+        var bonus = 1.0;
+        if (curSign !== 0 && lastSign !== 0 && curSign !== lastSign) {
+          if (now - lastRevT < 420) bonus = 1.7;
+          lastRevT = now;
+        }
+        if (curSign !== 0) lastSign = curSign;
+
+        if (speed > 1.2) {
+          pcState.instantIntensity = Math.min(3.8, (speed - 1.2) * 0.18 * bonus);
+        }
+
+        var rot = Math.max(-8, Math.min(8, dx * 0.2));
+        photoEl.style.transform = 'translateX(-50%) translate3d(' + (dx * 0.5) + 'px, 0, 0) rotate(' + (0.4 + rot) + 'deg)';
+      });
+
+      function endPcDrag() {
+        if (!pDown) return;
+        pDown = false;
+        photoEl.classList.remove('pc-dragging');
+        photoEl.style.transform = 'translateX(-50%) rotate(0.4deg)';
+      }
+      photoEl.addEventListener('pointerup', endPcDrag);
+      photoEl.addEventListener('pointercancel', endPcDrag);
+    }
+
+    function requestMotionPerm() {
+      if (pcState.motionPermissionRequested) return;
+      pcState.motionPermissionRequested = true;
+      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission()
+          .then(function (perm) {
+            if (perm === 'granted') window.addEventListener('devicemotion', handleMotionGlobal, { passive: true });
+          }).catch(function () {});
+      } else if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion', handleMotionGlobal, { passive: true });
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       2. REPRODUCTOR DE MÚSICA (CONTROL REAL & STREAMING LOOK)
+       ═══════════════════════════════════════════════════════ */
+    var audioEl = document.getElementById('bg-music');
+    var isMusicPlaying = false;
+
+    function startMusicPlayback() {
+      if (isMusicPlaying) return;
+      if (audioEl.src) {
+        audioEl.play().then(function () {
+          isMusicPlaying = true;
+          updatePlayerButtonState();
         }).catch(function () {});
       }
     }
 
-    /* ============================================================
-       IIFE AISLADO: SISTEMA DE CÁMARA POLAROID Y REVELADO
-    ============================================================ */
-    (function () {
-      var pcState = {
-        hasShot: false,
-        isEjecting: false,
-        isEjected: false,
-        isDeveloped: false,
-        energy: 0,
-        progress: 0,
-        renderedProgress: -1,
-        sourceImage: null,
-        fbmNoise: null,
-        lastFrameTime: performance.now(),
-        motionPermissionRequested: false,
-        hasRealMovementStarted: false,
-        usesDeviceMotion: false,
-        instantIntensity: 0
-      };
-
-      /* AUDIO SYNTHESIZER (WEB AUDIO API) */
-      var audioCtx = null;
-      function getAudioCtx() {
-        if (!audioCtx) {
-          var AudioClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioClass) audioCtx = new AudioClass();
-        }
-        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        return audioCtx;
+    function toggleMusicPlayback() {
+      if (!audioEl.src) return;
+      if (isMusicPlaying) {
+        audioEl.pause();
+        isMusicPlaying = false;
+      } else {
+        audioEl.play().then(function () {
+          isMusicPlaying = true;
+        }).catch(function () {});
       }
+      updatePlayerButtonState();
+    }
 
-      function playMechanicalClick() {
-        var ctx = getAudioCtx();
-        if (!ctx) return;
-        var now = ctx.currentTime;
-        var bufferSize = ctx.sampleRate * 0.05;
-        var noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        var output = noiseBuffer.getChannelData(0);
-        for (var i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
-        var whiteNoise = ctx.createBufferSource();
-        whiteNoise.buffer = noiseBuffer;
-        var filter = ctx.createBiquadFilter();
-        filter.type = 'highpass';
-        filter.frequency.setValueAtTime(1400, now);
-        var gainNode = ctx.createGain();
-        gainNode.gain.setValueAtTime(0.85, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.045);
-        whiteNoise.connect(filter);
-        filter.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        whiteNoise.start(now);
-
-        var osc = ctx.createOscillator();
-        var oscGain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(160, now);
-        osc.frequency.exponentialRampToValueAtTime(45, now + 0.07);
-        oscGain.gain.setValueAtTime(0.9, now);
-        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-        osc.connect(oscGain);
-        oscGain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.09);
+    function updatePlayerButtonState() {
+      var playIcon = document.getElementById('play-icon');
+      var pauseIcon = document.getElementById('pause-icon');
+      if (isMusicPlaying) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+      } else {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
       }
+    }
 
-      function playMotorHum(duration) {
-        var ctx = getAudioCtx();
-        if (!ctx) return;
-        var now = ctx.currentTime;
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(85, now);
-        var lfo = ctx.createOscillator();
-        var lfoGain = ctx.createGain();
-        lfo.frequency.setValueAtTime(14, now);
-        lfoGain.gain.setValueAtTime(25, now);
-        lfo.connect(osc.frequency);
-        lfo.start(now);
-        lfo.stop(now + duration);
+    function formatTime(secs) {
+      if (isNaN(secs) || secs < 0) return '0:00';
+      var m = Math.floor(secs / 60);
+      var s = Math.floor(secs % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
 
-        gain.gain.setValueAtTime(0.01, now);
-        gain.gain.linearRampToValueAtTime(0.18, now + 0.15);
-        gain.gain.setValueAtTime(0.18, now + duration - 0.2);
-        gain.gain.linearRampToValueAtTime(0.001, now + duration);
+    audioEl.addEventListener('timeupdate', function () {
+      if (!audioEl.duration) return;
+      var pct = (audioEl.currentTime / audioEl.duration) * 100;
+      document.getElementById('player-progress-fill').style.width = pct + '%';
+      document.getElementById('player-current-time').textContent = formatTime(audioEl.currentTime);
+      document.getElementById('player-total-time').textContent = formatTime(audioEl.duration);
+    });
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + duration);
-      }
+    audioEl.addEventListener('loadedmetadata', function () {
+      document.getElementById('player-total-time').textContent = formatTime(audioEl.duration);
+    });
 
-      /* RUIDO FBM */
-      var FBM_SIZE = 112;
-      function generateFbmNoise() {
-        var grid = new Float32Array(FBM_SIZE * FBM_SIZE);
-        var cx = FBM_SIZE / 2, cy = FBM_SIZE / 2;
-        var maxDist = Math.sqrt(cx * cx + cy * cy);
-        var perm = new Uint8Array(512);
-        for (var i = 0; i < 256; i++) perm[i] = perm[256 + i] = Math.floor(Math.random() * 256);
+    document.getElementById('player-play-btn').addEventListener('click', toggleMusicPlayback);
 
-        function noise2D(x, y) {
-          var X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
-          var xf = x - Math.floor(x), yf = y - Math.floor(y);
-          var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
-          var g00 = perm[perm[X] + Y], g10 = perm[perm[X + 1] + Y];
-          var g01 = perm[perm[X] + Y + 1], g11 = perm[perm[X + 1] + Y + 1];
-          var x1 = ((g00 & 1) ? xf : -xf) + ((g00 & 2) ? yf : -yf);
-          var x2 = ((g10 & 1) ? (xf - 1) : -(xf - 1)) + ((g10 & 2) ? yf : -yf);
-          var y1 = ((g01 & 1) ? xf : -xf) + ((g01 & 2) ? (yf - 1) : -(yf - 1));
-          var y2 = ((g11 & 1) ? (xf - 1) : -(xf - 1)) + ((g11 & 2) ? (yf - 1) : -(yf - 1));
-          var a = x1 + u * (x2 - x1), b = y1 + u * (y2 - y1);
-          return a + v * (b - a);
-        }
+    document.getElementById('player-progress-bar').addEventListener('click', function (e) {
+      if (!audioEl.duration) return;
+      var rect = this.getBoundingClientRect();
+      var clickX = e.clientX - rect.left;
+      var pct = clickX / rect.width;
+      audioEl.currentTime = pct * audioEl.duration;
+    });
 
-        for (var y = 0; y < FBM_SIZE; y++) {
-          for (var x = 0; x < FBM_SIZE; x++) {
-            var val = 0, amp = 0.5, freq = 0.055;
-            for (var o = 0; o < 4; o++) {
-              val += noise2D(x * freq, y * freq) * amp;
-              amp *= 0.5; freq *= 2.0;
-            }
-            var dx = x - cx, dy = y - cy;
-            var dist = Math.sqrt(dx * dx + dy * dy) / maxDist;
-            val = (val + 0.5) * 0.72 + (1.0 - dist) * 0.28;
-            grid[y * FBM_SIZE + x] = Math.max(0, Math.min(1, val));
-          }
-        }
-        return grid;
-      }
+    /* ═══════════════════════════════════════════════════════
+       3. PILA DESORDENADA DE POLAROIDS (INTERACTIVE SCATTER STACK)
+       ═══════════════════════════════════════════════════════ */
+    var stackCards = [];
+    var activeStackIndex = 0;
+    var activeStackCard = null;
+    var STACK_ANGLES = [-4.5, 3.8, -2.5, 4.2, -1.2];
 
-      /* CANVAS DE ENCUADRE COVER */
-      var canvas = document.getElementById('pc-canvas');
-      var ctx = canvas.getContext('2d');
-      var offscreenCanvas = document.createElement('canvas');
-      var offscreenCtx = offscreenCanvas.getContext('2d');
-      var maskCanvas = document.createElement('canvas');
-      maskCanvas.width = FBM_SIZE; maskCanvas.height = FBM_SIZE;
-      var maskCtx = maskCanvas.getContext('2d');
+    function buildPolaroidStack(photos) {
+      var box = document.getElementById('polaroid-stack-box');
+      box.innerHTML = '';
+      stackCards = [];
 
-      function resizeCanvasBuffer() {
-        var rect = canvas.getBoundingClientRect();
-        var dpr = window.devicePixelRatio || 1;
-        var w = Math.round(rect.width * dpr);
-        var h = Math.round(rect.height * dpr);
-        if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
-          canvas.width = w;
-          canvas.height = h;
-          offscreenCanvas.width = w;
-          offscreenCanvas.height = h;
-          if (pcState.sourceImage) drawCoverToOffscreen();
-          renderPhoto(true);
-        }
-      }
+      var list = photos && photos.length ? photos.slice(0, 5) : [
+        'paginas/demo/1.jpg', 'paginas/demo/10.jpg', 'paginas/demo/11.jpg', 'paginas/demo/12.jpg', 'paginas/demo/13.jpg'
+      ];
 
-      function drawCoverToOffscreen() {
-        var S = offscreenCanvas.width;
-        if (!S) return;
-        offscreenCtx.clearRect(0, 0, S, S);
-        var img = pcState.sourceImage;
-        if (!img || !img.width || !img.height) return;
+      list.forEach(function (url, idx) {
+        var card = document.createElement('div');
+        card.className = 'stack-card';
+        card.setAttribute('data-idx', idx);
 
-        var scale = Math.max(S / img.width, S / img.height);
-        var drawW = img.width * scale;
-        var drawH = img.height * scale;
-        var dx = (S - drawW) / 2;
-        var dy = (S - drawH) / 2;
-        offscreenCtx.drawImage(img, dx, dy, drawW, drawH);
-      }
+        var wrap = document.createElement('div');
+        wrap.className = 'stack-canvas-wrap';
 
-      function createDefaultPlaceholder() {
-        var pCanvas = document.createElement('canvas');
-        pCanvas.width = 600; pCanvas.height = 600;
-        var pCtx = pCanvas.getContext('2d');
-        var grad = pCtx.createLinearGradient(0, 0, 600, 600);
-        grad.addColorStop(0, '#fce4db');
-        grad.addColorStop(0.5, '#e5a894');
-        grad.addColorStop(1, '#9b5d6b');
-        pCtx.fillStyle = grad;
-        pCtx.fillRect(0, 0, 600, 600);
-        pCtx.fillStyle = '#ffffff';
-        pCtx.font = 'italic 42px "Playfair Display", Georgia, serif';
-        pCtx.textAlign = 'center';
-        pCtx.fillText('Recuerdo Especial', 300, 290);
-        pCtx.font = '600 22px "Plus Jakarta Sans", sans-serif';
-        pCtx.fillStyle = 'rgba(255,255,255,0.9)';
-        pCtx.fillText('Momentos que quedan grabados 💛', 300, 340);
-        return pCanvas;
-      }
+        var cv = document.createElement('canvas');
+        cv.className = 'stack-canvas';
+        wrap.appendChild(cv);
+        card.appendChild(wrap);
 
-      function setPhoto(src) {
-        if (!src) {
-          pcState.sourceImage = createDefaultPlaceholder();
-          drawCoverToOffscreen();
-          renderPhoto(true);
-          return;
-        }
+        var impr = document.createElement('div');
+        impr.className = 'stack-imprint';
+        impr.textContent = todayFormatted;
+        card.appendChild(impr);
 
+        box.appendChild(card);
+
+        var offscreen = document.createElement('canvas');
+        var maskCv = document.createElement('canvas');
+        maskCv.width = FBM_SIZE; maskCv.height = FBM_SIZE;
+        var maskC = maskCv.getContext('2d');
+
+        var cardObj = {
+          el: card,
+          canvas: cv,
+          offscreen: offscreen,
+          maskCanvas: maskCv,
+          maskCtx: maskC,
+          sourceImg: null,
+          progress: 0,
+          energy: 0,
+          instantIntensity: 0,
+          isDeveloped: false,
+          baseAngle: STACK_ANGLES[idx % STACK_ANGLES.length]
+        };
+
+        // Cargar imagen
         var img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = function () {
-          pcState.sourceImage = img;
-          drawCoverToOffscreen();
-          renderPhoto(true);
+          cardObj.sourceImg = img;
+          resizeStackCardBuffer(cardObj);
         };
         img.onerror = function () {
-          pcState.sourceImage = createDefaultPlaceholder();
-          drawCoverToOffscreen();
-          renderPhoto(true);
+          var fC = document.createElement('canvas'); fC.width = 500; fC.height = 500;
+          var fCtx = fC.getContext('2d');
+          fCtx.fillStyle = '#eddccb'; fCtx.fillRect(0, 0, 500, 500);
+          cardObj.sourceImg = fC;
+          resizeStackCardBuffer(cardObj);
         };
-        img.src = src;
+        img.src = url;
+
+        setupStackCardGesture(cardObj, idx);
+        stackCards.push(cardObj);
+      });
+
+      updateStackLayout();
+    }
+
+    function resizeStackCardBuffer(cObj) {
+      var rect = cObj.canvas.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      var w = Math.round(rect.width * dpr);
+      var h = Math.round(rect.height * dpr);
+      if (w > 0 && h > 0) {
+        cObj.canvas.width = w; cObj.canvas.height = h;
+        cObj.offscreen.width = w; cObj.offscreen.height = h;
+        if (cObj.sourceImg) drawCoverToCanvas(cObj.sourceImg, cObj.offscreen);
+        renderChemicalCanvas(cObj.canvas, cObj.offscreen, cObj.progress, cObj.maskCanvas, cObj.maskCtx);
       }
+    }
 
-      function smoothstep(min, max, value) {
-        var x = Math.max(0, Math.min(1, (value - min) / (max - min)));
-        return x * x * (3 - 2 * x);
-      }
+    function updateStackLayout() {
+      var total = stackCards.length;
+      stackCards.forEach(function (c, i) {
+        var pos = (i - activeStackIndex + total) % total;
+        c.el.style.zIndex = total - pos;
 
-      function renderPhoto(force) {
-        var P = pcState.progress;
-        if (!force && Math.abs(P - pcState.renderedProgress) < 0.004) return;
-        pcState.renderedProgress = P;
-
-        var S = canvas.width;
-        if (!S) return;
-
-        ctx.clearRect(0, 0, S, S);
-
-        if (P <= 0.001) {
-          ctx.fillStyle = '#0f0c0a';
-          ctx.fillRect(0, 0, S, S);
-          return;
-        }
-
-        var blurPx = Math.round((1 - P) * 10);
-        var brightness = 0.35 + 0.65 * P;
-        var contrast = 0.65 + 0.35 * P;
-        var saturate = 0.2 + 0.8 * P;
-        var sepia = Math.max(0, (1 - P) * 0.45);
-
-        ctx.save();
-        if (P < 0.999) {
-          ctx.filter = 'blur(' + blurPx + 'px) brightness(' + brightness + ') contrast(' + contrast + ') saturate(' + saturate + ') sepia(' + sepia + ')';
-        }
-        ctx.drawImage(offscreenCanvas, 0, 0, S, S);
-        ctx.restore();
-
-        if (P < 0.995 && pcState.fbmNoise) {
-          var imgData = maskCtx.createImageData(FBM_SIZE, FBM_SIZE);
-          var data = imgData.data;
-          var noise = pcState.fbmNoise;
-          var threshold = P;
-          var edge = 0.16;
-
-          for (var i = 0; i < noise.length; i++) {
-            var n = noise[i];
-            var factor = smoothstep(threshold - edge, threshold + edge, n);
-            var v = Math.round(factor * 255);
-            var idx = i * 4;
-            data[idx] = v; data[idx + 1] = v; data[idx + 2] = v; data[idx + 3] = 255;
-          }
-          maskCtx.putImageData(imgData, 0, 0);
-
-          ctx.save();
-          ctx.globalCompositeOperation = 'multiply';
-          ctx.imageSmoothingEnabled = true;
-          ctx.drawImage(maskCanvas, 0, 0, S, S);
-          ctx.restore();
-
-          var veilAlpha = (1 - P) * 0.38 * (1 - P * 0.8);
-          if (veilAlpha > 0.01) {
-            ctx.save();
-            ctx.globalCompositeOperation = 'lighter';
-            ctx.fillStyle = 'rgba(25, 45, 65, ' + veilAlpha + ')';
-            ctx.fillRect(0, 0, S, S);
-            ctx.restore();
-          }
-
-          var grainAlpha = (1 - P) * 0.14;
-          if (grainAlpha > 0.01) {
-            ctx.save();
-            ctx.globalCompositeOperation = 'overlay';
-            ctx.fillStyle = 'rgba(180, 160, 140, ' + grainAlpha + ')';
-            ctx.fillRect(0, 0, S, S);
-            ctx.restore();
-          }
-        }
-      }
-
-      /* LOOP DE ANIMACIÓN */
-      var RATE_FACTOR = 0.18;
-      function animationLoop(timestamp) {
-        var dt = Math.min(0.1, (timestamp - pcState.lastFrameTime) / 1000);
-        pcState.lastFrameTime = timestamp;
-
-        if (pcState.isEjected && !pcState.isDeveloped) {
-          if (pcState.instantIntensity > 0.01) {
-            pcState.energy += pcState.instantIntensity * dt * RATE_FACTOR;
-            pcState.instantIntensity *= Math.pow(0.15, dt);
-
-            if (!pcState.hasRealMovementStarted && pcState.energy > 0.04) {
-              pcState.hasRealMovementStarted = true;
-              hideHint();
-            }
-          }
-
-          if (pcState.energy > 0.06 && pcState.energy < 0.62) {
-            pcState.energy += 0.018 * dt;
-          }
-
-          var targetProgress = Math.min(1.0, pcState.energy);
-          pcState.progress += (targetProgress - pcState.progress) * Math.min(1, dt * 6.0);
-
-          renderPhoto(false);
-
-          if (pcState.progress >= 0.996) {
-            pcState.progress = 1.0;
-            pcState.isDeveloped = true;
-            renderPhoto(true);
-            showHint('✨ Foto revelada');
-            setTimeout(hideHint, 2800);
-          }
-        }
-
-        requestAnimationFrame(animationLoop);
-      }
-
-      /* DETECCIÓN DE MOVIMIENTO */
-      var smoothX = 0, lastSmoothX = 0, lastReversalTime = 0;
-      var lastAccel = { x: 0, y: 0, z: 0, set: false };
-
-      function handleDeviceMotion(e) {
-        if (!pcState.isEjected || pcState.isDeveloped) return;
-        var a = e.accelerationIncludingGravity || e.acceleration;
-        if (!a || a.x === null) return;
-
-        pcState.usesDeviceMotion = true;
-        if (!lastAccel.set) {
-          lastAccel = { x: a.x, y: a.y, z: a.z, set: true };
-          return;
-        }
-
-        var dx = a.x - lastAccel.x;
-        var dy = a.y - lastAccel.y;
-        var dz = a.z - lastAccel.z;
-        lastAccel.x = a.x; lastAccel.y = a.y; lastAccel.z = a.z;
-
-        smoothX = 0.72 * smoothX + 0.28 * dx;
-
-        var now = performance.now();
-        var bonus = 1.0;
-        if ((smoothX > 0 && lastSmoothX < 0) || (smoothX < 0 && lastSmoothX > 0)) {
-          if (now - lastReversalTime < 420) bonus = 1.7;
-          lastReversalTime = now;
-        }
-        lastSmoothX = smoothX;
-
-        var mag = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        if (mag > 1.8) {
-          pcState.instantIntensity = Math.min(3.6, (mag - 1.8) * bonus * 0.45);
-        }
-      }
-
-      /* FALLBACK ARRASTRE */
-      var pointer = { isDown: false, lastX: 0, lastY: 0, lastTime: 0, lastSign: 0, lastRevTime: 0 };
-      function setupPointerInteraction() {
-        var photoEl = document.getElementById('pc-photo');
-
-        photoEl.addEventListener('pointerdown', function (e) {
-          if (!pcState.isEjected || pcState.isDeveloped) return;
-          unlockAudio();
-          requestIosMotionPermission();
-
-          pointer.isDown = true;
-          pointer.lastX = e.clientX;
-          pointer.lastY = e.clientY;
-          pointer.lastTime = performance.now();
-          photoEl.setPointerCapture(e.pointerId);
-          photoEl.classList.add('pc-dragging');
-
-          if (!pcState.hasRealMovementStarted) updateHintForInteraction();
-        });
-
-        photoEl.addEventListener('pointermove', function (e) {
-          if (!pointer.isDown || !pcState.isEjected || pcState.isDeveloped) return;
-
-          var now = performance.now();
-          var dt = (now - pointer.lastTime) || 16;
-          var dx = e.clientX - pointer.lastX;
-          var dy = e.clientY - pointer.lastY;
-          pointer.lastX = e.clientX;
-          pointer.lastY = e.clientY;
-          pointer.lastTime = now;
-
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          var speed = dist / (dt / 16.66);
-
-          var currentSign = dx > 0 ? 1 : (dx < 0 ? -1 : 0);
-          var bonus = 1.0;
-          if (currentSign !== 0 && pointer.lastSign !== 0 && currentSign !== pointer.lastSign) {
-            if (now - pointer.lastRevTime < 420) bonus = 1.7;
-            pointer.lastRevTime = now;
-          }
-          if (currentSign !== 0) pointer.lastSign = currentSign;
-
-          if (speed > 1.2) {
-            var rawIntensity = (speed - 1.2) * 0.18 * bonus;
-            pcState.instantIntensity = Math.min(3.8, Math.max(pcState.instantIntensity, rawIntensity));
-          }
-
-          var rot = Math.max(-8, Math.min(8, dx * 0.2));
-          photoEl.style.transform = 'translateX(-50%) translate3d(' + (dx * 0.5) + 'px, 0, 0) rotate(' + (0.4 + rot) + 'deg)';
-        });
-
-        function endDrag() {
-          if (!pointer.isDown) return;
-          pointer.isDown = false;
-          photoEl.classList.remove('pc-dragging');
-          photoEl.style.transform = 'translateX(-50%) rotate(0.4deg)';
-        }
-
-        photoEl.addEventListener('pointerup', endDrag);
-        photoEl.addEventListener('pointercancel', endDrag);
-      }
-
-      function requestIosMotionPermission() {
-        if (pcState.motionPermissionRequested) return;
-        pcState.motionPermissionRequested = true;
-
-        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-          DeviceMotionEvent.requestPermission()
-            .then(function (permission) {
-              if (permission === 'granted') {
-                window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
-                showHint('Sacudí el teléfono');
-              } else {
-                showHint('Sacudí la foto con el dedo');
-              }
-            })
-            .catch(function () {
-              showHint('Sacudí la foto con el dedo');
-            });
-        } else if (window.DeviceMotionEvent) {
-          window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
-        }
-      }
-
-      var hintEl = document.getElementById('pc-hint');
-      function showHint(text) {
-        hintEl.textContent = text;
-        hintEl.classList.add('pc-show');
-      }
-      function hideHint() {
-        hintEl.classList.remove('pc-show');
-      }
-      function updateHintForInteraction() {
-        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-          showHint('Sacudí el teléfono');
-        } else if (window.DeviceMotionEvent && pcState.usesDeviceMotion) {
-          showHint('Sacudí el teléfono');
+        if (pos === 0) {
+          activeStackCard = c;
+          c.el.style.transform = 'translate3d(0, 0, 0) rotate(' + c.baseAngle + 'deg)';
+          c.el.style.opacity = '1';
+          c.el.style.pointerEvents = 'all';
         } else {
-          showHint('Sacudí la foto con el dedo');
+          var yOffset = pos * 7;
+          var xOffset = (pos % 2 === 0 ? 1 : -1) * pos * 5;
+          var rot = c.baseAngle + (pos % 2 === 0 ? 2 : -2);
+          c.el.style.transform = 'translate3d(' + xOffset + 'px, ' + yOffset + 'px, 0) rotate(' + rot + 'deg) scale(' + (1 - pos * 0.04) + ')';
+          c.el.style.opacity = String(Math.max(0.6, 1 - pos * 0.12));
+          c.el.style.pointerEvents = 'none';
+        }
+      });
+
+      document.getElementById('stack-counter').textContent = 'Foto ' + (activeStackIndex + 1) + ' de ' + total;
+    }
+
+    function cycleStackNext() {
+      if (!stackCards.length) return;
+      var topCard = stackCards[activeStackIndex];
+      topCard.el.style.transition = 'transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease';
+      topCard.el.style.transform = 'translate3d(140%, -20px, 0) rotate(18deg) scale(0.9)';
+      topCard.el.style.opacity = '0';
+
+      setTimeout(function () {
+        activeStackIndex = (activeStackIndex + 1) % stackCards.length;
+        updateStackLayout();
+        setTimeout(function () {
+          topCard.el.style.transition = '';
+        }, 50);
+      }, 250);
+    }
+
+    function setupStackCardGesture(cObj, index) {
+      var el = cObj.el;
+      var isDown = false, sX = 0, sY = 0, lastX = 0, lastT = 0, lastSign = 0, lastRevT = 0;
+      var movedFar = false;
+
+      el.addEventListener('pointerdown', function (e) {
+        if (index !== activeStackIndex) return;
+        startMusicPlayback();
+        requestMotionPerm();
+
+        isDown = true;
+        sX = lastX = e.clientX; sY = e.clientY;
+        lastT = performance.now();
+        movedFar = false;
+        el.setPointerCapture(e.pointerId);
+        el.classList.add('swiping');
+      });
+
+      el.addEventListener('pointermove', function (e) {
+        if (!isDown || index !== activeStackIndex) return;
+        var now = performance.now();
+        var dt = (now - lastT) || 16;
+        var dx = e.clientX - lastX;
+        var totalDx = e.clientX - sX;
+        var totalDy = e.clientY - sY;
+        lastX = e.clientX; lastT = now;
+
+        if (Math.abs(totalDx) > 8 || Math.abs(totalDy) > 8) movedFar = true;
+
+        var dist = Math.abs(dx);
+        var speed = dist / (dt / 16.66);
+
+        var curSign = dx > 0 ? 1 : (dx < 0 ? -1 : 0);
+        var bonus = 1.0;
+        if (curSign !== 0 && lastSign !== 0 && curSign !== lastSign) {
+          if (now - lastRevT < 420) bonus = 1.7;
+          lastRevT = now;
+        }
+        if (curSign !== 0) lastSign = curSign;
+
+        // Revelado al agitar/arrastrar
+        if (speed > 1.2 && !cObj.isDeveloped) {
+          cObj.instantIntensity = Math.min(3.8, (speed - 1.2) * 0.18 * bonus);
+        }
+
+        var rot = cObj.baseAngle + totalDx * 0.08;
+        el.style.transform = 'translate3d(' + totalDx + 'px, ' + (totalDy * 0.4) + 'px, 0) rotate(' + rot + 'deg)';
+      });
+
+      function endStackDrag(e) {
+        if (!isDown) return;
+        isDown = false;
+        el.classList.remove('swiping');
+
+        var totalDx = e.clientX - sX;
+        // Si fue un swipe decidido hacia un lado o un tap simple, pasa a la siguiente
+        if (Math.abs(totalDx) > 80 || !movedFar) {
+          cycleStackNext();
+        } else {
+          // Vuelve a su posición en la pila
+          el.style.transform = 'translate3d(0, 0, 0) rotate(' + cObj.baseAngle + 'deg)';
         }
       }
 
-      function triggerShutter() {
-        if (pcState.hasShot) return;
-        pcState.hasShot = true;
-        unlockAudio();
+      el.addEventListener('pointerup', endStackDrag);
+      el.addEventListener('pointercancel', endStackDrag);
+    }
 
-        var shutterBtn = document.getElementById('pc-shutter');
-        var cameraWrap = document.getElementById('pc-camera-wrap');
-        var flashEl = document.getElementById('pc-flash');
-        var photoEl = document.getElementById('pc-photo');
+    /* ═══════════════════════════════════════════════════════
+       LOOP GLOBAL DE INTEGRACIÓN TEMPORAL (R.A.F.)
+    ============================================================ */
+    var RATE_FACTOR = 0.18;
+    function globalAnimationLoop(timestamp) {
+      var dt = Math.min(0.1, (timestamp - pcState.lastFrameTime) / 1000);
+      pcState.lastFrameTime = timestamp;
 
-        shutterBtn.classList.add('pc-pressed');
-        playMechanicalClick();
-
-        if (navigator.vibrate) {
-          try { navigator.vibrate(35); } catch(e) {}
+      // 1. Revelado de la foto de la cámara
+      if (pcState.isEjected && !pcState.isDeveloped) {
+        if (pcState.instantIntensity > 0.01) {
+          pcState.energy += pcState.instantIntensity * dt * RATE_FACTOR;
+          pcState.instantIntensity *= Math.pow(0.15, dt);
+          if (!pcState.hasRealMovementStarted && pcState.energy > 0.04) {
+            pcState.hasRealMovementStarted = true;
+            hidePcHint();
+          }
         }
+        if (pcState.energy > 0.06 && pcState.energy < 0.62) pcState.energy += 0.018 * dt;
 
-        flashEl.classList.add('pc-active');
-        setTimeout(function () { flashEl.classList.remove('pc-active'); }, 80);
+        var targetProgress = Math.min(1.0, pcState.energy);
+        pcState.progress += (targetProgress - pcState.progress) * Math.min(1, dt * 6.0);
+        renderChemicalCanvas(pcCanvas, pcOffscreen, pcState.progress, pcMaskCanvas, pcMaskCtx);
 
-        cameraWrap.classList.add('pc-shaking');
-        setTimeout(function () {
-          cameraWrap.classList.remove('pc-shaking');
-          shutterBtn.classList.remove('pc-pressed');
-        }, 420);
-
-        hideHint();
-
-        setTimeout(function () {
-          pcState.isEjecting = true;
-          playMotorHum(2.4);
-          photoEl.classList.add('pc-ejecting');
-
-          setTimeout(function () {
-            photoEl.classList.remove('pc-ejecting');
-            photoEl.classList.add('pc-ejected');
-            pcState.isEjecting = false;
-            pcState.isEjected = true;
-            renderPhoto(true);
-            showHint('Tocá la foto');
-          }, 2600);
-        }, 200);
+        if (pcState.progress >= 0.996) {
+          pcState.progress = 1.0;
+          pcState.isDeveloped = true;
+          renderChemicalCanvas(pcCanvas, pcOffscreen, 1.0, pcMaskCanvas, pcMaskCtx);
+          showPcHint('✨ Foto revelada');
+          setTimeout(hidePcHint, 2800);
+        }
       }
 
-      function initPolaroid() {
-        pcState.fbmNoise = generateFbmNoise();
-        resizeCanvasBuffer();
-        window.addEventListener('resize', resizeCanvasBuffer);
+      // 2. Revelado de las fotos de la pila activa
+      stackCards.forEach(function (c) {
+        if (!c.isDeveloped && c.instantIntensity > 0.01) {
+          c.energy += c.instantIntensity * dt * RATE_FACTOR;
+          c.instantIntensity *= Math.pow(0.15, dt);
 
-        var shutterBtn = document.getElementById('pc-shutter');
-        shutterBtn.addEventListener('click', triggerShutter);
+          if (c.energy > 0.06 && c.energy < 0.62) c.energy += 0.018 * dt;
+          var tP = Math.min(1.0, c.energy);
+          c.progress += (tP - c.progress) * Math.min(1, dt * 6.0);
+          renderChemicalCanvas(c.canvas, c.offscreen, c.progress, c.maskCanvas, c.maskCtx);
 
-        setupPointerInteraction();
-        renderPhoto(true);
+          if (c.progress >= 0.996) {
+            c.progress = 1.0;
+            c.isDeveloped = true;
+            renderChemicalCanvas(c.canvas, c.offscreen, 1.0, c.maskCanvas, c.maskCtx);
+          }
+        }
+      });
 
-        setTimeout(function () {
-          showHint('Tocá el botón rojo');
-        }, 400);
+      requestAnimationFrame(globalAnimationLoop);
+    }
 
-        requestAnimationFrame(animationLoop);
-      }
-
-      window.PolaroidCamera = {
-        setPhoto: setPhoto,
-        shoot: triggerShutter,
-        init: initPolaroid
-      };
-    })();
-
-    /* ============================================================
-       CARGA DE DATOS (MULTI-TENANT / DEMO POR DEFECTO)
+    /* ═══════════════════════════════════════════════════════
+       CARGA DE DATOS & INICIALIZACIÓN
     ============================================================ */
     window.addEventListener('DOMContentLoaded', function () {
+      // Impronta de fecha dinámica en la foto principal
+      document.getElementById('pc-imprint').textContent = todayFormatted;
+
+      resizePcCanvasBuffer();
+      window.addEventListener('resize', function () {
+        resizePcCanvasBuffer();
+        stackCards.forEach(resizeStackCardBuffer);
+      });
+
+      document.getElementById('pc-shutter').addEventListener('click', triggerShutter);
+      setupPcPointer();
+      renderChemicalCanvas(pcCanvas, pcOffscreen, 0, pcMaskCanvas, pcMaskCtx);
+
       var urlParams = new URLSearchParams(window.location.search);
       var clientId = urlParams.get('id') || 'demo';
       var photoParam = urlParams.get('photo');
 
-      window.PolaroidCamera.init();
-
       fetch('datos.json')
         .then(function (res) {
-          if (!res.ok) throw new Error('No se pudo cargar datos.json');
+          if (!res.ok) throw new Error();
           return res.json();
         })
-        .then(function (allData) {
-          clientData = allData[clientId] || allData['demo'];
-          if (!clientData) throw new Error('No se encontraron datos');
-          renderData(photoParam);
+        .then(function (all) {
+          var data = all[clientId] || all['demo'];
+          populateData(data, photoParam);
         })
         .catch(function () {
-          clientData = {
+          var fallbackData = {
             nombre: 'Cris',
             titulo: 'Hoy es el cumpleaños\nde mi persona favorita',
             fecha: '18 de junio',
-            fotos: ['paginas/demo/1.jpg', 'paginas/demo/10.jpg', 'paginas/demo/11.jpg'],
-            foto_final: 'paginas/demo/10.jpg',
-            cancion_url: 'paginas/demo/musica.mp3',
+            cancion: {
+              titulo: 'Yellow',
+              artista: 'Coldplay',
+              audio_url: 'paginas/demo/musica.mp3',
+              portada: 'paginas/demo/1.jpg'
+            },
+            fotos: ['paginas/demo/1.jpg','paginas/demo/10.jpg','paginas/demo/11.jpg','paginas/demo/12.jpg','paginas/demo/13.jpg'],
             carta: "<p>Hay personas que llegan y lo cambian todo.</p><p>Pienso que ni el destino escribiendo la mejor de las historias habría creado a alguien tan especial como tú.</p><p>Hoy celebro tu risa, tu luz y tu forma de hacerme sentir en casa.</p><span class='letter-highlight'>Cada año tuyo es un capítulo nuevo, y pienso estar en todos y cada uno de ellos.</span>",
             frase_cierre: 'Por muchos cumpleaños más juntos'
           };
-          renderData(photoParam);
+          populateData(fallbackData, photoParam);
         });
+
+      requestAnimationFrame(globalAnimationLoop);
     });
 
-    function renderData(photoParam) {
-      document.getElementById('header-title').textContent = clientData.titulo || '';
-      document.getElementById('header-date').textContent = clientData.fecha || '';
+    function populateData(data, photoParam) {
+      document.getElementById('header-title').innerHTML = (data.titulo || '').replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
+      document.getElementById('header-date').textContent = data.fecha || todayFormatted;
 
-      var chosenPhoto = photoParam || (clientData.fotos && clientData.fotos.length ? clientData.fotos[0] : clientData.foto_final);
-      window.PolaroidCamera.setPhoto(chosenPhoto);
+      // Foto de la cámara
+      var mainPhoto = photoParam || data.foto_principal || (data.fotos && data.fotos[0]) || 'paginas/demo/1.jpg';
+      setPcPhoto(mainPhoto);
 
-      document.getElementById('letter-content').innerHTML = clientData.carta || '';
-      document.getElementById('closing-phrase').textContent = clientData.frase_cierre || '';
-      var photoEl = document.getElementById('closing-photo');
-      if (clientData.foto_final) {
-        photoEl.src = clientData.foto_final;
-      } else if (clientData.fotos && clientData.fotos.length) {
-        photoEl.src = clientData.fotos[0];
+      // Reproductor de música estilo streaming
+      var songInfo = data.cancion || {};
+      document.getElementById('player-song').textContent = songInfo.titulo || 'Música Especial';
+      document.getElementById('player-artist').textContent = songInfo.artista || (data.nombre ? 'Para ' + data.nombre : 'Recuerdos');
+      if (songInfo.portada || data.fotos && data.fotos[0]) {
+        document.getElementById('player-cover').src = songInfo.portada || data.fotos[0];
+      }
+      var songUrl = songInfo.audio_url || data.cancion_url || 'paginas/demo/musica.mp3';
+      if (songUrl) {
+        audioEl.src = songUrl;
       }
 
-      if (clientData.cancion_url) {
-        document.getElementById('bg-music').src = clientData.cancion_url;
-      }
+      // Carta
+      document.getElementById('letter-content').innerHTML = data.carta || '';
+      document.getElementById('closing-phrase').textContent = data.frase_cierre || 'Por muchos momentos más juntos 💛';
+
+      // Mazo desordenado de fotos
+      buildPolaroidStack(data.fotos || []);
     }
 
-    /* ============================================================
-       SOBRE & CARTA INTERACTIVA
-    ============================================================ */
+    /* SOBRE Y CARTA */
     function openEnvelope() {
       var card = document.getElementById('envelope-card');
       var letter = document.getElementById('letter-card');
-
       card.style.transform = 'scale(0.96)';
       card.style.opacity = '0';
-
       setTimeout(function () {
         card.style.display = 'none';
         letter.classList.add('visible');
       }, 350);
     }
 
-    /* ============================================================
-       GUARDAR ESTE MOMENTO
-    ============================================================ */
+    /* COMPARTIR */
     function handleSaveMoment() {
-      var shareData = {
-        title: clientData ? clientData.titulo : 'Cápsula de Recuerdos',
-        text: clientData ? clientData.frase_cierre : 'Un momento para siempre',
-        url: window.location.href
-      };
-
       if (navigator.share) {
-        navigator.share(shareData).catch(function () {});
+        navigator.share({
+          title: 'Cápsula de Recuerdos',
+          text: 'Un momento guardado para siempre',
+          url: window.location.href
+        }).catch(function () {});
       } else {
         navigator.clipboard.writeText(window.location.href)
-          .then(function () {
-            alert('¡Enlace guardado en el portapapeles! 💛');
-          })
-          .catch(function () {
-            alert('¡Momento guardado con éxito! 💛');
-          });
+          .then(function () { alert('¡Enlace copiado al portapapeles! 💛'); })
+          .catch(function () { alert('¡Momento guardado con éxito! 💛'); });
       }
     }
   </script>
