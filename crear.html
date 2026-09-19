@@ -7,6 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -731,6 +734,20 @@
     </form>
   </main>
 
+
+  <!-- OVERLAY DE PROGRESO DE SUBIDA -->
+  <div class="modal-overlay" id="modal-uploading" style="z-index:1100;">
+    <div class="modal-card" style="text-align:center;gap:18px;">
+      <div style="font-size:2rem;">☁️</div>
+      <h2 class="modal-title" style="font-size:1.1rem;">Guardando cápsula...</h2>
+      <p style="font-size:0.82rem;color:var(--text-muted);">Esto tarda solo unos segundos</p>
+      <div id="upload-bar-wrap" style="width:100%;background:#f0e8df;border-radius:99px;height:8px;overflow:hidden;">
+        <div id="upload-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#c59b58,#d9383a);border-radius:99px;transition:width 0.4s ease;"></div>
+      </div>
+      <div id="upload-status" style="font-size:0.78rem;color:var(--text-muted);">Preparando...</div>
+    </div>
+  </div>
+
   <!-- MODAL CON EL ENLACE RESULTANTE -->
   <div class="modal-overlay" id="modal-result">
     <div class="modal-card">
@@ -756,25 +773,49 @@
     </div>
   </div>
 
+
   <script>
+    /* ═══════════════════════════════════════════════
+       FIREBASE INIT
+    ═══════════════════════════════════════════════ */
+    var firebaseConfig = {
+      apiKey: "AIzaSyCua4Xer0tnDBWw1iqriVrZBLw8fIa4SHE",
+      authDomain: "recuerdame-512e4.firebaseapp.com",
+      projectId: "recuerdame-512e4",
+      storageBucket: "recuerdame-512e4.firebasestorage.app",
+      messagingSenderId: "856589691935",
+      appId: "1:856589691935:web:cafd8102b412ec675df92a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
+    /* ═══════════════════════════════════════════════
+       ESTADO DE FOTOS
+    ═══════════════════════════════════════════════ */
     var loadedPhotos = ['', '', '', '', ''];
 
+    /* ═══════════════════════════════════════════════
+       CONTADOR DE CARACTERES
+    ═══════════════════════════════════════════════ */
     function updateCharCount() {
       var txt = document.getElementById('input-letter').value;
       document.getElementById('char-counter').textContent = txt.length + ' / 650 caracteres recomendados';
     }
 
+    /* ═══════════════════════════════════════════════
+       CARGA Y COMPRESIÓN DE FOTOS
+       (500px max, calidad 0.65 — óptimo para Firestore)
+    ═══════════════════════════════════════════════ */
     function handleFileSelect(e, wrapId, imgId, photoIndex) {
       var file = e.target.files[0];
       if (!file) return;
 
-      // Compresión rápida cliente para que la carga sea instantánea
       var reader = new FileReader();
       reader.onload = function(evt) {
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement('canvas');
-          var maxDim = 900; // tamaño óptimo para web veloz
+          var maxDim = 500;
           var w = img.width, h = img.height;
           if (w > maxDim || h > maxDim) {
             if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
@@ -782,23 +823,20 @@
           }
           canvas.width = w;
           canvas.height = h;
-          var ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-
-          var compressedBase64 = canvas.toDataURL('image/jpeg', 0.82);
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          var compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
           loadedPhotos[photoIndex] = compressedBase64;
-
-          var wrap = document.getElementById(wrapId);
-          var imgEl = document.getElementById(imgId);
-          imgEl.src = compressedBase64;
-          wrap.classList.add('has-img');
+          document.getElementById(imgId).src = compressedBase64;
+          document.getElementById(wrapId).classList.add('has-img');
         };
         img.src = evt.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    /* BÚSQUEDA INTERACTIVA DE CANCIONES (ITUNES MUSIC API) */
+    /* ═══════════════════════════════════════════════
+       BÚSQUEDA MUSICAL (iTunes API)
+    ═══════════════════════════════════════════════ */
     var songDebounceTimer = null;
     function handleSongSearchInput(query) {
       clearTimeout(songDebounceTimer);
@@ -821,23 +859,19 @@
               data.results.forEach(function (track) {
                 var item = document.createElement('div');
                 item.className = 'song-result-item';
-
                 var artUrl = track.artworkUrl60 || track.artworkUrl100 || '';
                 var trackTitle = track.trackName || 'Sin título';
                 var artistName = track.artistName || 'Artista';
                 var previewUrl = track.previewUrl || '';
-
-                item.innerHTML = 
+                item.innerHTML =
                   '<img class="song-result-art" src="' + artUrl + '" alt="Portada" />' +
                   '<div class="song-result-info">' +
                     '<div class="song-result-title">' + trackTitle + '</div>' +
                     '<div class="song-result-artist">' + artistName + '</div>' +
                   '</div>';
-
                 item.addEventListener('click', function () {
                   selectSong(trackTitle, artistName, previewUrl, track.artworkUrl100 || artUrl);
                 });
-
                 listEl.appendChild(item);
               });
               listEl.classList.add('active');
@@ -846,13 +880,10 @@
               listEl.classList.add('active');
             }
           })
-          .catch(function () {
-            listEl.classList.remove('active');
-          });
+          .catch(function () { listEl.classList.remove('active'); });
       }, 280);
     }
 
-    // Cerrar lista si hace click afuera
     document.addEventListener('click', function (e) {
       if (!e.target.closest('.song-search-box')) {
         document.getElementById('song-results-list').classList.remove('active');
@@ -864,12 +895,10 @@
       document.getElementById('input-song-artist').value = artist;
       document.getElementById('input-song-preview').value = previewUrl || '';
       document.getElementById('input-song-artwork').value = artworkUrl || '';
-
       document.getElementById('song-selected-name').textContent = title;
       document.getElementById('song-selected-singer').textContent = artist;
       document.getElementById('song-selected-art').src = artworkUrl || '';
       document.getElementById('song-selected-badge').classList.add('active');
-
       document.getElementById('input-song-search').style.display = 'none';
       document.getElementById('song-results-list').classList.remove('active');
     }
@@ -879,7 +908,6 @@
       document.getElementById('input-song-artist').value = '';
       document.getElementById('input-song-preview').value = '';
       document.getElementById('input-song-artwork').value = '';
-
       document.getElementById('song-selected-badge').classList.remove('active');
       var searchInput = document.getElementById('input-song-search');
       searchInput.style.display = 'block';
@@ -887,42 +915,61 @@
       searchInput.focus();
     }
 
+    /* ═══════════════════════════════════════════════
+       GENERAR UUID v4 (ID único e irrepetible)
+    ═══════════════════════════════════════════════ */
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0;
+        var v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    /* ═══════════════════════════════════════════════
+       HELPERS DE PROGRESO
+    ═══════════════════════════════════════════════ */
+    function setProgress(pct, msg) {
+      document.getElementById('upload-bar').style.width = pct + '%';
+      document.getElementById('upload-status').textContent = msg;
+    }
+
+    /* ═══════════════════════════════════════════════
+       CREAR CÁPSULA → FIRESTORE
+    ═══════════════════════════════════════════════ */
     var generatedUrl = '';
 
     function handleCreate(e) {
       e.preventDefault();
       var btn = document.getElementById('btn-submit');
       btn.disabled = true;
-      btn.innerHTML = 'Generando enlace...';
 
       var recipient = document.getElementById('input-recipient').value.trim();
-      var title = document.getElementById('input-title').value.trim();
-      var songTitle = document.getElementById('input-song-title').value.trim() || document.getElementById('input-song-search').value.trim() || 'Yellow';
-      var songArtist = document.getElementById('input-song-artist').value.trim() || 'Coldplay';
+      var title     = document.getElementById('input-title').value.trim();
+      var songTitle  = document.getElementById('input-song-title').value.trim()
+                    || document.getElementById('input-song-search').value.trim()
+                    || 'Yellow';
+      var songArtist  = document.getElementById('input-song-artist').value.trim() || 'Coldplay';
       var songPreview = document.getElementById('input-song-preview').value.trim();
       var songArtwork = document.getElementById('input-song-artwork').value.trim();
-      var letter = document.getElementById('input-letter').value.trim();
+      var letter  = document.getElementById('input-letter').value.trim();
       var closing = document.getElementById('input-closing').value.trim();
 
-      // Formatear carta a HTML respetando saltos
+      // Convertir carta a HTML
       var letterHtml = letter.split('\n\n').map(function(p) {
         return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
       }).join('');
 
-      // Slug ID limpio
-      var cleanSlug = recipient.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      var uniqueId = cleanSlug + '-' + Date.now().toString(36);
+      // Fotos con fallback demo
+      var fallbackList = [
+        'paginas/demo/1.jpg','paginas/demo/10.jpg',
+        'paginas/demo/11.jpg','paginas/demo/12.jpg','paginas/demo/13.jpg'
+      ];
+      var finalPhotos = loadedPhotos.map(function(p, i) {
+        return p || fallbackList[i];
+      });
 
-      // Completar fotos faltantes con las de demo si no cargó las 5
-      var finalPhotos = [];
-      for (var i = 0; i < 5; i++) {
-        if (loadedPhotos[i]) {
-          finalPhotos.push(loadedPhotos[i]);
-        } else {
-          var fallbackList = ['paginas/demo/1.jpg', 'paginas/demo/10.jpg', 'paginas/demo/11.jpg', 'paginas/demo/12.jpg', 'paginas/demo/13.jpg'];
-          finalPhotos.push(fallbackList[i]);
-        }
-      }
+      var capsuleId = generateUUID();
 
       var clientData = {
         nombre: recipient,
@@ -936,26 +983,44 @@
         foto_principal: finalPhotos[0],
         fotos: finalPhotos,
         carta: letterHtml,
-        frase_cierre: closing || 'Por muchos momentos más juntos 💛'
+        frase_cierre: closing || 'Por muchos momentos más juntos 💛',
+        creado_en: new Date().toISOString()
       };
 
-      try {
-        localStorage.setItem('recuerdame_capsula_' + uniqueId, JSON.stringify(clientData));
-      } catch (storageErr) {
-        console.warn('LocalStorage limit reached', storageErr);
-      }
+      // Mostrar overlay de progreso
+      document.getElementById('modal-uploading').classList.add('active');
+      setProgress(10, 'Conectando con la nube...');
 
-      // URL final
-      var baseUrl = window.location.origin + window.location.pathname.replace('crear.html', '').replace(/\/$/, '') + '/index.html';
-      generatedUrl = baseUrl + '?id=' + uniqueId;
+      db.collection('capsulas').doc(capsuleId).set(clientData)
+        .then(function() {
+          setProgress(100, '¡Cápsula guardada con éxito!');
 
-      document.getElementById('link-result-text').textContent = generatedUrl;
-      document.getElementById('modal-result').classList.add('active');
+          var baseUrl = window.location.origin
+            + window.location.pathname.replace('crear.html', '').replace(/\/$/, '')
+            + '/index.html';
+          generatedUrl = baseUrl + '?id=' + capsuleId;
 
-      btn.disabled = false;
-      btn.innerHTML = '<span>Generar Enlace Personalizado</span>';
+          setTimeout(function() {
+            document.getElementById('modal-uploading').classList.remove('active');
+            document.getElementById('link-result-text').textContent = generatedUrl;
+            document.getElementById('modal-result').classList.add('active');
+            btn.disabled = false;
+          }, 600);
+        })
+        .catch(function(err) {
+          setProgress(0, 'Error al guardar. Verificá tu conexión.');
+          console.error('Firestore error:', err);
+          setTimeout(function() {
+            document.getElementById('modal-uploading').classList.remove('active');
+            alert('No se pudo guardar la cápsula. Revisá tu conexión e intentá de nuevo.');
+            btn.disabled = false;
+          }, 1200);
+        });
     }
 
+    /* ═══════════════════════════════════════════════
+       ACCIONES DEL MODAL DE RESULTADO
+    ═══════════════════════════════════════════════ */
     function copyLink() {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(generatedUrl).then(function() {
@@ -973,13 +1038,13 @@
     }
 
     function openPreview() {
-      if (generatedUrl) {
-        window.open(generatedUrl, '_blank');
-      }
+      if (generatedUrl) window.open(generatedUrl, '_blank');
     }
 
     function closeModal() {
       document.getElementById('modal-result').classList.remove('active');
+      // Resetear barra de progreso para próxima vez
+      setProgress(0, 'Preparando...');
     }
   </script>
 </body>

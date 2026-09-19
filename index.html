@@ -7,7 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
+
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -1849,43 +1853,57 @@
       var clientId = urlParams.get('id') || 'demo';
       var photoParam = urlParams.get('photo');
 
-      // 1. Revisar si existen datos personalizados en localStorage (generados por la app de creación)
-      var localCustomData = null;
-      try {
-        var rawLocal = localStorage.getItem('recuerdame_capsula_' + clientId);
-        if (rawLocal) localCustomData = JSON.parse(rawLocal);
-      } catch (e) {}
+      // ── Firebase init ──────────────────────────────────────────────
+      var firebaseConfig = {
+        apiKey: "AIzaSyCua4Xer0tnDBWw1iqriVrZBLw8fIa4SHE",
+        authDomain: "recuerdame-512e4.firebaseapp.com",
+        projectId: "recuerdame-512e4",
+        storageBucket: "recuerdame-512e4.firebasestorage.app",
+        messagingSenderId: "856589691935",
+        appId: "1:856589691935:web:cafd8102b412ec675df92a"
+      };
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
 
-      if (localCustomData) {
-        populateData(localCustomData, photoParam);
-      } else {
+      function loadFallbackDemo() {
         fetch('datos.json')
-          .then(function (res) {
-            if (!res.ok) throw new Error();
-            return res.json();
-          })
+          .then(function (res) { if (!res.ok) throw new Error(); return res.json(); })
           .then(function (all) {
-            var data = all[clientId] || all['demo'];
+            var data = all['demo'] || Object.values(all)[0];
             populateData(data, photoParam);
           })
           .catch(function () {
-            var fallbackData = {
+            populateData({
               nombre: 'Cris',
               titulo: 'Hoy es el cumpleaños\nde mi persona favorita',
               fecha: '18 de junio',
-              cancion: {
-                titulo: 'Yellow',
-                artista: 'Coldplay',
-                audio_url: 'paginas/demo/musica.mp3',
-                portada: 'paginas/demo/1.jpg'
-              },
+              cancion: { titulo: 'Yellow', artista: 'Coldplay', audio_url: 'paginas/demo/musica.mp3', portada: 'paginas/demo/1.jpg' },
               fotos: ['paginas/demo/1.jpg','paginas/demo/10.jpg','paginas/demo/11.jpg','paginas/demo/12.jpg','paginas/demo/13.jpg'],
               carta: "<p>Hay personas que llegan y lo cambian todo.</p><p>Pienso que ni el destino escribiendo la mejor de las historias habría creado a alguien tan especial como tú.</p><p>Hoy celebro tu risa, tu luz y tu forma de hacerme sentir en casa.</p><span class='letter-highlight'>Cada año tuyo es un capítulo nuevo, y pienso estar en todos y cada uno de ellos.</span>",
               frase_cierre: 'Por muchos cumpleaños más juntos'
-            };
-            populateData(fallbackData, photoParam);
+            }, photoParam);
           });
       }
+
+      // Si hay un ID en la URL, buscar en Firestore; si no, cargar demo
+      if (clientId && clientId !== 'demo') {
+        db.collection('capsulas').doc(clientId).get()
+          .then(function(doc) {
+            if (doc.exists) {
+              populateData(doc.data(), photoParam);
+            } else {
+              // ID no encontrado → demo
+              loadFallbackDemo();
+            }
+          })
+          .catch(function(err) {
+            console.warn('Firestore error:', err);
+            loadFallbackDemo();
+          });
+      } else {
+        loadFallbackDemo();
+      }
+
 
       requestAnimationFrame(globalAnimationLoop);
     });
