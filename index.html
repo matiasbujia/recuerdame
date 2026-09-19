@@ -6,7 +6,7 @@
   <title>Cápsula de Recuerdos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -26,7 +26,7 @@
       --envelope-bg: #eddccb;
       --envelope-flap: #dec7b1;
       --paper-bg: #fdfbf7;
-      --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.06);
+      --shadow-subtle: 0 12px 32px rgba(0, 0, 0, 0.07);
     }
 
     body {
@@ -37,152 +37,53 @@
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* ══════════════════════════════════════════════
-       1. PANTALLA DE REVELADO (TAP / HOLD)
-    ══════════════════════════════════════════════ */
-    #reveal-screen {
+    /* FLASH SCREEN OVERLAY */
+    .pc-flash {
       position: fixed;
       inset: 0;
-      background-color: var(--bg-cream);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      padding: 60px 24px 70px;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-
-    #reveal-screen.hidden {
+      background-color: #ffffff;
       opacity: 0;
-      visibility: hidden;
       pointer-events: none;
+      z-index: 9999;
+      transition: opacity 0.06s ease-out;
     }
 
-    .reveal-header {
-      text-align: center;
-      margin-top: 20px;
+    .pc-flash.pc-active {
+      opacity: 0.96;
+      transition: none;
     }
 
-    .reveal-name {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.4rem, 8vw, 3.2rem);
-      font-weight: 700;
-      color: var(--text-main);
-      letter-spacing: -0.02em;
-    }
-
-    .reveal-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 28px;
-    }
-
-    .heart-button {
-      position: relative;
-      width: 110px;
-      height: 110px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.15s ease;
-    }
-
-    .heart-button:active {
-      transform: scale(0.92);
-    }
-
-    .heart-button svg {
-      width: 84px;
-      height: 84px;
-      fill: var(--red-heart);
-      filter: drop-shadow(0 6px 14px rgba(230, 57, 70, 0.28));
-      transition: transform 0.15s ease;
-    }
-
-    .heart-button.bump svg {
-      animation: heartBump 0.35s ease-out;
-    }
-
-    @keyframes heartBump {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.18); }
-      100% { transform: scale(1); }
-    }
-
-    .reveal-status {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-align: center;
-      min-height: 26px;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-    }
-
-    .reveal-status.pop {
-      animation: statusPop 0.25s ease;
-    }
-
-    @keyframes statusPop {
-      0% { transform: translateY(4px); opacity: 0.6; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    .reveal-footer {
+    /* CONTENEDOR PRINCIPAL VERTICAL */
+    .capsule-main {
       width: 100%;
-      max-width: 280px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .progress-bar-container {
-      width: 100%;
-      height: 7px;
-      background-color: rgba(0, 0, 0, 0.06);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #e63946, #f26a76);
-      border-radius: 10px;
-      transition: width 0.12s ease;
-    }
-
-    /* ══════════════════════════════════════════════
-       2. EXPERIENCIA PRINCIPAL (SCROLL VERTICAL)
-    ══════════════════════════════════════════════ */
-    #main-content {
       max-width: 440px;
       margin: 0 auto;
-      padding: 40px 20px 60px;
+      padding: 24px 16px 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 52px;
-      opacity: 0;
-      transition: opacity 0.8s ease 0.2s;
+      gap: 48px;
     }
 
-    #main-content.visible {
-      opacity: 1;
-    }
-
-    /* --- PORTADA / POLAROID --- */
-    .polaroid-section {
+    /* ═══════════════════════════════════════════════════════
+       1. SECCIÓN CÁMARA POLAROID (.pc-)
+       ═══════════════════════════════════════════════════════ */
+    .pc-section {
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+      position: relative;
+    }
+
+    .pc-header {
+      margin-bottom: 12px;
     }
 
     .header-title {
@@ -192,86 +93,314 @@
       line-height: 1.35;
       color: var(--text-main);
       white-space: pre-line;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .header-date {
       font-size: 0.88rem;
       font-weight: 500;
       color: var(--text-muted);
-      margin-bottom: 24px;
       text-transform: capitalize;
     }
 
-    .polaroid-card {
-      background: var(--card-bg);
-      padding: 12px 12px 28px;
-      border-radius: 4px;
-      box-shadow: var(--shadow-subtle);
+    /* ESCENARIO DE LA CÁMARA (ALTO 560px PARA ALBERGAR CÁMARA Y FOTO EXPULSADA) */
+    .pc-viewport {
       width: 100%;
-      max-width: 340px;
+      max-width: 380px;
+      height: 560px;
+      position: relative;
+      background: radial-gradient(ellipse at 50% 30%, #faf8f5 0%, #eee6dc 100%);
+      border-radius: 28px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pc-camera-wrap {
+      position: relative;
+      width: 324px;
+      height: 268px;
+      z-index: 30; /* Cubre completamente la foto escondida */
+      margin-top: 10px;
+      transition: transform 0.1s ease;
+    }
+
+    .pc-camera-wrap.pc-shaking {
+      animation: pcCameraShake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes pcCameraShake {
+      10%, 90% { transform: translate3d(-2px, 1px, 0) rotate(-0.6deg); }
+      20%, 80% { transform: translate3d(3px, -2px, 0) rotate(0.9deg); }
+      30%, 50%, 70% { transform: translate3d(-4px, 2px, 0) rotate(-1.2deg); }
+      40%, 60% { transform: translate3d(4px, -1px, 0) rotate(1deg); }
+    }
+
+    .pc-camera-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(175deg, #f5efe6 0%, #e7dcce 100%);
+      border-radius: 28px 28px 18px 18px;
+      box-shadow: 0 16px 36px rgba(45, 30, 20, 0.22), inset 0 2px 4px rgba(255, 255, 255, 0.85), inset 0 -3px 6px rgba(0, 0, 0, 0.16);
+      border: 1px solid #ded3bf;
+      overflow: hidden;
+    }
+
+    .pc-camera-strip {
+      position: absolute;
+      bottom: 44px;
+      left: 0;
+      right: 0;
+      height: 7px;
+      display: flex;
+    }
+
+    .pc-strip-c1 { flex: 1; background: #e53935; }
+    .pc-strip-c2 { flex: 1; background: #fb8c00; }
+    .pc-strip-c3 { flex: 1; background: #fdd835; }
+    .pc-strip-c4 { flex: 1; background: #43a047; }
+    .pc-strip-c5 { flex: 1; background: #1e88e5; }
+
+    .pc-lens-outer {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2d2522 0%, #151110 100%);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.38), inset 0 3px 5px rgba(255, 255, 255, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid #dbcfbd;
+    }
+
+    .pc-lens-ring {
+      width: 94px;
+      height: 94px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #423833 0%, #120e0d 75%);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
     }
 
-    .carousel-viewport {
+    .pc-lens-glass {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #304a5e 0%, #0d151c 65%, #05080b 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pc-lens-glass::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      width: 22px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+      transform: rotate(-35deg);
+    }
+
+    .pc-flash-unit {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      width: 46px;
+      height: 34px;
+      background: #38302a;
+      border-radius: 6px;
+      border: 2px solid #c8baa4;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pc-flash-grid {
+      width: 34px;
+      height: 22px;
+      background: repeating-linear-gradient(90deg, #d8d0c0, #d8d0c0 2px, #423832 2px, #423832 4px);
+      border-radius: 3px;
+    }
+
+    .pc-viewfinder {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      width: 24px;
+      height: 24px;
+      background: #1e1917;
+      border-radius: 50%;
+      border: 3px solid #c8baa4;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .pc-shutter-wrap {
+      position: absolute;
+      top: 76px;
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pc-shutter-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff4b5a 0%, #d81b2a 70%, #990c17 100%);
+      border: 3px solid #f5efe6;
+      box-shadow: 0 4px 12px rgba(180, 20, 30, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      outline: none;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      touch-action: manipulation;
+    }
+
+    .pc-shutter-btn:active, .pc-shutter-btn.pc-pressed {
+      transform: scale(0.91) translateY(2px);
+      box-shadow: 0 1px 4px rgba(180, 20, 30, 0.4), inset 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .pc-camera-slot {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 20px;
+      background: #181311;
+      border-radius: 8px 8px 0 0;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.9), 0 3px 6px rgba(0,0,0,0.2);
+      z-index: 35;
+    }
+
+    /* FOTO FÍSICA */
+    .pc-photo {
+      position: absolute;
+      top: 12px; /* Oculta detrás de la cámara */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 226px;
+      height: 264px;
+      background-color: #ffffff;
+      padding: 10px 10px 32px 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+      border-radius: 3px;
+      z-index: 20;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: none;
+      transition: box-shadow 0.25s ease;
+    }
+
+    .pc-photo.pc-ejecting {
+      animation: pcEjectMotor 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes pcEjectMotor {
+      0% { top: 12px; transform: translateX(-50%) scale(0.97); }
+      14% { top: 65px; transform: translateX(-50.4%) scale(0.98); }
+      18% { top: 64px; transform: translateX(-50%) scale(0.98); }
+      38% { top: 140px; transform: translateX(-49.6%) scale(0.99); }
+      42% { top: 139px; transform: translateX(-50%) scale(0.99); }
+      68% { top: 220px; transform: translateX(-50.2%) scale(0.995); }
+      72% { top: 219px; transform: translateX(-50%) scale(0.995); }
+      100% { top: 270px; transform: translateX(-50%) scale(1) rotate(0.4deg); }
+    }
+
+    .pc-photo.pc-ejected {
+      top: 270px;
+      transform: translateX(-50%) rotate(0.4deg);
+      z-index: 45;
+    }
+
+    .pc-photo.pc-dragging {
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      transition: none !important;
+    }
+
+    .pc-canvas-wrap {
       width: 100%;
       aspect-ratio: 1 / 1;
-      border-radius: 2px;
-      overflow: hidden;
-      background-color: #ede7dd;
+      background-color: #0d0a09;
       position: relative;
-      touch-action: pan-y pinch-zoom;
+      overflow: hidden;
+      border-radius: 2px;
     }
 
-    .carousel-track {
-      display: flex;
+    .pc-canvas {
       width: 100%;
       height: 100%;
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-
-    .carousel-slide {
-      min-width: 100%;
-      height: 100%;
-      flex-shrink: 0;
-    }
-
-    .carousel-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
       display: block;
+    }
+
+    .pc-signature {
+      margin-top: 6px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.88rem;
+      color: #5c4e43;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    .pc-hint-wrap {
+      position: absolute;
+      bottom: 16px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      padding: 0 16px;
+      z-index: 50;
       pointer-events: none;
     }
 
-    .carousel-dots {
-      display: flex;
-      justify-content: center;
-      gap: 7px;
-      margin-top: 14px;
+    .pc-hint {
+      display: inline-block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #35271e;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 7px 20px;
+      border-radius: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: rgba(0, 0, 0, 0.15);
-      cursor: pointer;
-      transition: background-color 0.25s ease, transform 0.25s ease;
-    }
-
-    .dot.active {
-      background-color: var(--text-main);
-      transform: scale(1.2);
+    .pc-hint.pc-show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .festive-emojis {
-      margin-top: 18px;
+      margin-top: 14px;
       font-size: 1.15rem;
       letter-spacing: 0.25em;
     }
 
-    /* --- SOBRE INTERACTIVO Y CARTA --- */
+    /* ═══════════════════════════════════════════════════════
+       2. SOBRE INTERACTIVO Y CARTA
+       ═══════════════════════════════════════════════════════ */
     .envelope-section {
       width: 100%;
       max-width: 350px;
@@ -281,7 +410,7 @@
     .envelope-card {
       background-color: var(--envelope-bg);
       border-radius: 12px;
-      padding: 50px 20px;
+      padding: 48px 20px;
       box-shadow: var(--shadow-subtle);
       text-align: center;
       cursor: pointer;
@@ -339,7 +468,6 @@
       z-index: 2;
     }
 
-    /* --- CARTA DESPLEGADA --- */
     .letter-card {
       background-color: var(--paper-bg);
       border-radius: 12px;
@@ -392,7 +520,9 @@
       text-align: center;
     }
 
-    /* --- CIERRE DE PÁGINA --- */
+    /* ═══════════════════════════════════════════════════════
+       3. CIERRE DE PÁGINA
+       ═══════════════════════════════════════════════════════ */
     .closing-section {
       width: 100%;
       max-width: 340px;
@@ -453,56 +583,69 @@
 </head>
 <body>
 
-  <!-- ══════════════════════════════════════════════
-       AUDIO ELEMENT (LOOP)
-  ══════════════════════════════════════════════ -->
+  <!-- FLASH OVERLAY -->
+  <div class="pc-flash" id="pc-flash"></div>
+
+  <!-- AUDIO ELEMENT (LOOP) -->
   <audio id="bg-music" loop preload="auto"></audio>
 
-  <!-- ══════════════════════════════════════════════
-       1. PANTALLA DE REVELADO
-  ══════════════════════════════════════════════ -->
-  <div id="reveal-screen">
-    <div class="reveal-header">
-      <h1 class="reveal-name" id="reveal-name">Cris</h1>
-    </div>
+  <!-- CONTENEDOR PRINCIPAL DE LA CÁPSULA -->
+  <main class="capsule-main">
 
-    <div class="reveal-center">
-      <div class="heart-button" id="heart-btn">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
+    <!-- 1. SECCIÓN CÁMARA POLAROID -->
+    <section class="pc-section">
+      <div class="pc-header">
+        <h1 class="header-title" id="header-title"></h1>
+        <div class="header-date" id="header-date"></div>
       </div>
-      <div class="reveal-status" id="reveal-status">Toca el corazón</div>
-    </div>
 
-    <div class="reveal-footer">
-      <div class="progress-bar-container">
-        <div class="progress-bar-fill" id="progress-fill"></div>
-      </div>
-    </div>
-  </div>
+      <div class="pc-viewport" id="pc-viewport" data-photo="">
+        <!-- CÁMARA RETRO -->
+        <div class="pc-camera-wrap" id="pc-camera-wrap">
+          <div class="pc-camera-body">
+            <div class="pc-flash-unit"><div class="pc-flash-grid"></div></div>
+            <div class="pc-viewfinder"></div>
+            
+            <div class="pc-lens-outer">
+              <div class="pc-lens-ring">
+                <div class="pc-lens-glass"></div>
+              </div>
+            </div>
 
-  <!-- ══════════════════════════════════════════════
-       2. EXPERIENCIA PRINCIPAL (SCROLL VERTICAL)
-  ══════════════════════════════════════════════ -->
-  <main id="main-content">
-    
-    <!-- PORTADA / CARRUSEL POLAROID -->
-    <section class="polaroid-section">
-      <h2 class="header-title" id="header-title"></h2>
-      <div class="header-date" id="header-date"></div>
+            <div class="pc-shutter-wrap">
+              <button class="pc-shutter-btn" id="pc-shutter" aria-label="Sacar Foto"></button>
+            </div>
 
-      <div class="polaroid-card">
-        <div class="carousel-viewport" id="carousel-viewport">
-          <div class="carousel-track" id="carousel-track"></div>
+            <div class="pc-camera-strip">
+              <div class="pc-strip-c1"></div>
+              <div class="pc-strip-c2"></div>
+              <div class="pc-strip-c3"></div>
+              <div class="pc-strip-c4"></div>
+              <div class="pc-strip-c5"></div>
+            </div>
+
+            <div class="pc-camera-slot"></div>
+          </div>
         </div>
-        <div class="carousel-dots" id="carousel-dots"></div>
+
+        <!-- FOTO QUE EMERGE -->
+        <div class="pc-photo" id="pc-photo">
+          <div class="pc-canvas-wrap">
+            <canvas class="pc-canvas" id="pc-canvas"></canvas>
+          </div>
+          <div class="pc-signature" id="pc-signature">Polaroid &trade;</div>
+        </div>
+
+        <!-- HINT DINÁMICO -->
+        <div class="pc-hint-wrap">
+          <div class="pc-hint" id="pc-hint">Tocá el botón rojo</div>
+        </div>
       </div>
 
       <div class="festive-emojis">🎉✨🎉</div>
     </section>
 
-    <!-- SOBRE Y CARTA -->
+    <!-- 2. SOBRE INTERACTIVO Y CARTA -->
     <section class="envelope-section">
       <div class="envelope-card" id="envelope-card" onclick="openEnvelope()">
         <div class="envelope-seal">
@@ -518,7 +661,7 @@
       </div>
     </section>
 
-    <!-- CIERRE DE PÁGINA -->
+    <!-- 3. CIERRE DE PÁGINA -->
     <section class="closing-section">
       <div class="closing-phrase" id="closing-phrase"></div>
       <img class="closing-photo" id="closing-photo" src="" alt="Foto final" />
@@ -532,23 +675,555 @@
     'use strict';
 
     /* ============================================================
-       ESTADO & CONFIGURACIÓN
+       ESTADO GLOBAL & DATOS DEL CLIENTE
     ============================================================ */
     var clientData = null;
-    var progress = 0;
     var audioStarted = false;
-    var holdTimer = null;
-    var currentSlide = 0;
-    var totalSlides = 0;
 
-    var STATUS_STEPS = [
-      { min: 0,  max: 18, text: 'Toca el corazón' },
-      { min: 19, max: 38, text: 'Otra vez' },
-      { min: 39, max: 58, text: 'Algo se está encendiendo...' },
-      { min: 59, max: 78, text: 'Sigue, que esto se calienta' },
-      { min: 79, max: 94, text: 'Un poquito más' },
-      { min: 95, max: 100, text: 'No pares ahora' }
-    ];
+    function unlockAudio() {
+      if (audioStarted) return;
+      var audio = document.getElementById('bg-music');
+      if (audio && audio.src) {
+        audio.play().then(function () {
+          audioStarted = true;
+        }).catch(function () {});
+      }
+    }
+
+    /* ============================================================
+       IIFE AISLADO: SISTEMA DE CÁMARA POLAROID Y REVELADO
+    ============================================================ */
+    (function () {
+      var pcState = {
+        hasShot: false,
+        isEjecting: false,
+        isEjected: false,
+        isDeveloped: false,
+        energy: 0,
+        progress: 0,
+        renderedProgress: -1,
+        sourceImage: null,
+        fbmNoise: null,
+        lastFrameTime: performance.now(),
+        motionPermissionRequested: false,
+        hasRealMovementStarted: false,
+        usesDeviceMotion: false,
+        instantIntensity: 0
+      };
+
+      /* AUDIO SYNTHESIZER (WEB AUDIO API) */
+      var audioCtx = null;
+      function getAudioCtx() {
+        if (!audioCtx) {
+          var AudioClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioClass) audioCtx = new AudioClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      }
+
+      function playMechanicalClick() {
+        var ctx = getAudioCtx();
+        if (!ctx) return;
+        var now = ctx.currentTime;
+        var bufferSize = ctx.sampleRate * 0.05;
+        var noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        var output = noiseBuffer.getChannelData(0);
+        for (var i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+        var whiteNoise = ctx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        var filter = ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(1400, now);
+        var gainNode = ctx.createGain();
+        gainNode.gain.setValueAtTime(0.85, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.045);
+        whiteNoise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        whiteNoise.start(now);
+
+        var osc = ctx.createOscillator();
+        var oscGain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.07);
+        oscGain.gain.setValueAtTime(0.9, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(oscGain);
+        oscGain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+      }
+
+      function playMotorHum(duration) {
+        var ctx = getAudioCtx();
+        if (!ctx) return;
+        var now = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(85, now);
+        var lfo = ctx.createOscillator();
+        var lfoGain = ctx.createGain();
+        lfo.frequency.setValueAtTime(14, now);
+        lfoGain.gain.setValueAtTime(25, now);
+        lfo.connect(osc.frequency);
+        lfo.start(now);
+        lfo.stop(now + duration);
+
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.18, now + 0.15);
+        gain.gain.setValueAtTime(0.18, now + duration - 0.2);
+        gain.gain.linearRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      }
+
+      /* RUIDO FBM */
+      var FBM_SIZE = 112;
+      function generateFbmNoise() {
+        var grid = new Float32Array(FBM_SIZE * FBM_SIZE);
+        var cx = FBM_SIZE / 2, cy = FBM_SIZE / 2;
+        var maxDist = Math.sqrt(cx * cx + cy * cy);
+        var perm = new Uint8Array(512);
+        for (var i = 0; i < 256; i++) perm[i] = perm[256 + i] = Math.floor(Math.random() * 256);
+
+        function noise2D(x, y) {
+          var X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
+          var xf = x - Math.floor(x), yf = y - Math.floor(y);
+          var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+          var g00 = perm[perm[X] + Y], g10 = perm[perm[X + 1] + Y];
+          var g01 = perm[perm[X] + Y + 1], g11 = perm[perm[X + 1] + Y + 1];
+          var x1 = ((g00 & 1) ? xf : -xf) + ((g00 & 2) ? yf : -yf);
+          var x2 = ((g10 & 1) ? (xf - 1) : -(xf - 1)) + ((g10 & 2) ? yf : -yf);
+          var y1 = ((g01 & 1) ? xf : -xf) + ((g01 & 2) ? (yf - 1) : -(yf - 1));
+          var y2 = ((g11 & 1) ? (xf - 1) : -(xf - 1)) + ((g11 & 2) ? (yf - 1) : -(yf - 1));
+          var a = x1 + u * (x2 - x1), b = y1 + u * (y2 - y1);
+          return a + v * (b - a);
+        }
+
+        for (var y = 0; y < FBM_SIZE; y++) {
+          for (var x = 0; x < FBM_SIZE; x++) {
+            var val = 0, amp = 0.5, freq = 0.055;
+            for (var o = 0; o < 4; o++) {
+              val += noise2D(x * freq, y * freq) * amp;
+              amp *= 0.5; freq *= 2.0;
+            }
+            var dx = x - cx, dy = y - cy;
+            var dist = Math.sqrt(dx * dx + dy * dy) / maxDist;
+            val = (val + 0.5) * 0.72 + (1.0 - dist) * 0.28;
+            grid[y * FBM_SIZE + x] = Math.max(0, Math.min(1, val));
+          }
+        }
+        return grid;
+      }
+
+      /* CANVAS DE ENCUADRE COVER */
+      var canvas = document.getElementById('pc-canvas');
+      var ctx = canvas.getContext('2d');
+      var offscreenCanvas = document.createElement('canvas');
+      var offscreenCtx = offscreenCanvas.getContext('2d');
+      var maskCanvas = document.createElement('canvas');
+      maskCanvas.width = FBM_SIZE; maskCanvas.height = FBM_SIZE;
+      var maskCtx = maskCanvas.getContext('2d');
+
+      function resizeCanvasBuffer() {
+        var rect = canvas.getBoundingClientRect();
+        var dpr = window.devicePixelRatio || 1;
+        var w = Math.round(rect.width * dpr);
+        var h = Math.round(rect.height * dpr);
+        if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+          canvas.width = w;
+          canvas.height = h;
+          offscreenCanvas.width = w;
+          offscreenCanvas.height = h;
+          if (pcState.sourceImage) drawCoverToOffscreen();
+          renderPhoto(true);
+        }
+      }
+
+      function drawCoverToOffscreen() {
+        var S = offscreenCanvas.width;
+        if (!S) return;
+        offscreenCtx.clearRect(0, 0, S, S);
+        var img = pcState.sourceImage;
+        if (!img || !img.width || !img.height) return;
+
+        var scale = Math.max(S / img.width, S / img.height);
+        var drawW = img.width * scale;
+        var drawH = img.height * scale;
+        var dx = (S - drawW) / 2;
+        var dy = (S - drawH) / 2;
+        offscreenCtx.drawImage(img, dx, dy, drawW, drawH);
+      }
+
+      function createDefaultPlaceholder() {
+        var pCanvas = document.createElement('canvas');
+        pCanvas.width = 600; pCanvas.height = 600;
+        var pCtx = pCanvas.getContext('2d');
+        var grad = pCtx.createLinearGradient(0, 0, 600, 600);
+        grad.addColorStop(0, '#fce4db');
+        grad.addColorStop(0.5, '#e5a894');
+        grad.addColorStop(1, '#9b5d6b');
+        pCtx.fillStyle = grad;
+        pCtx.fillRect(0, 0, 600, 600);
+        pCtx.fillStyle = '#ffffff';
+        pCtx.font = 'italic 42px "Playfair Display", Georgia, serif';
+        pCtx.textAlign = 'center';
+        pCtx.fillText('Recuerdo Especial', 300, 290);
+        pCtx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+        pCtx.fillStyle = 'rgba(255,255,255,0.9)';
+        pCtx.fillText('Momentos que quedan grabados 💛', 300, 340);
+        return pCanvas;
+      }
+
+      function setPhoto(src) {
+        if (!src) {
+          pcState.sourceImage = createDefaultPlaceholder();
+          drawCoverToOffscreen();
+          renderPhoto(true);
+          return;
+        }
+
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+          pcState.sourceImage = img;
+          drawCoverToOffscreen();
+          renderPhoto(true);
+        };
+        img.onerror = function () {
+          pcState.sourceImage = createDefaultPlaceholder();
+          drawCoverToOffscreen();
+          renderPhoto(true);
+        };
+        img.src = src;
+      }
+
+      function smoothstep(min, max, value) {
+        var x = Math.max(0, Math.min(1, (value - min) / (max - min)));
+        return x * x * (3 - 2 * x);
+      }
+
+      function renderPhoto(force) {
+        var P = pcState.progress;
+        if (!force && Math.abs(P - pcState.renderedProgress) < 0.004) return;
+        pcState.renderedProgress = P;
+
+        var S = canvas.width;
+        if (!S) return;
+
+        ctx.clearRect(0, 0, S, S);
+
+        if (P <= 0.001) {
+          ctx.fillStyle = '#0f0c0a';
+          ctx.fillRect(0, 0, S, S);
+          return;
+        }
+
+        var blurPx = Math.round((1 - P) * 10);
+        var brightness = 0.35 + 0.65 * P;
+        var contrast = 0.65 + 0.35 * P;
+        var saturate = 0.2 + 0.8 * P;
+        var sepia = Math.max(0, (1 - P) * 0.45);
+
+        ctx.save();
+        if (P < 0.999) {
+          ctx.filter = 'blur(' + blurPx + 'px) brightness(' + brightness + ') contrast(' + contrast + ') saturate(' + saturate + ') sepia(' + sepia + ')';
+        }
+        ctx.drawImage(offscreenCanvas, 0, 0, S, S);
+        ctx.restore();
+
+        if (P < 0.995 && pcState.fbmNoise) {
+          var imgData = maskCtx.createImageData(FBM_SIZE, FBM_SIZE);
+          var data = imgData.data;
+          var noise = pcState.fbmNoise;
+          var threshold = P;
+          var edge = 0.16;
+
+          for (var i = 0; i < noise.length; i++) {
+            var n = noise[i];
+            var factor = smoothstep(threshold - edge, threshold + edge, n);
+            var v = Math.round(factor * 255);
+            var idx = i * 4;
+            data[idx] = v; data[idx + 1] = v; data[idx + 2] = v; data[idx + 3] = 255;
+          }
+          maskCtx.putImageData(imgData, 0, 0);
+
+          ctx.save();
+          ctx.globalCompositeOperation = 'multiply';
+          ctx.imageSmoothingEnabled = true;
+          ctx.drawImage(maskCanvas, 0, 0, S, S);
+          ctx.restore();
+
+          var veilAlpha = (1 - P) * 0.38 * (1 - P * 0.8);
+          if (veilAlpha > 0.01) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.fillStyle = 'rgba(25, 45, 65, ' + veilAlpha + ')';
+            ctx.fillRect(0, 0, S, S);
+            ctx.restore();
+          }
+
+          var grainAlpha = (1 - P) * 0.14;
+          if (grainAlpha > 0.01) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'overlay';
+            ctx.fillStyle = 'rgba(180, 160, 140, ' + grainAlpha + ')';
+            ctx.fillRect(0, 0, S, S);
+            ctx.restore();
+          }
+        }
+      }
+
+      /* LOOP DE ANIMACIÓN */
+      var RATE_FACTOR = 0.18;
+      function animationLoop(timestamp) {
+        var dt = Math.min(0.1, (timestamp - pcState.lastFrameTime) / 1000);
+        pcState.lastFrameTime = timestamp;
+
+        if (pcState.isEjected && !pcState.isDeveloped) {
+          if (pcState.instantIntensity > 0.01) {
+            pcState.energy += pcState.instantIntensity * dt * RATE_FACTOR;
+            pcState.instantIntensity *= Math.pow(0.15, dt);
+
+            if (!pcState.hasRealMovementStarted && pcState.energy > 0.04) {
+              pcState.hasRealMovementStarted = true;
+              hideHint();
+            }
+          }
+
+          if (pcState.energy > 0.06 && pcState.energy < 0.62) {
+            pcState.energy += 0.018 * dt;
+          }
+
+          var targetProgress = Math.min(1.0, pcState.energy);
+          pcState.progress += (targetProgress - pcState.progress) * Math.min(1, dt * 6.0);
+
+          renderPhoto(false);
+
+          if (pcState.progress >= 0.996) {
+            pcState.progress = 1.0;
+            pcState.isDeveloped = true;
+            renderPhoto(true);
+            showHint('✨ Foto revelada');
+            setTimeout(hideHint, 2800);
+          }
+        }
+
+        requestAnimationFrame(animationLoop);
+      }
+
+      /* DETECCIÓN DE MOVIMIENTO */
+      var smoothX = 0, lastSmoothX = 0, lastReversalTime = 0;
+      var lastAccel = { x: 0, y: 0, z: 0, set: false };
+
+      function handleDeviceMotion(e) {
+        if (!pcState.isEjected || pcState.isDeveloped) return;
+        var a = e.accelerationIncludingGravity || e.acceleration;
+        if (!a || a.x === null) return;
+
+        pcState.usesDeviceMotion = true;
+        if (!lastAccel.set) {
+          lastAccel = { x: a.x, y: a.y, z: a.z, set: true };
+          return;
+        }
+
+        var dx = a.x - lastAccel.x;
+        var dy = a.y - lastAccel.y;
+        var dz = a.z - lastAccel.z;
+        lastAccel.x = a.x; lastAccel.y = a.y; lastAccel.z = a.z;
+
+        smoothX = 0.72 * smoothX + 0.28 * dx;
+
+        var now = performance.now();
+        var bonus = 1.0;
+        if ((smoothX > 0 && lastSmoothX < 0) || (smoothX < 0 && lastSmoothX > 0)) {
+          if (now - lastReversalTime < 420) bonus = 1.7;
+          lastReversalTime = now;
+        }
+        lastSmoothX = smoothX;
+
+        var mag = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (mag > 1.8) {
+          pcState.instantIntensity = Math.min(3.6, (mag - 1.8) * bonus * 0.45);
+        }
+      }
+
+      /* FALLBACK ARRASTRE */
+      var pointer = { isDown: false, lastX: 0, lastY: 0, lastTime: 0, lastSign: 0, lastRevTime: 0 };
+      function setupPointerInteraction() {
+        var photoEl = document.getElementById('pc-photo');
+
+        photoEl.addEventListener('pointerdown', function (e) {
+          if (!pcState.isEjected || pcState.isDeveloped) return;
+          unlockAudio();
+          requestIosMotionPermission();
+
+          pointer.isDown = true;
+          pointer.lastX = e.clientX;
+          pointer.lastY = e.clientY;
+          pointer.lastTime = performance.now();
+          photoEl.setPointerCapture(e.pointerId);
+          photoEl.classList.add('pc-dragging');
+
+          if (!pcState.hasRealMovementStarted) updateHintForInteraction();
+        });
+
+        photoEl.addEventListener('pointermove', function (e) {
+          if (!pointer.isDown || !pcState.isEjected || pcState.isDeveloped) return;
+
+          var now = performance.now();
+          var dt = (now - pointer.lastTime) || 16;
+          var dx = e.clientX - pointer.lastX;
+          var dy = e.clientY - pointer.lastY;
+          pointer.lastX = e.clientX;
+          pointer.lastY = e.clientY;
+          pointer.lastTime = now;
+
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var speed = dist / (dt / 16.66);
+
+          var currentSign = dx > 0 ? 1 : (dx < 0 ? -1 : 0);
+          var bonus = 1.0;
+          if (currentSign !== 0 && pointer.lastSign !== 0 && currentSign !== pointer.lastSign) {
+            if (now - pointer.lastRevTime < 420) bonus = 1.7;
+            pointer.lastRevTime = now;
+          }
+          if (currentSign !== 0) pointer.lastSign = currentSign;
+
+          if (speed > 1.2) {
+            var rawIntensity = (speed - 1.2) * 0.18 * bonus;
+            pcState.instantIntensity = Math.min(3.8, Math.max(pcState.instantIntensity, rawIntensity));
+          }
+
+          var rot = Math.max(-8, Math.min(8, dx * 0.2));
+          photoEl.style.transform = 'translateX(-50%) translate3d(' + (dx * 0.5) + 'px, 0, 0) rotate(' + (0.4 + rot) + 'deg)';
+        });
+
+        function endDrag() {
+          if (!pointer.isDown) return;
+          pointer.isDown = false;
+          photoEl.classList.remove('pc-dragging');
+          photoEl.style.transform = 'translateX(-50%) rotate(0.4deg)';
+        }
+
+        photoEl.addEventListener('pointerup', endDrag);
+        photoEl.addEventListener('pointercancel', endDrag);
+      }
+
+      function requestIosMotionPermission() {
+        if (pcState.motionPermissionRequested) return;
+        pcState.motionPermissionRequested = true;
+
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          DeviceMotionEvent.requestPermission()
+            .then(function (permission) {
+              if (permission === 'granted') {
+                window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
+                showHint('Sacudí el teléfono');
+              } else {
+                showHint('Sacudí la foto con el dedo');
+              }
+            })
+            .catch(function () {
+              showHint('Sacudí la foto con el dedo');
+            });
+        } else if (window.DeviceMotionEvent) {
+          window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
+        }
+      }
+
+      var hintEl = document.getElementById('pc-hint');
+      function showHint(text) {
+        hintEl.textContent = text;
+        hintEl.classList.add('pc-show');
+      }
+      function hideHint() {
+        hintEl.classList.remove('pc-show');
+      }
+      function updateHintForInteraction() {
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          showHint('Sacudí el teléfono');
+        } else if (window.DeviceMotionEvent && pcState.usesDeviceMotion) {
+          showHint('Sacudí el teléfono');
+        } else {
+          showHint('Sacudí la foto con el dedo');
+        }
+      }
+
+      function triggerShutter() {
+        if (pcState.hasShot) return;
+        pcState.hasShot = true;
+        unlockAudio();
+
+        var shutterBtn = document.getElementById('pc-shutter');
+        var cameraWrap = document.getElementById('pc-camera-wrap');
+        var flashEl = document.getElementById('pc-flash');
+        var photoEl = document.getElementById('pc-photo');
+
+        shutterBtn.classList.add('pc-pressed');
+        playMechanicalClick();
+
+        if (navigator.vibrate) {
+          try { navigator.vibrate(35); } catch(e) {}
+        }
+
+        flashEl.classList.add('pc-active');
+        setTimeout(function () { flashEl.classList.remove('pc-active'); }, 80);
+
+        cameraWrap.classList.add('pc-shaking');
+        setTimeout(function () {
+          cameraWrap.classList.remove('pc-shaking');
+          shutterBtn.classList.remove('pc-pressed');
+        }, 420);
+
+        hideHint();
+
+        setTimeout(function () {
+          pcState.isEjecting = true;
+          playMotorHum(2.4);
+          photoEl.classList.add('pc-ejecting');
+
+          setTimeout(function () {
+            photoEl.classList.remove('pc-ejecting');
+            photoEl.classList.add('pc-ejected');
+            pcState.isEjecting = false;
+            pcState.isEjected = true;
+            renderPhoto(true);
+            showHint('Tocá la foto');
+          }, 2600);
+        }, 200);
+      }
+
+      function initPolaroid() {
+        pcState.fbmNoise = generateFbmNoise();
+        resizeCanvasBuffer();
+        window.addEventListener('resize', resizeCanvasBuffer);
+
+        var shutterBtn = document.getElementById('pc-shutter');
+        shutterBtn.addEventListener('click', triggerShutter);
+
+        setupPointerInteraction();
+        renderPhoto(true);
+
+        setTimeout(function () {
+          showHint('Tocá el botón rojo');
+        }, 400);
+
+        requestAnimationFrame(animationLoop);
+      }
+
+      window.PolaroidCamera = {
+        setPhoto: setPhoto,
+        shoot: triggerShutter,
+        init: initPolaroid
+      };
+    })();
 
     /* ============================================================
        CARGA DE DATOS (MULTI-TENANT / DEMO POR DEFECTO)
@@ -556,6 +1231,9 @@
     window.addEventListener('DOMContentLoaded', function () {
       var urlParams = new URLSearchParams(window.location.search);
       var clientId = urlParams.get('id') || 'demo';
+      var photoParam = urlParams.get('photo');
+
+      window.PolaroidCamera.init();
 
       fetch('datos.json')
         .then(function (res) {
@@ -564,12 +1242,10 @@
         })
         .then(function (allData) {
           clientData = allData[clientId] || allData['demo'];
-          if (!clientData) throw new Error('No se encontraron datos para: ' + clientId);
-          renderData();
+          if (!clientData) throw new Error('No se encontraron datos');
+          renderData(photoParam);
         })
-        .catch(function (err) {
-          console.error(err);
-          // Fallback seguro en caso de visualización directa sin servidor
+        .catch(function () {
           clientData = {
             nombre: 'Cris',
             titulo: 'Hoy es el cumpleaños\nde mi persona favorita',
@@ -580,25 +1256,18 @@
             carta: "<p>Hay personas que llegan y lo cambian todo.</p><p>Pienso que ni el destino escribiendo la mejor de las historias habría creado a alguien tan especial como tú.</p><p>Hoy celebro tu risa, tu luz y tu forma de hacerme sentir en casa.</p><span class='letter-highlight'>Cada año tuyo es un capítulo nuevo, y pienso estar en todos y cada uno de ellos.</span>",
             frase_cierre: 'Por muchos cumpleaños más juntos'
           };
-          renderData();
+          renderData(photoParam);
         });
-
-      setupHeartEvents();
     });
 
-    function renderData() {
-      // 1. Pantalla de revelado
-      document.getElementById('reveal-name').textContent = clientData.nombre || 'Cris';
-
-      // 2. Portada & Carrusel
+    function renderData(photoParam) {
       document.getElementById('header-title').textContent = clientData.titulo || '';
       document.getElementById('header-date').textContent = clientData.fecha || '';
-      buildCarousel(clientData.fotos || []);
 
-      // 3. Carta
+      var chosenPhoto = photoParam || (clientData.fotos && clientData.fotos.length ? clientData.fotos[0] : clientData.foto_final);
+      window.PolaroidCamera.setPhoto(chosenPhoto);
+
       document.getElementById('letter-content').innerHTML = clientData.carta || '';
-
-      // 4. Cierre
       document.getElementById('closing-phrase').textContent = clientData.frase_cierre || '';
       var photoEl = document.getElementById('closing-photo');
       if (clientData.foto_final) {
@@ -607,173 +1276,9 @@
         photoEl.src = clientData.fotos[0];
       }
 
-      // Audio
       if (clientData.cancion_url) {
         document.getElementById('bg-music').src = clientData.cancion_url;
       }
-    }
-
-    /* ============================================================
-       INTERACCIÓN DEL CORAZÓN (TAP / HOLD + DESBLOQUEO DE AUDIO)
-    ============================================================ */
-    function setupHeartEvents() {
-      var btn = document.getElementById('heart-btn');
-
-      // Tap / Click
-      btn.addEventListener('click', function () {
-        triggerInteraction(17);
-      });
-
-      // Hold (Táctil y Ratón)
-      function startHold(e) {
-        unlockAudio();
-        if (holdTimer) clearInterval(holdTimer);
-        holdTimer = setInterval(function () {
-          triggerInteraction(4, true);
-        }, 70);
-      }
-
-      function stopHold() {
-        if (holdTimer) {
-          clearInterval(holdTimer);
-          holdTimer = null;
-        }
-      }
-
-      btn.addEventListener('touchstart', startHold, { passive: true });
-      btn.addEventListener('touchend', stopHold, { passive: true });
-      btn.addEventListener('touchcancel', stopHold, { passive: true });
-
-      btn.addEventListener('mousedown', startHold);
-      btn.addEventListener('mouseup', stopHold);
-      btn.addEventListener('mouseleave', stopHold);
-    }
-
-    function unlockAudio() {
-      if (audioStarted) return;
-      var audio = document.getElementById('bg-music');
-      if (audio && audio.src) {
-        audio.play().then(function () {
-          audioStarted = true;
-        }).catch(function () {
-          // Autoplay policy retry
-        });
-      }
-    }
-
-    function triggerInteraction(amount, isHold) {
-      unlockAudio();
-      progress = Math.min(100, progress + amount);
-      updateProgressBar(progress);
-
-      var btn = document.getElementById('heart-btn');
-      if (!isHold) {
-        btn.classList.remove('bump');
-        void btn.offsetWidth; // Reflow para reiniciar animación
-        btn.classList.add('bump');
-      }
-
-      updateStatusText(progress);
-
-      if (progress >= 100) {
-        if (holdTimer) clearInterval(holdTimer);
-        finishReveal();
-      }
-    }
-
-    function updateProgressBar(val) {
-      document.getElementById('progress-fill').style.width = val + '%';
-    }
-
-    function updateStatusText(val) {
-      var statusEl = document.getElementById('reveal-status');
-      for (var i = 0; i < STATUS_STEPS.length; i++) {
-        var step = STATUS_STEPS[i];
-        if (val >= step.min && val <= step.max) {
-          if (statusEl.textContent !== step.text) {
-            statusEl.textContent = step.text;
-            statusEl.classList.remove('pop');
-            void statusEl.offsetWidth;
-            statusEl.classList.add('pop');
-          }
-          break;
-        }
-      }
-    }
-
-    function finishReveal() {
-      var screen = document.getElementById('reveal-screen');
-      var main = document.getElementById('main-content');
-
-      setTimeout(function () {
-        screen.classList.add('hidden');
-        main.classList.add('visible');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 350);
-    }
-
-    /* ============================================================
-       CARRUSEL POLAROID (SWIPE + PUNTOS)
-    ============================================================ */
-    function buildCarousel(photos) {
-      var track = document.getElementById('carousel-track');
-      var dotsContainer = document.getElementById('carousel-dots');
-      track.innerHTML = '';
-      dotsContainer.innerHTML = '';
-
-      totalSlides = photos.length;
-      if (totalSlides === 0) return;
-
-      photos.forEach(function (url, idx) {
-        var slide = document.createElement('div');
-        slide.className = 'carousel-slide';
-        var img = document.createElement('img');
-        img.src = url;
-        img.alt = 'Recuerdo ' + (idx + 1);
-        img.onerror = function () {
-          // Fallback elegante si la imagen local aún no está colocada
-          this.style.backgroundColor = '#e8dfd3';
-        };
-        slide.appendChild(img);
-        track.appendChild(slide);
-
-        var dot = document.createElement('div');
-        dot.className = 'dot' + (idx === 0 ? ' active' : '');
-        dot.onclick = function () { goToSlide(idx); };
-        dotsContainer.appendChild(dot);
-      });
-
-      setupCarouselSwipe();
-    }
-
-    function goToSlide(idx) {
-      if (idx < 0 || idx >= totalSlides) return;
-      currentSlide = idx;
-      document.getElementById('carousel-track').style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-      var dots = document.querySelectorAll('.carousel-dots .dot');
-      dots.forEach(function (d, i) {
-        d.classList.toggle('active', i === currentSlide);
-      });
-    }
-
-    function setupCarouselSwipe() {
-      var viewport = document.getElementById('carousel-viewport');
-      var startX = 0;
-
-      viewport.addEventListener('touchstart', function (e) {
-        startX = e.changedTouches[0].clientX;
-      }, { passive: true });
-
-      viewport.addEventListener('touchend', function (e) {
-        var diffX = startX - e.changedTouches[0].clientX;
-        if (Math.abs(diffX) > 40) {
-          if (diffX > 0 && currentSlide < totalSlides - 1) {
-            goToSlide(currentSlide + 1);
-          } else if (diffX < 0 && currentSlide > 0) {
-            goToSlide(currentSlide - 1);
-          }
-        }
-      }, { passive: true });
     }
 
     /* ============================================================
@@ -793,7 +1298,7 @@
     }
 
     /* ============================================================
-       GUARDAR ESTE MOMENTO (NAVIGATOR.SHARE CON FALLBACK)
+       GUARDAR ESTE MOMENTO
     ============================================================ */
     function handleSaveMoment() {
       var shareData = {
