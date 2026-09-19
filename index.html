@@ -1358,29 +1358,87 @@
        ═══════════════════════════════════════════════════════ */
     var audioEl = document.getElementById('bg-music');
     var isMusicPlaying = false;
+    var currentSongMeta = { titulo: '', artista: '' };
+    var hasAttemptedFallback = false;
 
     function startMusicPlayback() {
       if (isMusicPlaying) return;
       if (audioEl.src) {
-        audioEl.play().then(function () {
-          isMusicPlaying = true;
-          updatePlayerButtonState();
-        }).catch(function () {});
+        var playPromise = audioEl.play();
+        if (playPromise !== undefined) {
+          playPromise.then(function () {
+            isMusicPlaying = true;
+            updatePlayerButtonState();
+          }).catch(function (err) {
+            console.log('Audio autoplay bloqueado o diferido:', err);
+          });
+        }
       }
     }
+
+    // Desbloqueo en el primer toque de la pantalla si aún no arrancó
+    function unlockAudioOnFirstInteraction() {
+      startMusicPlayback();
+      document.removeEventListener('pointerdown', unlockAudioOnFirstInteraction);
+      document.removeEventListener('touchstart', unlockAudioOnFirstInteraction);
+      document.removeEventListener('click', unlockAudioOnFirstInteraction);
+    }
+    document.addEventListener('pointerdown', unlockAudioOnFirstInteraction, { once: true, passive: true });
+    document.addEventListener('touchstart', unlockAudioOnFirstInteraction, { once: true, passive: true });
+    document.addEventListener('click', unlockAudioOnFirstInteraction, { once: true, passive: true });
 
     function toggleMusicPlayback() {
       if (!audioEl.src) return;
       if (isMusicPlaying) {
         audioEl.pause();
-        isMusicPlaying = false;
       } else {
-        audioEl.play().then(function () {
-          isMusicPlaying = true;
-        }).catch(function () {});
+        audioEl.play().catch(function (err) {
+          console.log('Error al reproducir audio:', err);
+        });
       }
-      updatePlayerButtonState();
     }
+
+    audioEl.addEventListener('play', function () {
+      isMusicPlaying = true;
+      updatePlayerButtonState();
+    });
+
+    audioEl.addEventListener('pause', function () {
+      isMusicPlaying = false;
+      updatePlayerButtonState();
+    });
+
+    audioEl.addEventListener('ended', function () {
+      isMusicPlaying = false;
+      updatePlayerButtonState();
+    });
+
+    // Fallback inteligente: Si el audio local o configurado falla (404 o formato no soportado),
+    // busca automáticamente el track preview en streaming de alta calidad usando iTunes API
+    audioEl.addEventListener('error', function (e) {
+      console.warn('Error en la fuente de audio actual:', audioEl.src);
+      if (!hasAttemptedFallback && (currentSongMeta.titulo || currentSongMeta.artista)) {
+        hasAttemptedFallback = true;
+        var query = (currentSongMeta.titulo + ' ' + currentSongMeta.artista).trim();
+        var apiUrl = 'https://itunes.apple.com/search?term=' + encodeURIComponent(query) + '&media=music&limit=1';
+        fetch(apiUrl)
+          .then(function (res) { return res.json(); })
+          .then(function (resData) {
+            if (resData.results && resData.results.length > 0 && resData.results[0].previewUrl) {
+              var previewUrl = resData.results[0].previewUrl;
+              console.log('Cargando fallback de audio desde streaming:', previewUrl);
+              audioEl.src = previewUrl;
+              audioEl.play().then(function () {
+                isMusicPlaying = true;
+                updatePlayerButtonState();
+              }).catch(function () {});
+            }
+          })
+          .catch(function (err) {
+            console.error('No se pudo cargar el audio alternativo:', err);
+          });
+      }
+    });
 
     function updatePlayerButtonState() {
       var playIcon = document.getElementById('play-icon');
@@ -1739,14 +1797,21 @@
 
       // Reproductor de música estilo streaming
       var songInfo = data.cancion || {};
+      currentSongMeta = {
+        titulo: songInfo.titulo || 'Yellow',
+        artista: songInfo.artista || 'Coldplay'
+      };
+      hasAttemptedFallback = false;
+
       document.getElementById('player-song').textContent = songInfo.titulo || 'Música Especial';
       document.getElementById('player-artist').textContent = songInfo.artista || (data.nombre ? 'Para ' + data.nombre : 'Recuerdos');
-      if (songInfo.portada || data.fotos && data.fotos[0]) {
+      if (songInfo.portada || (data.fotos && data.fotos[0])) {
         document.getElementById('player-cover').src = songInfo.portada || data.fotos[0];
       }
       var songUrl = songInfo.audio_url || data.cancion_url || 'paginas/demo/musica.mp3';
       if (songUrl) {
         audioEl.src = songUrl;
+        audioEl.load();
       }
 
       // Carta
@@ -1759,6 +1824,7 @@
 
     /* SOBRE Y CARTA */
     function openEnvelope() {
+      startMusicPlayback();
       var card = document.getElementById('envelope-card');
       var letter = document.getElementById('letter-card');
       card.style.transform = 'scale(0.96)';
