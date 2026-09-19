@@ -31,8 +31,11 @@
     }
 
     body {
-      background-color: var(--bg-pastel);
-      background-image: radial-gradient(ellipse at 50% 20%, #fdf9f4 0%, #f4eae0 100%);
+      background-color: #f4ede4;
+      background-image: url('paginas/demo/fondo.jpg');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
@@ -154,10 +157,10 @@
     .pc-camera-body {
       position: absolute;
       inset: 0;
-      background: linear-gradient(175deg, #f5efe6 0%, #e7dcce 100%);
+      background: linear-gradient(175deg, #2a2522 0%, #161210 100%);
       border-radius: 28px 28px 18px 18px;
-      box-shadow: 0 16px 36px rgba(45, 30, 20, 0.22), inset 0 2px 4px rgba(255, 255, 255, 0.85), inset 0 -3px 6px rgba(0, 0, 0, 0.16);
-      border: 1px solid #ded3bf;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), inset 0 2px 4px rgba(255, 255, 255, 0.12), inset 0 -3px 6px rgba(0, 0, 0, 0.5);
+      border: 1px solid #3a3230;
       overflow: hidden;
     }
 
@@ -185,11 +188,11 @@
       height: 130px;
       border-radius: 50%;
       background: linear-gradient(135deg, #2d2522 0%, #151110 100%);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.38), inset 0 3px 5px rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 3px 5px rgba(255, 255, 255, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 4px solid #dbcfbd;
+      border: 4px solid #4a4240;
     }
 
     .pc-lens-ring {
@@ -231,19 +234,25 @@
       left: 24px;
       width: 46px;
       height: 34px;
-      background: #38302a;
+      background: #1c1714;
       border-radius: 6px;
-      border: 2px solid #c8baa4;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+      border: 2px solid #4a4240;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.06s ease, box-shadow 0.06s ease;
+    }
+
+    .pc-flash-unit.flashing {
+      background: #fff8e0;
+      box-shadow: 0 0 18px 6px rgba(255, 240, 160, 0.9), inset 0 0 8px rgba(255,255,255,0.8);
     }
 
     .pc-flash-grid {
       width: 34px;
       height: 22px;
-      background: repeating-linear-gradient(90deg, #d8d0c0, #d8d0c0 2px, #423832 2px, #423832 4px);
+      background: repeating-linear-gradient(90deg, #6a6058, #6a6058 2px, #2c2420 2px, #2c2420 4px);
       border-radius: 3px;
     }
 
@@ -255,7 +264,7 @@
       height: 24px;
       background: #1e1917;
       border-radius: 50%;
-      border: 3px solid #c8baa4;
+      border: 3px solid #4a4240;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
     }
 
@@ -834,7 +843,7 @@
         <!-- CÁMARA RETRO -->
         <div class="pc-camera-wrap" id="pc-camera-wrap">
           <div class="pc-camera-body">
-            <div class="pc-flash-unit"><div class="pc-flash-grid"></div></div>
+            <div class="pc-flash-unit" id="pc-flash-unit"><div class="pc-flash-grid"></div></div>
             <div class="pc-viewfinder"></div>
             
             <div class="pc-lens-outer">
@@ -1201,11 +1210,11 @@
     function triggerShutter() {
       if (pcState.hasShot) return;
       pcState.hasShot = true;
-      startMusicPlayback();
 
       var shutterBtn = document.getElementById('pc-shutter');
       var cameraWrap = document.getElementById('pc-camera-wrap');
       var flashEl = document.getElementById('pc-flash');
+      var flashUnit = document.getElementById('pc-flash-unit');
       var photoEl = document.getElementById('pc-photo');
 
       shutterBtn.classList.add('pc-pressed');
@@ -1217,8 +1226,13 @@
         try { navigator.vibrate(40); } catch(e) {}
       }
 
+      // FLASH REALISTA: Destello en la bombilla de la cámara + resplandor de pantalla
+      if (flashUnit) flashUnit.classList.add('flashing');
       flashEl.classList.add('pc-active');
-      setTimeout(function () { flashEl.classList.remove('pc-active'); }, 75);
+      setTimeout(function () {
+        flashEl.classList.remove('pc-active');
+        if (flashUnit) flashUnit.classList.remove('flashing');
+      }, 95);
 
       cameraWrap.classList.add('pc-shaking');
       setTimeout(function () {
@@ -1290,7 +1304,6 @@
 
       photoEl.addEventListener('pointerdown', function (e) {
         if (!pcState.isEjected || pcState.isDeveloped) return;
-        startMusicPlayback();
         requestMotionPerm();
 
         pDown = true;
@@ -1376,17 +1389,7 @@
       }
     }
 
-    // Desbloqueo en el primer toque de la pantalla si aún no arrancó
-    function unlockAudioOnFirstInteraction() {
-      startMusicPlayback();
-      document.removeEventListener('pointerdown', unlockAudioOnFirstInteraction);
-      document.removeEventListener('touchstart', unlockAudioOnFirstInteraction);
-      document.removeEventListener('click', unlockAudioOnFirstInteraction);
-    }
-    document.addEventListener('pointerdown', unlockAudioOnFirstInteraction, { once: true, passive: true });
-    document.addEventListener('touchstart', unlockAudioOnFirstInteraction, { once: true, passive: true });
-    document.addEventListener('click', unlockAudioOnFirstInteraction, { once: true, passive: true });
-
+    // Reproducción manual o en interacciones clave (reproductor, abrir sobre)
     function toggleMusicPlayback() {
       if (!audioEl.src) return;
       if (isMusicPlaying) {
@@ -1620,7 +1623,6 @@
 
       el.addEventListener('pointerdown', function (e) {
         if (index !== activeStackIndex) return;
-        startMusicPlayback();
         requestMotionPerm();
 
         isDown = true;
