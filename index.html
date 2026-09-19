@@ -815,6 +815,9 @@
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--text-muted);
+      margin-top: 10px;
+    }
+
     /* ═══════════════════════════════════════════════════════
        LLUVIA SUTIL DE PÉTALOS DE FLORES
        ═══════════════════════════════════════════════════════ */
@@ -822,7 +825,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 9998;
+      z-index: 10000;
       overflow: hidden;
     }
 
@@ -1254,6 +1257,42 @@
       img.src = src;
     }
 
+    /* ═══════════════════════════════════════════════════════
+       LLUVIA SUTIL DE PÉTALOS DE FLORES (AL DISPARAR Y REVELAR)
+       ═══════════════════════════════════════════════════════ */
+    function triggerPetalsShower() {
+      var container = document.getElementById('petals-container');
+      if (!container) return;
+
+      var totalPetals = 35;
+      for (var i = 0; i < totalPetals; i++) {
+        (function (index) {
+          setTimeout(function () {
+            var petal = document.createElement('div');
+            petal.className = 'petal' + (Math.random() > 0.5 ? ' petal-alt' : '');
+
+            var leftPos = Math.random() * 96; // 0% a 96% de la pantalla
+            var duration = 4.0 + Math.random() * 3.5; // caída suave y serena
+            var drift = (Math.random() - 0.5) * 180; // suave balanceo
+            var rot = 180 + Math.random() * 540;
+            var scale = 0.7 + Math.random() * 0.55;
+
+            petal.style.left = leftPos + '%';
+            petal.style.animationDuration = duration + 's';
+            petal.style.setProperty('--drift', drift + 'px');
+            petal.style.setProperty('--rot', rot + 'deg');
+            petal.style.transform = 'scale(' + scale + ')';
+
+            container.appendChild(petal);
+
+            setTimeout(function () {
+              if (petal.parentNode) petal.parentNode.removeChild(petal);
+            }, duration * 1000 + 400);
+          }, index * 100);
+        })(i);
+      }
+    }
+
     function triggerShutter() {
       if (pcState.hasShot) return;
       pcState.hasShot = true;
@@ -1280,6 +1319,9 @@
         flashEl.classList.remove('pc-active');
         if (flashUnit) flashUnit.classList.remove('flashing');
       }, 95);
+
+      // LLUVIA DE PÉTALOS AL SACAR LA FOTO
+      triggerPetalsShower();
 
       cameraWrap.classList.add('pc-shaking');
       setTimeout(function () {
@@ -1728,47 +1770,6 @@
 
       el.addEventListener('pointerup', endStackDrag);
       el.addEventListener('pointercancel', endStackDrag);
-    }
-
-    /* ═══════════════════════════════════════════════════════
-       LLUVIA SUTIL DE PÉTALOS DE FLORES AL REVELAR
-       ═══════════════════════════════════════════════════════ */
-    var hasPetalsFallen = false;
-    function triggerPetalsShower() {
-      if (hasPetalsFallen) return;
-      hasPetalsFallen = true;
-
-      var container = document.getElementById('petals-container');
-      if (!container) return;
-
-      var totalPetals = 38;
-      for (var i = 0; i < totalPetals; i++) {
-        (function (index) {
-          setTimeout(function () {
-            var petal = document.createElement('div');
-            petal.className = 'petal' + (Math.random() > 0.5 ? ' petal-alt' : '');
-
-            var leftPos = Math.random() * 96; // 0% a 96% de ancho
-            var duration = 4.2 + Math.random() * 3.6; // 4.2s a 7.8s de caída suave
-            var drift = (Math.random() - 0.5) * 160; // deriva horizontal por brisa
-            var rot = 180 + Math.random() * 540; // rotación orgánica
-            var scale = 0.75 + Math.random() * 0.5;
-
-            petal.style.left = leftPos + '%';
-            petal.style.animationDuration = duration + 's';
-            petal.style.setProperty('--drift', drift + 'px');
-            petal.style.setProperty('--rot', rot + 'deg');
-            petal.style.transform = 'scale(' + scale + ')';
-
-            container.appendChild(petal);
-
-            // Limpieza del elemento al terminar la animación
-            setTimeout(function () {
-              if (petal.parentNode) petal.parentNode.removeChild(petal);
-            }, duration * 1000 + 400);
-          }, index * 110);
-        })(i);
-      }
     }
 
     /* ═══════════════════════════════════════════════════════
