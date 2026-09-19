@@ -1262,37 +1262,53 @@
     }
 
     /* ═══════════════════════════════════════════════════════
-       LLUVIA SUTIL DE PÉTALOS DE FLORES (AL DISPARAR Y REVELAR)
+       LLUVIA SUTIL Y PERMANENTE DE PÉTALOS DE FLORES
        ═══════════════════════════════════════════════════════ */
-    function triggerPetalsShower() {
+    function spawnSinglePetal() {
       var container = document.getElementById('petals-container');
       if (!container) return;
 
-      var totalPetals = 35;
+      var petal = document.createElement('div');
+      petal.className = 'petal' + (Math.random() > 0.5 ? ' petal-alt' : '');
+
+      var leftPos = Math.random() * 98; // 0% a 98% del ancho
+      var duration = 4.8 + Math.random() * 4.2; // 4.8s a 9.0s caída suave
+      var drift = (Math.random() - 0.5) * 160;
+      var rot = 180 + Math.random() * 720;
+      var scale = 0.65 + Math.random() * 0.5;
+
+      petal.style.left = leftPos + '%';
+      petal.style.animationDuration = duration + 's';
+      petal.style.setProperty('--drift', drift + 'px');
+      petal.style.setProperty('--rot', rot + 'deg');
+      petal.style.transform = 'scale(' + scale + ')';
+
+      container.appendChild(petal);
+
+      setTimeout(function () {
+        if (petal.parentNode) petal.parentNode.removeChild(petal);
+      }, duration * 1000 + 400);
+    }
+
+    var continuousPetalsTimer = null;
+    function startContinuousPetals() {
+      if (continuousPetalsTimer) return;
+      // Generar 7 pétalos iniciales con pequeño desfase
+      for (var i = 0; i < 7; i++) {
+        (function (idx) {
+          setTimeout(spawnSinglePetal, idx * 320);
+        })(i);
+      }
+      // Lluvia sutil e ininterrumpida cada 750ms
+      continuousPetalsTimer = setInterval(spawnSinglePetal, 750);
+    }
+
+    // Ráfaga extra festiva (disparo y revelado)
+    function triggerPetalsShower() {
+      var totalPetals = 28;
       for (var i = 0; i < totalPetals; i++) {
         (function (index) {
-          setTimeout(function () {
-            var petal = document.createElement('div');
-            petal.className = 'petal' + (Math.random() > 0.5 ? ' petal-alt' : '');
-
-            var leftPos = Math.random() * 96; // 0% a 96% de la pantalla
-            var duration = 4.0 + Math.random() * 3.5; // caída suave y serena
-            var drift = (Math.random() - 0.5) * 180; // suave balanceo
-            var rot = 180 + Math.random() * 540;
-            var scale = 0.7 + Math.random() * 0.55;
-
-            petal.style.left = leftPos + '%';
-            petal.style.animationDuration = duration + 's';
-            petal.style.setProperty('--drift', drift + 'px');
-            petal.style.setProperty('--rot', rot + 'deg');
-            petal.style.transform = 'scale(' + scale + ')';
-
-            container.appendChild(petal);
-
-            setTimeout(function () {
-              if (petal.parentNode) petal.parentNode.removeChild(petal);
-            }, duration * 1000 + 400);
-          }, index * 100);
+          setTimeout(spawnSinglePetal, index * 70);
         })(i);
       }
     }
@@ -1496,6 +1512,7 @@
 
     audioEl.addEventListener('play', function () {
       isMusicPlaying = true;
+      audioEl.loop = true; // asegurar loop siempre activo
       updatePlayerButtonState();
     });
 
@@ -1504,9 +1521,12 @@
       updatePlayerButtonState();
     });
 
+    // Asegurar reinicio inmediato y continuo si termina el tema (bucle infinito hasta pausar)
     audioEl.addEventListener('ended', function () {
-      isMusicPlaying = false;
-      updatePlayerButtonState();
+      if (isMusicPlaying) {
+        audioEl.currentTime = 0;
+        audioEl.play().catch(function () {});
+      }
     });
 
     // Fallback inteligente: Si el audio local o configurado falla (404 o formato no soportado),
@@ -1524,6 +1544,7 @@
               var previewUrl = resData.results[0].previewUrl;
               console.log('Cargando fallback de audio desde streaming:', previewUrl);
               audioEl.src = previewUrl;
+              audioEl.loop = true;
               audioEl.play().then(function () {
                 isMusicPlaying = true;
                 updatePlayerButtonState();
@@ -1561,6 +1582,12 @@
       document.getElementById('player-progress-fill').style.width = pct + '%';
       document.getElementById('player-current-time').textContent = formatTime(audioEl.currentTime);
       document.getElementById('player-total-time').textContent = formatTime(audioEl.duration);
+
+      // Reanudación anticipada para evitar micro-pausas al final del loop
+      if (isMusicPlaying && audioEl.duration > 2 && audioEl.currentTime >= audioEl.duration - 0.2) {
+        audioEl.currentTime = 0;
+        audioEl.play().catch(function () {});
+      }
     });
 
     audioEl.addEventListener('loadedmetadata', function () {
@@ -1836,6 +1863,9 @@
        CARGA DE DATOS & INICIALIZACIÓN
     ============================================================ */
     window.addEventListener('DOMContentLoaded', function () {
+      // Iniciar lluvia sutil y permanente de pétalos
+      startContinuousPetals();
+
       // Impronta de fecha dinámica en la foto principal
       document.getElementById('pc-imprint').textContent = todayFormatted;
 
@@ -1904,7 +1934,6 @@
         loadFallbackDemo();
       }
 
-
       requestAnimationFrame(globalAnimationLoop);
     });
 
@@ -1933,13 +1962,18 @@
         document.getElementById('player-cover').src = songInfo.portada || data.fotos[0];
       }
 
+      // Asegurar bucle continuo infinito de audio
+      audioEl.loop = true;
+
       // Si el cliente especificó un audio_url directo, usarlo; de lo contrario buscar en el catálogo musical
       var explicitUrl = songInfo.audio_url || data.cancion_url;
       if (explicitUrl && explicitUrl !== 'paginas/demo/musica.mp3') {
         audioEl.src = explicitUrl;
+        audioEl.loop = true;
         audioEl.load();
       } else if (songTitle.toLowerCase() === 'yellow' && (!songArtist || songArtist.toLowerCase().includes('coldplay'))) {
         audioEl.src = 'paginas/demo/musica.mp3';
+        audioEl.loop = true;
         audioEl.load();
       } else {
         // Búsqueda instantánea de cualquier canción solicitada en el catálogo musical
@@ -1949,17 +1983,20 @@
           .then(function (resData) {
             if (resData.results && resData.results.length > 0 && resData.results[0].previewUrl) {
               audioEl.src = resData.results[0].previewUrl;
+              audioEl.loop = true;
               audioEl.load();
               if (resData.results[0].artworkUrl100 && !songInfo.portada) {
                 document.getElementById('player-cover').src = resData.results[0].artworkUrl100;
               }
             } else {
               audioEl.src = 'paginas/demo/musica.mp3';
+              audioEl.loop = true;
               audioEl.load();
             }
           })
           .catch(function () {
             audioEl.src = 'paginas/demo/musica.mp3';
+            audioEl.loop = true;
             audioEl.load();
           });
       }

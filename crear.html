@@ -688,6 +688,17 @@
           </div>
           <button type="button" class="song-selected-remove" onclick="removeSelectedSong()">Cambiar</button>
         </div>
+
+        <!-- Opción para tema completo con MP3 propio -->
+        <details style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); background: rgba(0,0,0,0.02); padding: 8px 12px; border-radius: 8px; border: 1px dashed var(--border-soft);">
+          <summary style="cursor: pointer; font-weight: 600; color: var(--text-brown);">¿Tenés el link a un MP3 completo? (Opcional)</summary>
+          <div style="margin-top: 8px;">
+            <input class="field-input" id="input-custom-audio" type="url" placeholder="https://ejemplo.com/cancion-completa.mp3" style="font-size: 0.8rem; padding: 9px 12px;" />
+            <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 5px; line-height: 1.35;">
+              Si lo dejás vacío, se usa la vista previa oficial del buscador y se repetirá automáticamente en bucle infinito hasta que se pause. Si pegás tu link directo a un archivo MP3, sonará la canción completa.
+            </p>
+          </div>
+        </details>
       </div>
 
       <!-- 4. MENSAJE DE LA CARTA -->
@@ -951,6 +962,9 @@
                     || 'Yellow';
       var songArtist  = document.getElementById('input-song-artist').value.trim() || 'Coldplay';
       var songPreview = document.getElementById('input-song-preview').value.trim();
+      var customAudioEl = document.getElementById('input-custom-audio');
+      var customAudio = customAudioEl ? customAudioEl.value.trim() : '';
+      var finalAudioUrl = customAudio || songPreview;
       var songArtwork = document.getElementById('input-song-artwork').value.trim();
       var letter  = document.getElementById('input-letter').value.trim();
       var closing = document.getElementById('input-closing').value.trim();
@@ -977,7 +991,7 @@
         cancion: {
           titulo: songTitle,
           artista: songArtist,
-          audio_url: songPreview,
+          audio_url: finalAudioUrl,
           portada: songArtwork || finalPhotos[0]
         },
         foto_principal: finalPhotos[0],
