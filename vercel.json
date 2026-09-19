@@ -1,7 +1,6 @@
 {
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/crear", "destination": "/crear.html" },
-    { "source": "/crear.htm", "destination": "/crear.html" }
+  "redirects": [
+    { "source": "/crear.htm", "destination": "/crear", "permanent": true }
   ]
 }
