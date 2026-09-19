@@ -815,11 +815,58 @@
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-top: 10px;
+    /* ═══════════════════════════════════════════════════════
+       LLUVIA SUTIL DE PÉTALOS DE FLORES
+       ═══════════════════════════════════════════════════════ */
+    .petals-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      overflow: hidden;
+    }
+
+    .petal {
+      position: absolute;
+      top: -40px;
+      width: 16px;
+      height: 22px;
+      background: radial-gradient(circle at 35% 25%, #ffccd5, #e57399 75%, #c23868 100%);
+      border-radius: 50% 10% 50% 50%;
+      opacity: 0.85;
+      box-shadow: 0 2px 6px rgba(180, 50, 90, 0.25);
+      animation: petalFall linear forwards;
+    }
+
+    .petal.petal-alt {
+      width: 13px;
+      height: 18px;
+      background: radial-gradient(circle at 30% 30%, #fff0f3, #f8a5c2 70%, #d9538f 100%);
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+
+    @keyframes petalFall {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(0.85);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.85;
+      }
+      85% {
+        opacity: 0.75;
+      }
+      100% {
+        transform: translate3d(var(--drift, 40px), 105vh, 0) rotate(var(--rot, 360deg)) scale(1.1);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- CONTENEDOR DE PÉTALOS -->
+  <div class="petals-container" id="petals-container"></div>
 
   <!-- FLASH OVERLAY -->
   <div class="pc-flash" id="pc-flash"></div>
@@ -1684,6 +1731,47 @@
     }
 
     /* ═══════════════════════════════════════════════════════
+       LLUVIA SUTIL DE PÉTALOS DE FLORES AL REVELAR
+       ═══════════════════════════════════════════════════════ */
+    var hasPetalsFallen = false;
+    function triggerPetalsShower() {
+      if (hasPetalsFallen) return;
+      hasPetalsFallen = true;
+
+      var container = document.getElementById('petals-container');
+      if (!container) return;
+
+      var totalPetals = 38;
+      for (var i = 0; i < totalPetals; i++) {
+        (function (index) {
+          setTimeout(function () {
+            var petal = document.createElement('div');
+            petal.className = 'petal' + (Math.random() > 0.5 ? ' petal-alt' : '');
+
+            var leftPos = Math.random() * 96; // 0% a 96% de ancho
+            var duration = 4.2 + Math.random() * 3.6; // 4.2s a 7.8s de caída suave
+            var drift = (Math.random() - 0.5) * 160; // deriva horizontal por brisa
+            var rot = 180 + Math.random() * 540; // rotación orgánica
+            var scale = 0.75 + Math.random() * 0.5;
+
+            petal.style.left = leftPos + '%';
+            petal.style.animationDuration = duration + 's';
+            petal.style.setProperty('--drift', drift + 'px');
+            petal.style.setProperty('--rot', rot + 'deg');
+            petal.style.transform = 'scale(' + scale + ')';
+
+            container.appendChild(petal);
+
+            // Limpieza del elemento al terminar la animación
+            setTimeout(function () {
+              if (petal.parentNode) petal.parentNode.removeChild(petal);
+            }, duration * 1000 + 400);
+          }, index * 110);
+        })(i);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
        LOOP GLOBAL DE INTEGRACIÓN TEMPORAL (R.A.F.)
     ============================================================ */
     var RATE_FACTOR = 0.18;
@@ -1712,6 +1800,7 @@
           pcState.isDeveloped = true;
           renderChemicalCanvas(pcCanvas, pcOffscreen, 1.0, pcMaskCanvas, pcMaskCtx);
           showPcHint('✨ Foto revelada');
+          triggerPetalsShower();
           setTimeout(hidePcHint, 2800);
         }
       }
@@ -1810,21 +1899,50 @@
 
       // Reproductor de música estilo streaming
       var songInfo = data.cancion || {};
+      var songTitle = songInfo.titulo || 'Yellow';
+      var songArtist = songInfo.artista || (data.nombre ? 'Para ' + data.nombre : 'Coldplay');
+
       currentSongMeta = {
-        titulo: songInfo.titulo || 'Yellow',
-        artista: songInfo.artista || 'Coldplay'
+        titulo: songTitle,
+        artista: songArtist
       };
       hasAttemptedFallback = false;
 
-      document.getElementById('player-song').textContent = songInfo.titulo || 'Música Especial';
-      document.getElementById('player-artist').textContent = songInfo.artista || (data.nombre ? 'Para ' + data.nombre : 'Recuerdos');
+      document.getElementById('player-song').textContent = songTitle;
+      document.getElementById('player-artist').textContent = songArtist;
       if (songInfo.portada || (data.fotos && data.fotos[0])) {
         document.getElementById('player-cover').src = songInfo.portada || data.fotos[0];
       }
-      var songUrl = songInfo.audio_url || data.cancion_url || 'paginas/demo/musica.mp3';
-      if (songUrl) {
-        audioEl.src = songUrl;
+
+      // Si el cliente especificó un audio_url directo, usarlo; de lo contrario buscar en el catálogo musical
+      var explicitUrl = songInfo.audio_url || data.cancion_url;
+      if (explicitUrl && explicitUrl !== 'paginas/demo/musica.mp3') {
+        audioEl.src = explicitUrl;
         audioEl.load();
+      } else if (songTitle.toLowerCase() === 'yellow' && (!songArtist || songArtist.toLowerCase().includes('coldplay'))) {
+        audioEl.src = 'paginas/demo/musica.mp3';
+        audioEl.load();
+      } else {
+        // Búsqueda instantánea de cualquier canción solicitada en el catálogo musical
+        var searchQ = (songTitle + ' ' + songArtist).trim();
+        fetch('https://itunes.apple.com/search?term=' + encodeURIComponent(searchQ) + '&media=music&limit=1')
+          .then(function (res) { return res.json(); })
+          .then(function (resData) {
+            if (resData.results && resData.results.length > 0 && resData.results[0].previewUrl) {
+              audioEl.src = resData.results[0].previewUrl;
+              audioEl.load();
+              if (resData.results[0].artworkUrl100 && !songInfo.portada) {
+                document.getElementById('player-cover').src = resData.results[0].artworkUrl100;
+              }
+            } else {
+              audioEl.src = 'paginas/demo/musica.mp3';
+              audioEl.load();
+            }
+          })
+          .catch(function () {
+            audioEl.src = 'paginas/demo/musica.mp3';
+            audioEl.load();
+          });
       }
 
       // Carta

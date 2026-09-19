@@ -163,6 +163,127 @@
       margin-top: 4px;
     }
 
+    /* BUSCADOR DE CANCIONES */
+    .song-search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .song-results-list {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 12px 34px rgba(45, 30, 20, 0.16);
+      border: 1px solid var(--border-soft);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .song-results-list.active {
+      display: block;
+    }
+
+    .song-result-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      transition: background 0.15s ease;
+    }
+
+    .song-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .song-result-item:hover {
+      background: #faf7f2;
+    }
+
+    .song-result-art {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #eee7de;
+      flex-shrink: 0;
+    }
+
+    .song-result-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .song-result-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-result-artist {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-selected-badge {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #faf6f0;
+      border: 1px solid rgba(197, 155, 88, 0.35);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-top: 8px;
+    }
+
+    .song-selected-badge.active {
+      display: flex;
+    }
+
+    .song-selected-art {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .song-selected-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .song-selected-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .song-selected-singer {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .song-selected-remove {
+      font-size: 0.8rem;
+      color: var(--accent-red);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
     /* UPLOADERS FOTOS */
     .polaroid-slot {
       display: flex;
@@ -534,12 +655,35 @@
           <span>Tema Musical</span>
         </div>
         <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">
-          Ingresá el nombre y artista (o enlace de Spotify / MP3). El reproductor lo transmitirá automáticamente.
+          Buscá cualquier canción o artista de todo el mundo. Se conectará directamente al reproductor.
         </p>
 
-        <div style="display: flex; gap: 8px;">
-          <input class="field-input" id="input-song-title" type="text" placeholder="Título (ej: Yellow)" style="flex: 1.2;" required />
-          <input class="field-input" id="input-song-artist" type="text" placeholder="Artista (ej: Coldplay)" style="flex: 1;" required />
+        <div class="song-search-box">
+          <input 
+            class="field-input" 
+            id="input-song-search" 
+            type="text" 
+            placeholder="Buscar tema o artista (ej: Spinetta, Coldplay, Taylor Swift...)" 
+            autocomplete="off"
+            oninput="handleSongSearchInput(this.value)" />
+
+          <div class="song-results-list" id="song-results-list"></div>
+        </div>
+
+        <!-- Inputs ocultos para enviar en el formulario -->
+        <input type="hidden" id="input-song-title" required />
+        <input type="hidden" id="input-song-artist" required />
+        <input type="hidden" id="input-song-preview" />
+        <input type="hidden" id="input-song-artwork" />
+
+        <!-- Badge de canción elegida -->
+        <div class="song-selected-badge" id="song-selected-badge">
+          <img class="song-selected-art" id="song-selected-art" src="" alt="Portada" />
+          <div class="song-selected-details">
+            <div class="song-selected-name" id="song-selected-name"></div>
+            <div class="song-selected-singer" id="song-selected-singer"></div>
+          </div>
+          <button type="button" class="song-selected-remove" onclick="removeSelectedSong()">Cambiar</button>
         </div>
       </div>
 
@@ -654,6 +798,95 @@
       reader.readAsDataURL(file);
     }
 
+    /* BÚSQUEDA INTERACTIVA DE CANCIONES (ITUNES MUSIC API) */
+    var songDebounceTimer = null;
+    function handleSongSearchInput(query) {
+      clearTimeout(songDebounceTimer);
+      var listEl = document.getElementById('song-results-list');
+      var q = query.trim();
+
+      if (!q || q.length < 2) {
+        listEl.classList.remove('active');
+        listEl.innerHTML = '';
+        return;
+      }
+
+      songDebounceTimer = setTimeout(function () {
+        var apiUrl = 'https://itunes.apple.com/search?term=' + encodeURIComponent(q) + '&media=music&limit=6';
+        fetch(apiUrl)
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            listEl.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+              data.results.forEach(function (track) {
+                var item = document.createElement('div');
+                item.className = 'song-result-item';
+
+                var artUrl = track.artworkUrl60 || track.artworkUrl100 || '';
+                var trackTitle = track.trackName || 'Sin título';
+                var artistName = track.artistName || 'Artista';
+                var previewUrl = track.previewUrl || '';
+
+                item.innerHTML = 
+                  '<img class="song-result-art" src="' + artUrl + '" alt="Portada" />' +
+                  '<div class="song-result-info">' +
+                    '<div class="song-result-title">' + trackTitle + '</div>' +
+                    '<div class="song-result-artist">' + artistName + '</div>' +
+                  '</div>';
+
+                item.addEventListener('click', function () {
+                  selectSong(trackTitle, artistName, previewUrl, track.artworkUrl100 || artUrl);
+                });
+
+                listEl.appendChild(item);
+              });
+              listEl.classList.add('active');
+            } else {
+              listEl.innerHTML = '<div style="padding: 12px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">No se encontraron canciones</div>';
+              listEl.classList.add('active');
+            }
+          })
+          .catch(function () {
+            listEl.classList.remove('active');
+          });
+      }, 280);
+    }
+
+    // Cerrar lista si hace click afuera
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.song-search-box')) {
+        document.getElementById('song-results-list').classList.remove('active');
+      }
+    });
+
+    function selectSong(title, artist, previewUrl, artworkUrl) {
+      document.getElementById('input-song-title').value = title;
+      document.getElementById('input-song-artist').value = artist;
+      document.getElementById('input-song-preview').value = previewUrl || '';
+      document.getElementById('input-song-artwork').value = artworkUrl || '';
+
+      document.getElementById('song-selected-name').textContent = title;
+      document.getElementById('song-selected-singer').textContent = artist;
+      document.getElementById('song-selected-art').src = artworkUrl || '';
+      document.getElementById('song-selected-badge').classList.add('active');
+
+      document.getElementById('input-song-search').style.display = 'none';
+      document.getElementById('song-results-list').classList.remove('active');
+    }
+
+    function removeSelectedSong() {
+      document.getElementById('input-song-title').value = '';
+      document.getElementById('input-song-artist').value = '';
+      document.getElementById('input-song-preview').value = '';
+      document.getElementById('input-song-artwork').value = '';
+
+      document.getElementById('song-selected-badge').classList.remove('active');
+      var searchInput = document.getElementById('input-song-search');
+      searchInput.style.display = 'block';
+      searchInput.value = '';
+      searchInput.focus();
+    }
+
     var generatedUrl = '';
 
     function handleCreate(e) {
@@ -664,8 +897,10 @@
 
       var recipient = document.getElementById('input-recipient').value.trim();
       var title = document.getElementById('input-title').value.trim();
-      var songTitle = document.getElementById('input-song-title').value.trim();
-      var songArtist = document.getElementById('input-song-artist').value.trim();
+      var songTitle = document.getElementById('input-song-title').value.trim() || document.getElementById('input-song-search').value.trim() || 'Yellow';
+      var songArtist = document.getElementById('input-song-artist').value.trim() || 'Coldplay';
+      var songPreview = document.getElementById('input-song-preview').value.trim();
+      var songArtwork = document.getElementById('input-song-artwork').value.trim();
       var letter = document.getElementById('input-letter').value.trim();
       var closing = document.getElementById('input-closing').value.trim();
 
@@ -695,8 +930,8 @@
         cancion: {
           titulo: songTitle,
           artista: songArtist,
-          audio_url: '',
-          portada: finalPhotos[0]
+          audio_url: songPreview,
+          portada: songArtwork || finalPhotos[0]
         },
         foto_principal: finalPhotos[0],
         fotos: finalPhotos,
