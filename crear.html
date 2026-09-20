@@ -297,129 +297,167 @@
     }
 
     /* UPLOADERS FOTOS */
-    .polaroid-slot {
+    /* UPLOADERS FOTOS: MULTI-UPLOAD Y SELECTOR */
+    .bulk-upload-card {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 8px;
-    }
-
-    .upload-polaroid-main {
-      width: 170px;
-      aspect-ratio: 1 / 1.18;
-      background: #ffffff;
-      border-radius: 6px;
-      box-shadow: 0 8px 22px rgba(45, 30, 20, 0.12);
-      border: 1px solid rgba(0,0,0,0.06);
-      padding: 8px 8px 22px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #faf6ef 100%);
+      border: 2px dashed rgba(197, 155, 88, 0.55);
+      border-radius: 14px;
+      padding: 14px 16px;
       cursor: pointer;
-      position: relative;
-      transition: transform 0.2s, box-shadow 0.2s;
-      overflow: hidden;
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
     }
 
-    .upload-polaroid-main:active {
-      transform: scale(0.97);
+    .bulk-upload-card:hover {
+      background: #ffffff;
+      border-color: var(--accent-gold);
+      box-shadow: 0 6px 18px rgba(197, 155, 88, 0.2);
     }
 
-    .polaroid-main-preview {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #181311;
-      border-radius: 3px;
+    .bulk-upload-inner {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      color: rgba(255, 255, 255, 0.7);
-      text-align: center;
-      padding: 10px;
-      position: relative;
-      overflow: hidden;
+      gap: 12px;
     }
 
-    .polaroid-main-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
+    .bulk-icon {
+      font-size: 1.8rem;
+      flex-shrink: 0;
     }
 
-    .polaroid-main-preview.has-img img {
-      display: block;
+    .bulk-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
-    .polaroid-main-preview.has-img .empty-state {
-      display: none;
+    .bulk-subtitle {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    .polaroid-label {
+    .bulk-badge-status {
       font-size: 0.74rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-top: 6px;
+      font-weight: 700;
+      color: var(--text-brown);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 5px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.08);
+      white-space: nowrap;
     }
 
-    /* GRILLA DE LAS 4 FOTOS DEL PIE */
-    .grid-4-photos {
+    .photos-selector-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
-    .thumb-slot {
-      aspect-ratio: 1 / 1;
-      background: #faf7f2;
-      border: 1.5px dashed rgba(44, 35, 30, 0.25);
-      border-radius: 12px;
+    @media (max-width: 480px) {
+      .photos-selector-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+      }
+    }
+
+    .photo-slot-card {
+      position: relative;
+      aspect-ratio: 1 / 1.28;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 2px solid rgba(0,0,0,0.08);
+      padding: 4px 4px 18px 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
+      transition: all 0.2s ease;
       overflow: hidden;
-      transition: border-color 0.2s, background-color 0.2s;
     }
 
-    .thumb-slot:hover {
-      border-color: var(--text-main);
-      background: #ffffff;
+    .photo-slot-card:hover {
+      border-color: rgba(44, 35, 30, 0.3);
+      transform: translateY(-2px);
     }
 
-    .thumb-slot img {
+    .photo-slot-card.is-main {
+      border-color: #d9383a;
+      box-shadow: 0 0 0 2px rgba(217, 56, 58, 0.3), 0 6px 14px rgba(217, 56, 58, 0.22);
+      transform: translateY(-3px);
+    }
+
+    .photo-slot-card .slot-preview {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 4px;
+      background: #f0e8de;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .photo-slot-card .slot-preview img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: none;
-    }
-
-    .thumb-slot.has-img img {
       display: block;
     }
 
-    .thumb-slot.has-img .thumb-placeholder {
-      display: none;
-    }
-
-    .thumb-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
+    .photo-slot-card .slot-empty-icon {
+      font-size: 1.2rem;
       color: var(--text-muted);
-      font-size: 0.68rem;
-      font-weight: 600;
+      opacity: 0.6;
+      font-weight: 300;
     }
 
-    .thumb-placeholder svg {
-      width: 18px;
-      height: 18px;
-      stroke: currentColor;
+    .photo-slot-card .slot-tag {
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 2px;
+    }
+
+    .photo-slot-card.is-main .slot-tag {
+      color: #d9383a;
+      font-weight: 800;
+    }
+
+    .photo-slot-card .slot-main-badge {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      background: #d9383a;
+      color: #ffffff;
+      font-size: 0.52rem;
+      font-weight: 800;
+      padding: 1px 4px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+      display: none;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    .photo-slot-card.is-main .slot-main-badge {
+      display: block;
     }
 
     /* BOTON CREAR */
@@ -563,11 +601,11 @@
         <input class="field-input" id="input-title" type="text" placeholder="Ej: Hoy es el cumpleaños de mi persona favorita" required />
       </div>
 
-      <!-- 1. FOTO DE LA POLAROID NEGRA -->
+      <!-- FOTOS DE LA CÁPSULA: SUBIDA DE 4 O 5 JUNTAS Y SELECTOR -->
       <div class="field-group">
         <div class="section-title">
           <div class="section-icon">
-            <!-- Icono Polaroid Negro -->
+            <!-- Icono Polaroid -->
             <svg viewBox="0 0 24 24" fill="none">
               <rect x="3" y="3" width="18" height="18" rx="4" fill="#181311"/>
               <circle cx="12" cy="11" r="4.5" fill="#2e2724" stroke="#4a4240" stroke-width="1"/>
@@ -576,81 +614,34 @@
               <line x1="3" y1="17.5" x2="21" y2="17.5" stroke="#3a3230" stroke-width="1.5"/>
             </svg>
           </div>
-          <span>Foto 1: Cámara Polaroid</span>
+          <span>Fotos de la Cápsula (5 en total)</span>
         </div>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">
-          Esta es la foto especial que saldrá físicamente de la cámara y se revelará al agitarla.
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
+          Podés subir <strong>hasta 5 fotos juntas de una sola vez</strong> desde tu galería o computadora, y luego elegir cuál saldrá de la cámara Polaroid.
         </p>
 
-        <div class="polaroid-slot">
-          <label class="upload-polaroid-main" for="file-photo-main">
-            <div class="polaroid-main-preview" id="preview-main">
-              <div class="empty-state">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px; opacity:0.8;">
-                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"></path>
-                  <line x1="16" y1="5" x2="22" y2="5"></line>
-                  <line x1="19" y1="2" x2="19" y2="8"></line>
-                  <circle cx="9" cy="9" r="2"></circle>
-                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
-                </svg>
-                <div style="font-size: 0.74rem; font-weight: 600;">Elegir foto</div>
-              </div>
-              <img id="img-main" alt="Foto Polaroid" />
+        <!-- BOTÓN DE CARGA RÁPIDA MASIVA -->
+        <label class="bulk-upload-card" for="file-bulk-photos">
+          <input type="file" id="file-bulk-photos" accept="image/*" multiple onchange="handleBulkFiles(event)" style="display:none;" />
+          <div class="bulk-upload-inner">
+            <div class="bulk-icon">📸</div>
+            <div class="bulk-text-wrap">
+              <div class="bulk-title">Subir fotos juntas (elegí de 1 a 5)</div>
+              <div class="bulk-subtitle">Tocá aquí para abrir la galería y seleccionar varias a la vez</div>
             </div>
-            <div class="polaroid-label">Foto principal</div>
-          </label>
-          <input type="file" id="file-photo-main" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'preview-main', 'img-main', 0)" required />
-        </div>
-      </div>
+          </div>
+          <div class="bulk-badge-status" id="bulk-status-badge">0 / 5 cargadas</div>
+        </label>
 
-      <!-- 2. LAS 4 FOTOS DEL PIE (MAZO DESORDENADO) -->
-      <div class="field-group">
-        <label class="field-label">Fotos 2 a 5: Mazo interactivo (Pie de página)</label>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">
-          Se agruparán en la pila desordenada estilo Polaroid para hojear y deslizar.
+        <!-- INPUT INDIVIDUAL OCULTO PARA CAMBIAR UNA FOTO PUNTUAL -->
+        <input type="file" id="file-single-slot" accept="image/*" style="display:none;" onchange="handleSingleFileChange(event)" />
+
+        <!-- GRILLA DE LAS 5 FOTOS -->
+        <div class="photos-selector-grid" id="photos-selector-grid"></div>
+
+        <p style="font-size: 0.73rem; color: var(--text-muted); margin-top: 6px; text-align: center;">
+          💡 <strong>Tip:</strong> Hacé clic en cualquier foto para elegir cuál será la <strong>primera (la que sale de la cámara)</strong>.
         </p>
-
-        <div class="grid-4-photos">
-          <!-- Foto 2 -->
-          <label class="thumb-slot" id="thumb-wrap-1" for="file-photo-1">
-            <div class="thumb-placeholder">
-              <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              <span>Foto 2</span>
-            </div>
-            <img id="thumb-img-1" alt="Foto 2" />
-          </label>
-          <input type="file" id="file-photo-1" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'thumb-wrap-1', 'thumb-img-1', 1)" />
-
-          <!-- Foto 3 -->
-          <label class="thumb-slot" id="thumb-wrap-2" for="file-photo-2">
-            <div class="thumb-placeholder">
-              <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              <span>Foto 3</span>
-            </div>
-            <img id="thumb-img-2" alt="Foto 3" />
-          </label>
-          <input type="file" id="file-photo-2" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'thumb-wrap-2', 'thumb-img-2', 2)" />
-
-          <!-- Foto 4 -->
-          <label class="thumb-slot" id="thumb-wrap-3" for="file-photo-3">
-            <div class="thumb-placeholder">
-              <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              <span>Foto 4</span>
-            </div>
-            <img id="thumb-img-3" alt="Foto 4" />
-          </label>
-          <input type="file" id="file-photo-3" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'thumb-wrap-3', 'thumb-img-3', 3)" />
-
-          <!-- Foto 5 -->
-          <label class="thumb-slot" id="thumb-wrap-4" for="file-photo-4">
-            <div class="thumb-placeholder">
-              <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              <span>Foto 5</span>
-            </div>
-            <img id="thumb-img-4" alt="Foto 5" />
-          </label>
-          <input type="file" id="file-photo-4" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'thumb-wrap-4', 'thumb-img-4', 4)" />
-        </div>
       </div>
 
       <!-- 3. CANCIÓN -->
@@ -810,26 +801,106 @@
     var db = firebase.firestore();
 
     /* ═══════════════════════════════════════════════
-       ESTADO DE FOTOS
+       ESTADO DE FOTOS Y SELECTOR DE CÁMARA
     ═══════════════════════════════════════════════ */
     var loadedPhotos = ['', '', '', '', ''];
+    var mainPhotoIndex = 0; // Índice de la foto que saldrá de la Polaroid
+    var targetSlotForSingleUpload = -1;
 
-    /* ═══════════════════════════════════════════════
-       CONTADOR DE CARACTERES
-    ═══════════════════════════════════════════════ */
-    function updateCharCount() {
-      var txt = document.getElementById('input-letter').value;
-      document.getElementById('char-counter').textContent = txt.length + ' / 650 caracteres recomendados';
+    function renderPhotoSlots() {
+      var grid = document.getElementById('photos-selector-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      var count = 0;
+      for (var i = 0; i < 5; i++) {
+        var src = loadedPhotos[i];
+        if (src) count++;
+        var isMain = (i === mainPhotoIndex);
+
+        var card = document.createElement('div');
+        card.className = 'photo-slot-card' + (isMain ? ' is-main' : '');
+        card.setAttribute('data-index', i);
+
+        var previewContent = src
+          ? '<img src="' + src + '" alt="Foto ' + (i + 1) + '" />'
+          : '<div class="slot-empty-icon">➕</div>';
+
+        var tagText = isMain ? '📷 Polaroid' : 'Mazo #' + (i + 1);
+
+        card.innerHTML =
+          '<div class="slot-main-badge">Cámara</div>' +
+          '<div class="slot-preview">' + previewContent + '</div>' +
+          '<div class="slot-tag">' + tagText + '</div>';
+
+        (function(idx) {
+          card.addEventListener('click', function(evt) {
+            if (loadedPhotos[idx]) {
+              // Si ya tiene foto, al hacer clic se elige como la de la cámara
+              mainPhotoIndex = idx;
+              renderPhotoSlots();
+            } else {
+              // Si está vacía, abrir diálogo para cargar foto en este slot
+              targetSlotForSingleUpload = idx;
+              document.getElementById('file-single-slot').click();
+            }
+          });
+        })(i);
+
+        grid.appendChild(card);
+      }
+
+      var statusBadge = document.getElementById('bulk-status-badge');
+      if (statusBadge) {
+        statusBadge.textContent = count + ' / 5 cargadas';
+        if (count > 0) {
+          statusBadge.style.background = '#e8f5e9';
+          statusBadge.style.color = '#2e7d32';
+        } else {
+          statusBadge.style.background = 'rgba(255, 255, 255, 0.9)';
+          statusBadge.style.color = 'var(--text-brown)';
+        }
+      }
     }
 
-    /* ═══════════════════════════════════════════════
-       CARGA Y COMPRESIÓN DE FOTOS
-       (500px max, calidad 0.65 — óptimo para Firestore)
-    ═══════════════════════════════════════════════ */
-    function handleFileSelect(e, wrapId, imgId, photoIndex) {
-      var file = e.target.files[0];
-      if (!file) return;
+    // Carga de hasta 5 fotos juntas en un solo paso
+    function handleBulkFiles(e) {
+      var fileList = e.target.files;
+      if (!fileList || !fileList.length) return;
 
+      var files = Array.from(fileList).slice(0, 5);
+      var statusBadge = document.getElementById('bulk-status-badge');
+      if (statusBadge) statusBadge.textContent = 'Procesando ' + files.length + ' fotos...';
+
+      var completed = 0;
+      files.forEach(function(file, index) {
+        compressImageFile(file, function(base64) {
+          loadedPhotos[index] = base64;
+          completed++;
+          if (completed === files.length) {
+            mainPhotoIndex = 0; // Por defecto la primera es la cámara
+            renderPhotoSlots();
+          }
+        });
+      });
+      e.target.value = ''; // permitir volver a subir
+    }
+
+    // Cargar o reemplazar una foto puntual
+    function handleSingleFileChange(e) {
+      var file = e.target.files[0];
+      if (!file || targetSlotForSingleUpload < 0) return;
+
+      compressImageFile(file, function(base64) {
+        loadedPhotos[targetSlotForSingleUpload] = base64;
+        renderPhotoSlots();
+        targetSlotForSingleUpload = -1;
+      });
+      e.target.value = '';
+    }
+
+    // Compresión ultra rápida en el cliente
+    function compressImageFile(file, callback) {
       var reader = new FileReader();
       reader.onload = function(evt) {
         var img = new Image();
@@ -844,15 +915,25 @@
           canvas.width = w;
           canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          var compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
-          loadedPhotos[photoIndex] = compressedBase64;
-          document.getElementById(imgId).src = compressedBase64;
-          document.getElementById(wrapId).classList.add('has-img');
+          callback(canvas.toDataURL('image/jpeg', 0.65));
         };
         img.src = evt.target.result;
       };
       reader.readAsDataURL(file);
     }
+
+    /* ═══════════════════════════════════════════════
+       CONTADOR DE CARACTERES
+    ═══════════════════════════════════════════════ */
+    function updateCharCount() {
+      var txt = document.getElementById('input-letter').value;
+      document.getElementById('char-counter').textContent = txt.length + ' / 650 caracteres recomendados';
+    }
+
+    // Inicializar visualizador de fotos al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      renderPhotoSlots();
+    });
 
     /* ═══════════════════════════════════════════════
        BÚSQUEDA MUSICAL (iTunes API)
@@ -983,14 +1064,20 @@
         return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
       }).join('');
 
-      // Fotos con fallback demo
+      // Reordenar fotos para que la elegida para la cámara Polaroid esté siempre en el índice 0
       var fallbackList = [
         'paginas/demo/1.jpg','paginas/demo/10.jpg',
         'paginas/demo/11.jpg','paginas/demo/12.jpg','paginas/demo/13.jpg'
       ];
-      var finalPhotos = loadedPhotos.map(function(p, i) {
-        return p || fallbackList[i];
-      });
+      var finalPhotos = [];
+      var chosenMainPhoto = loadedPhotos[mainPhotoIndex] || fallbackList[0];
+      finalPhotos.push(chosenMainPhoto);
+
+      for (var i = 0; i < 5; i++) {
+        if (i !== mainPhotoIndex) {
+          finalPhotos.push(loadedPhotos[i] || fallbackList[i]);
+        }
+      }
 
       var capsuleId = generateUUID();
 
