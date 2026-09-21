@@ -552,83 +552,116 @@
     /* ═══════════════════════════════════════════════════════
        3. SOBRE INTERACTIVO Y CARTA
        ═══════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════
+       3. SOBRE INTERACTIVO ELEGANTE Y CARTA TYPEWRITER
+       ═══════════════════════════════════════════════════════ */
     .envelope-section {
       width: 100%;
       max-width: 360px;
       position: relative;
+      perspective: 800px;
     }
 
     .envelope-card {
-      background-color: var(--envelope-bg);
-      border-radius: 14px;
-      padding: 50px 20px;
-      box-shadow: var(--shadow-card);
+      background: linear-gradient(145deg, #f5e8db 0%, #ecd6c2 100%);
+      border-radius: 12px;
+      padding: 56px 20px 42px;
+      box-shadow: 0 14px 34px rgba(45, 30, 20, 0.12), 0 3px 8px rgba(0, 0, 0, 0.04);
       text-align: center;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
     }
 
-    .envelope-card::before {
-      content: '';
+    .envelope-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 38px rgba(45, 30, 20, 0.16);
+    }
+
+    /* Solapa superior que se abre suavemente */
+    .envelope-flap {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 50%;
-      background-color: var(--envelope-flap);
+      height: 52%;
+      background: linear-gradient(180deg, #ecd4be 0%, #dfc3aa 100%);
       clip-path: polygon(0 0, 100% 0, 50% 100%);
-      opacity: 0.92;
+      transform-origin: top center;
+      transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 3;
+      box-shadow: 0 4px 10px rgba(45, 30, 20, 0.1);
     }
 
-    .envelope-seal {
-      width: 86px;
-      height: 86px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #e63946, #c1121f);
-      box-shadow: 0 6px 18px rgba(193, 18, 31, 0.36);
-      margin: 0 auto;
-      display: flex;
+    .envelope-card.opening .envelope-flap {
+      transform: rotateX(175deg);
+      opacity: 0.2;
+    }
+
+    /* Pliegues frontales del sobre */
+    .envelope-front-fold {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 55%;
+      background: linear-gradient(0deg, #ecd6c2 0%, #f7ebe0 100%);
+      clip-path: polygon(0 100%, 100% 100%, 50% 25%);
+      z-index: 2;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    /* Etiqueta delicada sin lacre */
+    .envelope-tag {
+      position: relative;
+      z-index: 4;
+      display: inline-flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 2;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(197, 155, 88, 0.4);
+      padding: 10px 22px;
+      border-radius: 20px;
+      box-shadow: 0 4px 14px rgba(45, 30, 20, 0.08);
       transition: transform 0.2s ease;
     }
 
-    .envelope-seal:active {
-      transform: scale(0.94);
+    .envelope-card:hover .envelope-tag {
+      transform: scale(1.03);
     }
 
-    .seal-text {
-      color: #ffffff;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .envelope-hint {
-      margin-top: 18px;
-      font-size: 0.88rem;
-      font-weight: 500;
+    .tag-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.96rem;
+      font-weight: 600;
       color: var(--text-brown);
-      position: relative;
-      z-index: 2;
+      letter-spacing: 0.04em;
     }
 
+    .tag-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* CARTA REVELADA */
     .letter-card {
       background-color: var(--paper-bg);
       border-radius: 14px;
-      padding: 34px 26px;
+      padding: 36px 26px 30px;
       box-shadow: var(--shadow-card);
-      text-align: center;
+      text-align: left;
       display: none;
       opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      transform: translateY(22px);
+      transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      cursor: pointer;
+      position: relative;
     }
 
     .letter-card.visible {
@@ -637,150 +670,224 @@
       transform: translateY(0);
     }
 
-    .letter-top-emojis {
-      font-size: 1.35rem;
-      letter-spacing: 0.3em;
-      margin-bottom: 20px;
+    .letter-top-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .letter-feather-icon {
+      font-size: 1.3rem;
+      opacity: 0.75;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
     }
 
     .letter-content {
       font-family: 'Playfair Display', serif;
-      font-size: 1.04rem;
-      line-height: 1.85;
+      font-size: 1.05rem;
+      line-height: 1.9;
       color: var(--text-brown);
-      text-align: left;
+      min-height: 80px;
     }
 
     .letter-content p {
       margin-bottom: 14px;
     }
 
-    .letter-highlight {
-      display: block;
-      font-style: italic;
-      color: var(--accent-red);
-      margin-top: 18px;
-      font-size: 1.08rem;
-      line-height: 1.7;
+    /* Palabras que van apareciendo en typewriter */
+    .tw-word {
+      display: inline-block;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+      will-change: opacity, transform;
     }
 
-    .letter-bottom-emojis {
-      margin-top: 24px;
-      font-size: 1.25rem;
-      letter-spacing: 0.25em;
+    .typewriter-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background-color: var(--text-brown);
+      vertical-align: -0.15em;
+      margin-left: 2px;
+      animation: twBlink 0.7s infinite;
+    }
+
+    @keyframes twBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .letter-skip-hint {
       text-align: center;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 18px;
+      opacity: 0.7;
+      letter-spacing: 0.02em;
+      transition: opacity 0.3s ease;
     }
 
     /* ═══════════════════════════════════════════════════════
-       4. PILA DESORDENADA DE POLAROIDS INTERACTIVAS (SCATTER STACK)
+       4. TENDEDERO DE POLAROIDS CON BROCHES DE MADERA
        ═══════════════════════════════════════════════════════ */
-    .stack-section {
+    .garland-section {
       width: 100%;
+      max-width: 440px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       position: relative;
+      margin-top: 14px;
     }
 
-    .stack-header-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.45rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 6px;
-    }
-
-    .stack-subtitle {
-      font-size: 0.84rem;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-
-    /* CONTENEDOR DE LA PILA */
-    .polaroid-stack-box {
+    .garland-wrap {
+      width: 100%;
       position: relative;
-      width: 250px;
-      height: 310px;
-      margin: 10px auto 26px;
-      perspective: 1000px;
+      padding: 16px 0 24px;
+      overflow: visible;
     }
 
-    /* TARJETA INDIVIDUAL DE LA PILA */
-    .stack-card {
+    /* Cuerda rústica tensada */
+    .garland-rope {
       position: absolute;
-      inset: 0;
+      top: 32px;
+      left: -10px;
+      right: -10px;
+      height: 4px;
+      background: repeating-linear-gradient(
+        45deg,
+        #b28658,
+        #b28658 5px,
+        #8a623c 5px,
+        #8a623c 10px
+      );
+      box-shadow: 0 3px 6px rgba(45, 30, 20, 0.22);
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+    /* Pista deslizante horizontal */
+    .garland-track {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+      padding: 12px 16px 22px;
+      scrollbar-width: none;
+      position: relative;
+      z-index: 2;
+    }
+    .garland-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Polaroid colgada */
+    .garland-item {
+      flex: 0 0 200px;
+      scroll-snap-align: center;
+      position: relative;
+      padding-top: 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.25s ease;
+    }
+    .garland-item:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Broche de madera realista */
+    .wooden-clothespin {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 13px;
+      height: 32px;
+      background: linear-gradient(90deg, #b88d55 0%, #dbb67e 45%, #9e7540 100%);
+      border-radius: 2px 2px 3px 3px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+      z-index: 10;
+    }
+    .wooden-clothespin::before {
+      content: '';
+      position: absolute;
+      top: 11px;
+      left: -1px;
+      right: -1px;
+      height: 4px;
+      background: #6e6e6e;
+      border-radius: 1px;
+      box-shadow: inset 0 1px 1px #383838, 0 1px 2px rgba(0,0,0,0.35);
+    }
+    .wooden-clothespin::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 4px;
+      right: 4px;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 1px;
+    }
+
+    .garland-polaroid {
       background: #ffffff;
-      padding: 10px 10px 34px 10px;
-      border-radius: 4px;
-      box-shadow: var(--shadow-polaroid);
+      padding: 10px 10px 24px 10px;
+      border-radius: 3px;
+      box-shadow: 0 10px 26px rgba(45, 30, 20, 0.16);
+      border: 1px solid rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
       align-items: center;
-      cursor: grab;
-      touch-action: none;
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, opacity 0.3s ease;
-      user-select: none;
     }
 
-    .stack-card:active {
-      cursor: grabbing;
-    }
-
-    .stack-card.swiping {
-      transition: none !important;
-      box-shadow: 0 20px 50px rgba(45, 30, 20, 0.26);
-    }
-
-    .stack-canvas-wrap {
+    .garland-canvas-wrap {
       width: 100%;
       aspect-ratio: 1 / 1;
-      background-color: #0e0b09;
+      background: #14100e;
       border-radius: 2px;
       overflow: hidden;
       position: relative;
     }
 
-    .stack-canvas {
+    .garland-canvas {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    .stack-imprint {
+    .garland-imprint {
       margin-top: 8px;
       font-family: 'Playfair Display', serif;
       font-style: italic;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       color: #55483f;
       text-align: center;
       opacity: 0.85;
     }
 
-    .stack-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.82rem;
+    /* BANNER FLOTANTE DE VISTA PREVIA */
+    .preview-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 99999;
+      background: rgba(44, 35, 30, 0.94);
+      color: #fdf8f0;
+      font-size: 0.76rem;
       font-weight: 600;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(6px);
-      padding: 6px 16px;
-      border-radius: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .stack-next-btn {
-      background: none;
-      border: none;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--accent-red);
-      cursor: pointer;
+      text-align: center;
+      padding: 9px 16px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
       display: flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 8px;
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -881,9 +988,50 @@
         opacity: 0;
       }
     }
+    /* BANNER DE VISTA PREVIA */
+    .preview-banner {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(90deg, #b88746, #c59b58);
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 9999;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .preview-banner span {
+      line-height: 1.3;
+    }
+    .preview-banner-btn {
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      color: #fff;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .preview-banner-btn:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
   </style>
 </head>
 <body>
+
+  <!-- BANNER DE PREVISUALIZACIÓN MODO BORRADOR -->
+  <div class="preview-banner" id="preview-banner" style="display: none;">
+    <span>👀 <strong>Modo Vista Previa:</strong> Así verá la persona tu cápsula.</span>
+    <button class="preview-banner-btn" onclick="window.close()">Volver a editar</button>
+  </div>
 
   <!-- CONTENEDOR DE PÉTALOS -->
   <div class="petals-container" id="petals-container"></div>
@@ -974,34 +1122,36 @@
       </div>
     </section>
 
-    <!-- 3. SOBRE INTERACTIVO Y CARTA -->
+    <!-- 3. SOBRE INTERACTIVO ELEGANTE Y CARTA -->
     <section class="envelope-section">
       <div class="envelope-card" id="envelope-card" onclick="openEnvelope()">
-        <div class="envelope-seal">
-          <span class="seal-text">Descúbrelo</span>
+        <div class="envelope-flap" id="envelope-flap"></div>
+        <div class="envelope-front-fold"></div>
+        <div class="envelope-tag">
+          <span class="tag-title">Para ti</span>
+          <span class="tag-hint">Tocá para abrir</span>
         </div>
-        <div class="envelope-hint">Hay algo dentro para ti</div>
       </div>
 
-      <div class="letter-card" id="letter-card">
-        <div class="letter-top-emojis">🎈🎂🎈</div>
+      <div class="letter-card" id="letter-card" onclick="handleLetterCardClick()">
+        <div class="letter-top-header">
+          <div class="letter-feather-icon">🕊️</div>
+        </div>
         <div class="letter-content" id="letter-content"></div>
-        <div class="letter-bottom-emojis">🥂🥂</div>
+        <div class="letter-skip-hint" id="letter-skip-hint">Tocá para mostrar todo el texto</div>
       </div>
     </section>
 
-    <!-- 4. PILA DESORDENADA DE POLAROIDS INTERACTIVAS -->
-    <section class="stack-section">
+    <!-- 4. TENDEDERO DE POLAROIDS CON BROCHES DE MADERA -->
+    <section class="garland-section">
       <h2 class="stack-header-title">Galería de Recuerdos</h2>
-      <div class="stack-subtitle">Agitá la foto para revelarla · Deslizá para pasar a la siguiente</div>
+      <div class="stack-subtitle">Deslizá hacia el costado para recorrer las fotos colgadas</div>
 
-      <div class="polaroid-stack-box" id="polaroid-stack-box">
-        <!-- Tarjetas dinámicas inyectadas por JS -->
-      </div>
-
-      <div class="stack-controls">
-        <span id="stack-counter">Foto 1 de 5</span>
-        <button class="stack-next-btn" id="stack-next-btn" onclick="cycleStackNext()">Siguiente &rarr;</button>
+      <div class="garland-wrap">
+        <div class="garland-rope"></div>
+        <div class="garland-track" id="garland-track">
+          <!-- Las fotos colgadas con broches de madera se inyectan acá -->
+        </div>
       </div>
     </section>
 
@@ -1338,6 +1488,10 @@
 
       shutterBtn.classList.add('pc-pressed');
 
+      // INICIAR LLUVIA DE PÉTALOS EXCLUSIVAMENTE AL DISPARAR LA CÁMARA
+      startContinuousPetals();
+      triggerPetalsShower();
+
       // SONIDO DE FLASH ELECTRÓNICO REALISTA
       playCameraFlashSound();
 
@@ -1415,8 +1569,10 @@
       if (mag > 1.8) {
         var intens = Math.min(3.6, (mag - 1.8) * bonus * 0.45);
         if (pcState.isEjected && !pcState.isDeveloped) pcState.instantIntensity = intens;
-        // También aplica a la tarjeta activa del mazo
-        if (activeStackCard && !activeStackCard.isDeveloped) activeStackCard.instantIntensity = intens;
+        // También acelera el revelado en las fotos del tendedero
+        garlandCards.forEach(function (c) {
+          if (!c.isDeveloped) c.instantIntensity = intens;
+        });
       }
     }
 
@@ -1618,41 +1774,55 @@
     });
 
     /* ═══════════════════════════════════════════════════════
-       3. PILA DESORDENADA DE POLAROIDS (INTERACTIVE SCATTER STACK)
+       4. TENDEDERO DE POLAROIDS CON BROCHES DE MADERA
        ═══════════════════════════════════════════════════════ */
-    var stackCards = [];
-    var activeStackIndex = 0;
-    var activeStackCard = null;
-    var STACK_ANGLES = [-4.5, 3.8, -2.5, 4.2, -1.2];
+    var garlandCards = [];
+    var GARLAND_ANGLES = [-2.5, 3.0, -1.8, 2.4, -2.0];
 
-    function buildPolaroidStack(photos) {
-      var box = document.getElementById('polaroid-stack-box');
-      box.innerHTML = '';
-      stackCards = [];
+    function buildGarlandSlider(photos) {
+      var track = document.getElementById('garland-track');
+      if (!track) return;
+      track.innerHTML = '';
+      garlandCards = [];
 
-      var list = photos && photos.length ? photos.slice(0, 5) : [
-        'paginas/demo/1.jpg', 'paginas/demo/10.jpg', 'paginas/demo/11.jpg', 'paginas/demo/12.jpg', 'paginas/demo/13.jpg'
-      ];
+      // Si vienen 5 fotos, la foto 0 es la de la cámara; las restantes van al tendedero
+      var list = photos && photos.length > 1 ? photos.slice(1) : (photos || []);
+      if (!list.length) {
+        list = [
+          'paginas/demo/10.jpg', 'paginas/demo/11.jpg', 'paginas/demo/12.jpg', 'paginas/demo/13.jpg'
+        ];
+      }
 
       list.forEach(function (url, idx) {
-        var card = document.createElement('div');
-        card.className = 'stack-card';
-        card.setAttribute('data-idx', idx);
+        var rot = GARLAND_ANGLES[idx % GARLAND_ANGLES.length];
+
+        var item = document.createElement('div');
+        item.className = 'garland-item';
+        item.style.transform = 'rotate(' + rot + 'deg)';
+        item.setAttribute('data-idx', idx);
+
+        var clothespin = document.createElement('div');
+        clothespin.className = 'wooden-clothespin';
+        item.appendChild(clothespin);
+
+        var polaroid = document.createElement('div');
+        polaroid.className = 'garland-polaroid';
 
         var wrap = document.createElement('div');
-        wrap.className = 'stack-canvas-wrap';
+        wrap.className = 'garland-canvas-wrap';
 
         var cv = document.createElement('canvas');
-        cv.className = 'stack-canvas';
+        cv.className = 'garland-canvas';
         wrap.appendChild(cv);
-        card.appendChild(wrap);
+        polaroid.appendChild(wrap);
 
         var impr = document.createElement('div');
-        impr.className = 'stack-imprint';
+        impr.className = 'garland-imprint';
         impr.textContent = todayFormatted;
-        card.appendChild(impr);
+        polaroid.appendChild(impr);
 
-        box.appendChild(card);
+        item.appendChild(polaroid);
+        track.appendChild(item);
 
         var offscreen = document.createElement('canvas');
         var maskCv = document.createElement('canvas');
@@ -1660,7 +1830,7 @@
         var maskC = maskCv.getContext('2d');
 
         var cardObj = {
-          el: card,
+          el: item,
           canvas: cv,
           offscreen: offscreen,
           maskCanvas: maskCv,
@@ -1670,7 +1840,7 @@
           energy: 0,
           instantIntensity: 0,
           isDeveloped: false,
-          baseAngle: STACK_ANGLES[idx % STACK_ANGLES.length]
+          baseAngle: rot
         };
 
         // Cargar imagen
@@ -1678,25 +1848,30 @@
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           cardObj.sourceImg = img;
-          resizeStackCardBuffer(cardObj);
+          resizeGarlandCardBuffer(cardObj);
+          cardObj.energy = 1.0;
         };
         img.onerror = function () {
           var fC = document.createElement('canvas'); fC.width = 500; fC.height = 500;
           var fCtx = fC.getContext('2d');
           fCtx.fillStyle = '#eddccb'; fCtx.fillRect(0, 0, 500, 500);
           cardObj.sourceImg = fC;
-          resizeStackCardBuffer(cardObj);
+          resizeGarlandCardBuffer(cardObj);
+          cardObj.energy = 1.0;
         };
         img.src = url;
 
-        setupStackCardGesture(cardObj, idx);
-        stackCards.push(cardObj);
-      });
+        // Al tocar la foto en el tendedero, acelera el revelado si no terminó (sin saltos de scroll)
+        item.addEventListener('click', function () {
+          cardObj.energy = 1.0;
+          cardObj.instantIntensity = 3.5;
+        });
 
-      updateStackLayout();
+        garlandCards.push(cardObj);
+      });
     }
 
-    function resizeStackCardBuffer(cObj) {
+    function resizeGarlandCardBuffer(cObj) {
       var rect = cObj.canvas.getBoundingClientRect();
       var dpr = window.devicePixelRatio || 1;
       var w = Math.round(rect.width * dpr);
@@ -1707,113 +1882,6 @@
         if (cObj.sourceImg) drawCoverToCanvas(cObj.sourceImg, cObj.offscreen);
         renderChemicalCanvas(cObj.canvas, cObj.offscreen, cObj.progress, cObj.maskCanvas, cObj.maskCtx);
       }
-    }
-
-    function updateStackLayout() {
-      var total = stackCards.length;
-      stackCards.forEach(function (c, i) {
-        var pos = (i - activeStackIndex + total) % total;
-        c.el.style.zIndex = total - pos;
-
-        if (pos === 0) {
-          activeStackCard = c;
-          c.el.style.transform = 'translate3d(0, 0, 0) rotate(' + c.baseAngle + 'deg)';
-          c.el.style.opacity = '1';
-          c.el.style.pointerEvents = 'all';
-        } else {
-          var yOffset = pos * 7;
-          var xOffset = (pos % 2 === 0 ? 1 : -1) * pos * 5;
-          var rot = c.baseAngle + (pos % 2 === 0 ? 2 : -2);
-          c.el.style.transform = 'translate3d(' + xOffset + 'px, ' + yOffset + 'px, 0) rotate(' + rot + 'deg) scale(' + (1 - pos * 0.04) + ')';
-          c.el.style.opacity = String(Math.max(0.6, 1 - pos * 0.12));
-          c.el.style.pointerEvents = 'none';
-        }
-      });
-
-      document.getElementById('stack-counter').textContent = 'Foto ' + (activeStackIndex + 1) + ' de ' + total;
-    }
-
-    function cycleStackNext() {
-      if (!stackCards.length) return;
-      var topCard = stackCards[activeStackIndex];
-      topCard.el.style.transition = 'transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease';
-      topCard.el.style.transform = 'translate3d(140%, -20px, 0) rotate(18deg) scale(0.9)';
-      topCard.el.style.opacity = '0';
-
-      setTimeout(function () {
-        activeStackIndex = (activeStackIndex + 1) % stackCards.length;
-        updateStackLayout();
-        setTimeout(function () {
-          topCard.el.style.transition = '';
-        }, 50);
-      }, 250);
-    }
-
-    function setupStackCardGesture(cObj, index) {
-      var el = cObj.el;
-      var isDown = false, sX = 0, sY = 0, lastX = 0, lastT = 0, lastSign = 0, lastRevT = 0;
-      var movedFar = false;
-
-      el.addEventListener('pointerdown', function (e) {
-        if (index !== activeStackIndex) return;
-        requestMotionPerm();
-
-        isDown = true;
-        sX = lastX = e.clientX; sY = e.clientY;
-        lastT = performance.now();
-        movedFar = false;
-        el.setPointerCapture(e.pointerId);
-        el.classList.add('swiping');
-      });
-
-      el.addEventListener('pointermove', function (e) {
-        if (!isDown || index !== activeStackIndex) return;
-        var now = performance.now();
-        var dt = (now - lastT) || 16;
-        var dx = e.clientX - lastX;
-        var totalDx = e.clientX - sX;
-        var totalDy = e.clientY - sY;
-        lastX = e.clientX; lastT = now;
-
-        if (Math.abs(totalDx) > 8 || Math.abs(totalDy) > 8) movedFar = true;
-
-        var dist = Math.abs(dx);
-        var speed = dist / (dt / 16.66);
-
-        var curSign = dx > 0 ? 1 : (dx < 0 ? -1 : 0);
-        var bonus = 1.0;
-        if (curSign !== 0 && lastSign !== 0 && curSign !== lastSign) {
-          if (now - lastRevT < 420) bonus = 1.7;
-          lastRevT = now;
-        }
-        if (curSign !== 0) lastSign = curSign;
-
-        // Revelado al agitar/arrastrar
-        if (speed > 1.2 && !cObj.isDeveloped) {
-          cObj.instantIntensity = Math.min(3.8, (speed - 1.2) * 0.18 * bonus);
-        }
-
-        var rot = cObj.baseAngle + totalDx * 0.08;
-        el.style.transform = 'translate3d(' + totalDx + 'px, ' + (totalDy * 0.4) + 'px, 0) rotate(' + rot + 'deg)';
-      });
-
-      function endStackDrag(e) {
-        if (!isDown) return;
-        isDown = false;
-        el.classList.remove('swiping');
-
-        var totalDx = e.clientX - sX;
-        // Si fue un swipe decidido hacia un lado o un tap simple, pasa a la siguiente
-        if (Math.abs(totalDx) > 80 || !movedFar) {
-          cycleStackNext();
-        } else {
-          // Vuelve a su posición en la pila
-          el.style.transform = 'translate3d(0, 0, 0) rotate(' + cObj.baseAngle + 'deg)';
-        }
-      }
-
-      el.addEventListener('pointerup', endStackDrag);
-      el.addEventListener('pointercancel', endStackDrag);
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -1850,8 +1918,8 @@
         }
       }
 
-      // 2. Revelado de las fotos de la pila activa
-      stackCards.forEach(function (c) {
+      // 2. Revelado de las fotos del tendedero
+      garlandCards.forEach(function (c) {
         if (!c.isDeveloped && c.instantIntensity > 0.01) {
           c.energy += c.instantIntensity * dt * RATE_FACTOR;
           c.instantIntensity *= Math.pow(0.15, dt);
@@ -1876,8 +1944,7 @@
        CARGA DE DATOS & INICIALIZACIÓN
     ============================================================ */
     window.addEventListener('DOMContentLoaded', function () {
-      // Iniciar lluvia sutil y permanente de pétalos
-      startContinuousPetals();
+      // NOTA: La lluvia de pétalos se inicia únicamente al presionar el disparador de la cámara (triggerShutter)
 
       // Impronta de fecha dinámica en la foto principal
       document.getElementById('pc-imprint').textContent = todayFormatted;
@@ -1885,7 +1952,7 @@
       resizePcCanvasBuffer();
       window.addEventListener('resize', function () {
         resizePcCanvasBuffer();
-        stackCards.forEach(resizeStackCardBuffer);
+        garlandCards.forEach(resizeGarlandCardBuffer);
       });
 
       document.getElementById('pc-shutter').addEventListener('click', triggerShutter);
@@ -1893,8 +1960,26 @@
       renderChemicalCanvas(pcCanvas, pcOffscreen, 0, pcMaskCanvas, pcMaskCtx);
 
       var urlParams = new URLSearchParams(window.location.search);
-      var clientId = urlParams.get('id') || 'demo';
       var photoParam = urlParams.get('photo');
+
+      // ── Modo Previsualización Borrador (sin guardar en Firestore) ────────
+      if (urlParams.get('preview') === 'draft') {
+        var draftJson = sessionStorage.getItem('capsula_preview_draft');
+        if (draftJson) {
+          try {
+            var draftData = JSON.parse(draftJson);
+            var banner = document.getElementById('preview-banner');
+            if (banner) banner.style.display = 'flex';
+            populateData(draftData, photoParam);
+            requestAnimationFrame(globalAnimationLoop);
+            return;
+          } catch (e) {
+            console.warn('Error al cargar borrador desde sessionStorage:', e);
+          }
+        }
+      }
+
+      var clientId = urlParams.get('id') || 'demo';
 
       // ── Firebase init ──────────────────────────────────────────────
       var firebaseConfig = {
@@ -1918,12 +2003,12 @@
           .catch(function () {
             populateData({
               nombre: 'Cris',
-              titulo: 'Hoy es el cumpleaños\nde mi persona favorita',
-              fecha: '18 de junio',
+              titulo: 'Para mi persona favorita en el mundo',
+              fecha: todayFormatted,
               cancion: { titulo: 'Yellow', artista: 'Coldplay', audio_url: 'paginas/demo/musica.mp3', portada: 'paginas/demo/1.jpg' },
               fotos: ['paginas/demo/1.jpg','paginas/demo/10.jpg','paginas/demo/11.jpg','paginas/demo/12.jpg','paginas/demo/13.jpg'],
-              carta: "<p>Hay personas que llegan y lo cambian todo.</p><p>Pienso que ni el destino escribiendo la mejor de las historias habría creado a alguien tan especial como tú.</p><p>Hoy celebro tu risa, tu luz y tu forma de hacerme sentir en casa.</p><span class='letter-highlight'>Cada año tuyo es un capítulo nuevo, y pienso estar en todos y cada uno de ellos.</span>",
-              frase_cierre: 'Por muchos cumpleaños más juntos'
+              carta: "<p>Hay personas que llegan y lo cambian todo.</p><p>Pienso que ni el destino escribiendo la mejor de las historias habría creado a alguien tan especial como tú.</p><p>Hoy celebro tu risa, tu luz y tu forma de hacerme sentir en casa.</p><p>Cada recuerdo contigo es un tesoro, y pienso estar en todos y cada uno de los momentos que vendrán.</p>",
+              frase_cierre: 'Por muchos momentos más juntos 💛'
             }, photoParam);
           });
       }
@@ -2014,24 +2099,169 @@
           });
       }
 
-      // Carta
-      document.getElementById('letter-content').innerHTML = data.carta || '';
-      document.getElementById('closing-phrase').textContent = data.frase_cierre || 'Por muchos momentos más juntos 💛';
+      // Preparar carta con animación de máquina de escribir
+      prepareTypewriterLetter(data.carta || '');
+      var closingPhrase = document.getElementById('closing-phrase');
+      if (closingPhrase) {
+        closingPhrase.textContent = data.frase_cierre || 'Por muchos momentos más juntos 💛';
+        closingPhrase.style.opacity = '0';
+        closingPhrase.style.transition = 'opacity 0.8s ease';
+      }
 
-      // Mazo desordenado de fotos
-      buildPolaroidStack(data.fotos || []);
+      // Tendedero de fotos con broches de madera
+      buildGarlandSlider(data.fotos || []);
     }
 
-    /* SOBRE Y CARTA */
+    /* ═══════════════════════════════════════════════════════
+       SOBRE SIN LACRE Y CARTA TYPEWRITER
+       ═══════════════════════════════════════════════════════ */
+    var typewriterTimer = null;
+    var typewriterWords = [];
+    var typewriterIndex = 0;
+    var isTypewriterRunning = false;
+
     function openEnvelope() {
       var card = document.getElementById('envelope-card');
       var letter = document.getElementById('letter-card');
-      card.style.transform = 'scale(0.96)';
-      card.style.opacity = '0';
+      if (!card || !letter) return;
+
+      // Apertura lenta y elegante de solapa 3D
+      card.classList.add('opening');
+
       setTimeout(function () {
-        card.style.display = 'none';
-        letter.classList.add('visible');
-      }, 350);
+        card.style.transform = 'scale(0.95)';
+        card.style.opacity = '0';
+        setTimeout(function () {
+          card.style.display = 'none';
+          letter.classList.add('visible');
+          startLetterTypewriter();
+        }, 320);
+      }, 700);
+    }
+
+    function prepareTypewriterLetter(rawHtml) {
+      var container = document.getElementById('letter-content');
+      if (!container) return;
+      container.innerHTML = '';
+      typewriterWords = [];
+      typewriterIndex = 0;
+      isTypewriterRunning = false;
+
+      var tempDiv = document.createElement('div');
+      tempDiv.innerHTML = rawHtml || '<p>Hay momentos que merecen guardarse para siempre...</p>';
+
+      var paragraphs = tempDiv.querySelectorAll('p');
+      if (!paragraphs.length) {
+        var p = document.createElement('p');
+        p.innerHTML = tempDiv.innerHTML;
+        paragraphs = [p];
+      }
+
+      paragraphs.forEach(function (pElem) {
+        var newP = document.createElement('p');
+        var childNodes = Array.from(pElem.childNodes);
+
+        childNodes.forEach(function (node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            var words = node.textContent.split(/(\s+)/);
+            words.forEach(function (w) {
+              if (!w) return;
+              if (/^\s+$/.test(w)) {
+                newP.appendChild(document.createTextNode(w));
+              } else {
+                var span = document.createElement('span');
+                span.className = 'tw-word';
+                span.style.opacity = '0';
+                span.style.transform = 'translateY(4px)';
+                span.textContent = w;
+                newP.appendChild(span);
+                typewriterWords.push(span);
+              }
+            });
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.tagName.toLowerCase() === 'br') {
+              newP.appendChild(document.createElement('br'));
+            } else {
+              var words = node.textContent.split(/(\s+)/);
+              words.forEach(function (w) {
+                if (!w) return;
+                if (/^\s+$/.test(w)) {
+                  newP.appendChild(document.createTextNode(w));
+                } else {
+                  var span = document.createElement('span');
+                  span.className = 'tw-word ' + (node.className || '');
+                  span.style.opacity = '0';
+                  span.style.transform = 'translateY(4px)';
+                  span.textContent = w;
+                  newP.appendChild(span);
+                  typewriterWords.push(span);
+                }
+              });
+            }
+          }
+        });
+
+        container.appendChild(newP);
+      });
+
+      var cursor = document.createElement('span');
+      cursor.className = 'typewriter-cursor';
+      cursor.id = 'tw-cursor';
+      container.appendChild(cursor);
+    }
+
+    function startLetterTypewriter() {
+      if (!typewriterWords.length) {
+        finishTypewriter();
+        return;
+      }
+      isTypewriterRunning = true;
+      typewriterIndex = 0;
+
+      var cursor = document.getElementById('tw-cursor');
+      var skipHint = document.getElementById('letter-skip-hint');
+      if (skipHint) skipHint.style.opacity = '0.7';
+
+      function typeNext() {
+        if (typewriterIndex < typewriterWords.length) {
+          var wordSpan = typewriterWords[typewriterIndex];
+          wordSpan.style.opacity = '1';
+          wordSpan.style.transform = 'translateY(0)';
+          if (cursor && wordSpan.parentNode) {
+            wordSpan.parentNode.appendChild(cursor);
+          }
+          typewriterIndex++;
+          typewriterTimer = setTimeout(typeNext, 55);
+        } else {
+          finishTypewriter();
+        }
+      }
+
+      typeNext();
+    }
+
+    function finishTypewriter() {
+      clearTimeout(typewriterTimer);
+      isTypewriterRunning = false;
+      typewriterWords.forEach(function (span) {
+        span.style.opacity = '1';
+        span.style.transform = 'translateY(0)';
+      });
+
+      var cursor = document.getElementById('tw-cursor');
+      if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
+
+      var skipHint = document.getElementById('letter-skip-hint');
+      if (skipHint) skipHint.style.opacity = '0';
+
+      var closingPhrase = document.getElementById('closing-phrase');
+      if (closingPhrase) closingPhrase.style.opacity = '1';
+    }
+
+    function handleLetterCardClick() {
+      if (isTypewriterRunning) {
+        finishTypewriter();
+      }
     }
 
     /* COMPARTIR */

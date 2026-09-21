@@ -460,6 +460,42 @@
       display: block;
     }
 
+    /* GRUPO DE ACCIONES */
+    .creator-actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn-preview {
+      width: 100%;
+      background: #fdfbf7;
+      color: var(--text-brown);
+      border: 1.5px solid rgba(197, 155, 88, 0.5);
+      border-radius: 14px;
+      padding: 15px 20px;
+      font-family: inherit;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(45, 30, 20, 0.05);
+    }
+
+    .btn-preview:hover {
+      background: #f3ede2;
+      transform: translateY(-1px);
+    }
+
+    .btn-preview:active {
+      transform: scale(0.98);
+    }
+
     /* BOTON CREAR */
     .btn-create {
       width: 100%;
@@ -479,7 +515,6 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-top: 10px;
     }
 
     .btn-create:active {
@@ -733,14 +768,24 @@
         <input class="field-input" id="input-closing" type="text" placeholder="Ej: Por muchos momentos más juntos 💛" />
       </div>
 
-      <!-- BOTON GENERAR -->
-      <button class="btn-create" type="submit" id="btn-submit">
-        <span>Generar Enlace Personalizado</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </button>
+      <!-- ACCIONES: PREVISUALIZAR Y CONFIRMAR -->
+      <div class="creator-actions-group">
+        <button class="btn-preview" type="button" id="btn-preview" onclick="handlePreviewDraft(event)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span>👁️ Previsualizar cómo queda</span>
+        </button>
+
+        <button class="btn-create" type="submit" id="btn-submit">
+          <span>🚀 Confirmar y Generar Enlace Definitivo</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
 
     </form>
   </main>
@@ -826,7 +871,7 @@
           ? '<img src="' + src + '" alt="Foto ' + (i + 1) + '" />'
           : '<div class="slot-empty-icon">➕</div>';
 
-        var tagText = isMain ? '📷 Polaroid' : 'Mazo #' + (i + 1);
+        var tagText = isMain ? '📷 Polaroid' : 'Tendedero #' + (i + 1);
 
         card.innerHTML =
           '<div class="slot-main-badge">Cámara</div>' +
@@ -1036,15 +1081,9 @@
     }
 
     /* ═══════════════════════════════════════════════
-       CREAR CÁPSULA → FIRESTORE
+       EXTRACCIÓN Y PREPARACIÓN DE DATOS DEL FORMULARIO
     ═══════════════════════════════════════════════ */
-    var generatedUrl = '';
-
-    function handleCreate(e) {
-      e.preventDefault();
-      var btn = document.getElementById('btn-submit');
-      btn.disabled = true;
-
+    function extractClientFormData() {
       var recipient = document.getElementById('input-recipient').value.trim();
       var title     = document.getElementById('input-title').value.trim();
       var songTitle  = document.getElementById('input-song-title').value.trim()
@@ -1060,9 +1099,9 @@
       var closing = document.getElementById('input-closing').value.trim();
 
       // Convertir carta a HTML
-      var letterHtml = letter.split('\n\n').map(function(p) {
+      var letterHtml = letter ? letter.split('\n\n').map(function(p) {
         return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
-      }).join('');
+      }).join('') : '<p>Hay personas que llegan y lo cambian todo...</p>';
 
       // Reordenar fotos para que la elegida para la cámara Polaroid esté siempre en el índice 0
       var fallbackList = [
@@ -1079,11 +1118,9 @@
         }
       }
 
-      var capsuleId = generateUUID();
-
-      var clientData = {
-        nombre: recipient,
-        titulo: title,
+      return {
+        nombre: recipient || 'Cris',
+        titulo: title || 'Para mi persona favorita en el mundo',
         cancion: {
           titulo: songTitle,
           artista: songArtist,
@@ -1096,6 +1133,35 @@
         frase_cierre: closing || 'Por muchos momentos más juntos 💛',
         creado_en: new Date().toISOString()
       };
+    }
+
+    /* ═══════════════════════════════════════════════
+       PREVISUALIZAR BORRADOR EN TIEMPO REAL
+    ═══════════════════════════════════════════════ */
+    function handlePreviewDraft(e) {
+      if (e) e.preventDefault();
+      var clientData = extractClientFormData();
+      try {
+        sessionStorage.setItem('capsula_preview_draft', JSON.stringify(clientData));
+        window.open('/?preview=draft', '_blank');
+      } catch (err) {
+        console.warn('Advertencia en almacenamiento local para vista previa:', err);
+        window.open('/?preview=draft', '_blank');
+      }
+    }
+
+    /* ═══════════════════════════════════════════════
+       CREAR CÁPSULA DEFINITIVA → FIRESTORE
+    ═══════════════════════════════════════════════ */
+    var generatedUrl = '';
+
+    function handleCreate(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+
+      var clientData = extractClientFormData();
+      var capsuleId = generateUUID();
 
       // Mostrar overlay de progreso
       document.getElementById('modal-uploading').classList.add('active');
