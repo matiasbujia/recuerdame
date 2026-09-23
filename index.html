@@ -891,7 +891,173 @@
     }
 
     /* ═══════════════════════════════════════════════════════
-       5. CIERRE DE PÁGINA
+       5. CUADRO MAGNÉTICO FÍSICO DE RECUERDAME
+       ═══════════════════════════════════════════════════════ */
+    .magnetic-frame-section {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 36px auto 14px;
+      position: relative;
+    }
+
+    .physical-frame-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* EL CUADRO FÍSICO (Marco negro, paspartú blanco, fondo magnético) */
+    .physical-frame {
+      width: min(330px, 86vw);
+      aspect-ratio: 3 / 4;
+      background: #141312;
+      border-radius: 4px;
+      padding: 13px;
+      box-shadow: 
+        0 22px 50px rgba(25, 18, 14, 0.24),
+        0 6px 16px rgba(0, 0, 0, 0.12),
+        inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      border: 1px solid #242220;
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Bisel interior del marco de madera negra */
+    .frame-wood-outer {
+      width: 100%;
+      height: 100%;
+      background: #11100f;
+      padding: 2px;
+      border-radius: 2px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.65);
+    }
+
+    /* Paspartú blanco texturado */
+    .frame-mat-board {
+      width: 100%;
+      height: 100%;
+      background: #fbf9f5;
+      padding: 22px 18px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
+      display: flex;
+    }
+
+    /* Superficie metálica magnética central */
+    .frame-magnetic-canvas {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(165deg, #f2eee7 0%, #e5dfd6 100%);
+      border-radius: 1px;
+      box-shadow: 
+        inset 2px 2px 5px rgba(0, 0, 0, 0.2),
+        inset -1px -1px 3px rgba(255, 255, 255, 0.7);
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+      transition: box-shadow 0.25s ease;
+    }
+
+    .frame-magnetic-canvas.magnet-hover {
+      box-shadow: 
+        inset 2px 2px 8px rgba(197, 155, 88, 0.4),
+        inset -1px -1px 3px rgba(255, 255, 255, 0.8);
+    }
+
+    /* BANDEJA DE APOYO DE FOTOS DISPONIBLES */
+    .frame-photos-tray {
+      width: 100%;
+      max-width: 360px;
+      min-height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 6px 4px;
+      position: relative;
+    }
+
+    /* POLAROIDS FÍSICAS MAGNÉTICAS */
+    .magnetic-polaroid {
+      width: 78px;
+      background: #ffffff;
+      padding: 4px 4px 15px 4px;
+      border-radius: 2px;
+      box-shadow: 0 4px 10px rgba(35, 25, 20, 0.16), 0 1px 3px rgba(0, 0, 0, 0.08);
+      cursor: grab;
+      touch-action: none;
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s ease;
+      will-change: transform, left, top;
+    }
+
+    .magnetic-polaroid.in-canvas {
+      position: absolute;
+    }
+
+    .magnetic-polaroid:hover {
+      box-shadow: 0 6px 16px rgba(35, 25, 20, 0.22);
+    }
+
+    .magnetic-polaroid.is-dragging {
+      cursor: grabbing;
+      transform: scale(1.09) !important;
+      box-shadow: 0 16px 34px rgba(25, 18, 14, 0.32), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+      z-index: 9999 !important;
+      transition: none !important;
+    }
+
+    .magnetic-snap-anim {
+      animation: magneticSnap 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    @keyframes magneticSnap {
+      0% { transform: scale(1.08); }
+      55% { transform: scale(0.97); }
+      80% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .magnetic-photo-img-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #1d1714;
+      overflow: hidden;
+      border-radius: 1px;
+    }
+
+    .magnetic-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .magnetic-imprint {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.56rem;
+      font-style: italic;
+      color: #7a6e65;
+      text-align: center;
+      margin-top: 4px;
+      line-height: 1;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       6. CIERRE DE PÁGINA
        ═══════════════════════════════════════════════════════ */
     .closing-section {
       width: 100%;
@@ -1155,7 +1321,28 @@
       </div>
     </section>
 
-    <!-- 5. CIERRE DE PÁGINA -->
+    <!-- 5. CUADRO MAGNÉTICO FÍSICO DE RECUERDAME -->
+    <section class="magnetic-frame-section" id="magnetic-frame-section">
+      <div class="physical-frame-container" id="physical-frame-container">
+        <!-- MARCO FÍSICO (Madera negra + paspartú blanco + fondo magnético) -->
+        <div class="physical-frame" id="physical-frame">
+          <div class="frame-wood-outer">
+            <div class="frame-mat-board">
+              <div class="frame-magnetic-canvas" id="frame-magnetic-canvas">
+                <!-- Las fotos Polaroid habitan magnéticamente aquí -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BANDEJA DE APOYO DE FOTOS DISPONIBLES -->
+        <div class="frame-photos-tray" id="frame-photos-tray">
+          <!-- Las fotos Polaroid descansan aquí listas para colocar -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CIERRE DE PÁGINA -->
     <section class="closing-section">
       <div class="closing-phrase" id="closing-phrase"></div>
       <button class="btn-save" onclick="handleSaveMoment()">Guardar este momento 💛</button>
@@ -2110,6 +2297,291 @@
 
       // Tendedero de fotos con broches de madera
       buildGarlandSlider(data.fotos || []);
+
+      // Cuadro magnético físico
+      buildMagneticFrame(data.fotos || []);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       CUADRO MAGNÉTICO FÍSICO DE RECUERDAME
+       ═══════════════════════════════════════════════════════ */
+    var magneticPolaroids = [];
+    var magZCounter = 10;
+    var MAGNETIC_ANGLES = [-3.8, 2.6, -1.4, 3.2, -2.1];
+
+    function buildMagneticFrame(photos) {
+      var canvas = document.getElementById('frame-magnetic-canvas');
+      var tray = document.getElementById('frame-photos-tray');
+      if (!canvas || !tray) return;
+
+      canvas.innerHTML = '';
+      tray.innerHTML = '';
+      magneticPolaroids = [];
+      magZCounter = 10;
+
+      var list = photos && photos.length ? photos.slice(0, 5) : [
+        'paginas/demo/1.jpg','paginas/demo/10.jpg',
+        'paginas/demo/11.jpg','paginas/demo/12.jpg','paginas/demo/13.jpg'
+      ];
+
+      list.forEach(function(url, idx) {
+        var pol = buildMagneticPolaroid(url, idx);
+        magneticPolaroids.push(pol);
+
+        if (idx < 2) {
+          placePolaroidInCanvas(pol, idx);
+        } else {
+          pol.inCanvas = false;
+          tray.appendChild(pol.el);
+        }
+
+        setupMagneticPointer(pol);
+      });
+    }
+
+    function buildMagneticPolaroid(url, idx) {
+      var el = document.createElement('div');
+      el.className = 'magnetic-polaroid';
+      el.setAttribute('data-idx', idx);
+
+      var imgWrap = document.createElement('div');
+      imgWrap.className = 'magnetic-photo-img-wrap';
+
+      var img = document.createElement('img');
+      img.className = 'magnetic-photo-img';
+      img.crossOrigin = 'anonymous';
+      img.src = url;
+      img.alt = 'Recuerdo ' + (idx + 1);
+      imgWrap.appendChild(img);
+      el.appendChild(imgWrap);
+
+      var imprint = document.createElement('div');
+      imprint.className = 'magnetic-imprint';
+      imprint.textContent = todayFormatted;
+      el.appendChild(imprint);
+
+      return {
+        el: el, inCanvas: false,
+        xPct: 50, yPct: 50,
+        rot: MAGNETIC_ANGLES[idx % MAGNETIC_ANGLES.length],
+        zIdx: idx + 1
+      };
+    }
+
+    function placePolaroidInCanvas(pol, idx) {
+      var canvas = document.getElementById('frame-magnetic-canvas');
+      if (!canvas) return;
+      var defaultPositions = [{ x: 12, y: 14 }, { x: 44, y: 42 }];
+      var pos = defaultPositions[idx] || { x: 20 + Math.random() * 50, y: 20 + Math.random() * 50 };
+
+      pol.inCanvas = true;
+      pol.xPct = pos.x;
+      pol.yPct = pos.y;
+      pol.rot = MAGNETIC_ANGLES[idx % MAGNETIC_ANGLES.length];
+      pol.zIdx = magZCounter++;
+
+      pol.el.classList.add('in-canvas');
+      pol.el.style.left = pol.xPct + '%';
+      pol.el.style.top = pol.yPct + '%';
+      pol.el.style.zIndex = pol.zIdx;
+      pol.el.style.transform = 'rotate(' + pol.rot + 'deg)';
+      canvas.appendChild(pol.el);
+    }
+
+    function playMagneticSnap() {
+      var ctx = getAudioCtx();
+      if (!ctx) return;
+      try {
+        var buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.04), ctx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3) * 0.28;
+        }
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        var gain = ctx.createGain();
+        gain.gain.setValueAtTime(1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+        src.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+      } catch (ex) {}
+    }
+
+    function snapToCanvas(pol, clientX, clientY, offsetX, offsetY) {
+      var canvasEl = document.getElementById('frame-magnetic-canvas');
+      var trayEl = document.getElementById('frame-photos-tray');
+      var el = pol.el;
+      var cr = canvasEl.getBoundingClientRect();
+
+      var relX = (clientX - offsetX) - cr.left;
+      var relY = (clientY - offsetY) - cr.top;
+      relX = Math.max(0, Math.min(cr.width - el.offsetWidth, relX));
+      relY = Math.max(0, Math.min(cr.height - el.offsetHeight, relY));
+
+      pol.inCanvas = true;
+      pol.xPct = (relX / cr.width) * 100;
+      pol.yPct = (relY / cr.height) * 100;
+      var baseRot = MAGNETIC_ANGLES[parseInt(el.getAttribute('data-idx')) % MAGNETIC_ANGLES.length];
+      pol.rot = baseRot + (Math.random() - 0.5) * 1.6;
+      pol.zIdx = magZCounter++;
+
+      el.classList.add('in-canvas');
+      el.style.position = 'absolute';
+      el.style.left = pol.xPct + '%';
+      el.style.top = pol.yPct + '%';
+      el.style.zIndex = pol.zIdx;
+      el.style.transform = 'rotate(' + pol.rot + 'deg)';
+      el.style.transition = 'transform 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+      canvasEl.appendChild(el);
+
+      el.classList.add('magnetic-snap-anim');
+      setTimeout(function() { el.classList.remove('magnetic-snap-anim'); }, 320);
+      playMagneticSnap();
+      if (navigator.vibrate) { try { navigator.vibrate(14); } catch(ex2) {} }
+    }
+
+    function returnToTray(pol, ghostEl) {
+      var canvasEl = document.getElementById('frame-magnetic-canvas');
+      var trayEl = document.getElementById('frame-photos-tray');
+      var el = pol.el;
+
+      pol.inCanvas = false;
+      el.classList.remove('in-canvas');
+      el.style.position = 'relative';
+      el.style.left = '';
+      el.style.top = '';
+      el.style.zIndex = '';
+      el.style.transform = 'rotate(' + pol.rot + 'deg)';
+      el.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+
+      if (ghostEl && ghostEl.parentNode === trayEl) {
+        trayEl.insertBefore(el, ghostEl);
+        trayEl.removeChild(ghostEl);
+      } else {
+        trayEl.appendChild(el);
+      }
+    }
+
+    function setupMagneticPointer(pol) {
+      var el = pol.el;
+      var isDragging = false;
+      var startClientX, startClientY, startLeft, startTop;
+      var dragOffsetX, dragOffsetY;
+      var ghostEl = null;
+      var canvasEl = document.getElementById('frame-magnetic-canvas');
+      var trayEl = document.getElementById('frame-photos-tray');
+
+      el.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        el.setPointerCapture(e.pointerId);
+        el.classList.add('is-dragging');
+        magZCounter++;
+        pol.zIdx = magZCounter;
+        el.style.zIndex = magZCounter;
+        el.style.transition = 'none';
+
+        var elR = el.getBoundingClientRect();
+        dragOffsetX = e.clientX - elR.left;
+        dragOffsetY = e.clientY - elR.top;
+
+        if (pol.inCanvas) {
+          var cr = canvasEl.getBoundingClientRect();
+          startLeft = elR.left - cr.left;
+          startTop = elR.top - cr.top;
+          startClientX = e.clientX;
+          startClientY = e.clientY;
+        } else {
+          ghostEl = document.createElement('div');
+          ghostEl.style.cssText = 'width:' + el.offsetWidth + 'px;height:' + el.offsetHeight + 'px;visibility:hidden;flex-shrink:0;';
+          trayEl.insertBefore(ghostEl, el);
+          document.body.appendChild(el);
+          el.style.position = 'fixed';
+          el.style.left = (e.clientX - dragOffsetX) + 'px';
+          el.style.top = (e.clientY - dragOffsetY) + 'px';
+          el.style.transform = 'rotate(' + pol.rot + 'deg) scale(1.09)';
+          el.style.zIndex = 99999;
+          startClientX = e.clientX;
+          startClientY = e.clientY;
+        }
+      }, { passive: false });
+
+      el.addEventListener('pointermove', function(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        var cr = canvasEl.getBoundingClientRect();
+        var overCanvas = (e.clientX >= cr.left && e.clientX <= cr.right && e.clientY >= cr.top && e.clientY <= cr.bottom);
+
+        if (pol.inCanvas) {
+          var dx = e.clientX - startClientX;
+          var dy = e.clientY - startClientY;
+          var newLeft = Math.max(-10, Math.min(cr.width - el.offsetWidth + 10, startLeft + dx));
+          var newTop = Math.max(-10, Math.min(cr.height - el.offsetHeight + 10, startTop + dy));
+          el.style.left = newLeft + 'px';
+          el.style.top = newTop + 'px';
+          if (overCanvas) canvasEl.classList.add('magnet-hover');
+          else canvasEl.classList.remove('magnet-hover');
+        } else {
+          el.style.left = (e.clientX - dragOffsetX) + 'px';
+          el.style.top = (e.clientY - dragOffsetY) + 'px';
+          if (overCanvas) canvasEl.classList.add('magnet-hover');
+          else canvasEl.classList.remove('magnet-hover');
+        }
+      }, { passive: false });
+
+      el.addEventListener('pointerup', function(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        el.classList.remove('is-dragging');
+        canvasEl.classList.remove('magnet-hover');
+
+        var cr = canvasEl.getBoundingClientRect();
+        var overCanvas = (e.clientX >= cr.left && e.clientX <= cr.right && e.clientY >= cr.top && e.clientY <= cr.bottom);
+
+        if (overCanvas) {
+          if (!pol.inCanvas && ghostEl) {
+            if (ghostEl.parentNode) ghostEl.parentNode.removeChild(ghostEl);
+            ghostEl = null;
+          }
+          snapToCanvas(pol, e.clientX, e.clientY, dragOffsetX, dragOffsetY);
+        } else {
+          returnToTray(pol, ghostEl);
+          ghostEl = null;
+        }
+      });
+
+      el.addEventListener('pointercancel', function() {
+        if (!isDragging) return;
+        isDragging = false;
+        el.classList.remove('is-dragging');
+        canvasEl.classList.remove('magnet-hover');
+        returnToTray(pol, ghostEl);
+        ghostEl = null;
+      });
+
+      // Toque rápido desde la bandeja → colocar en el cuadro automáticamente
+      el.addEventListener('click', function(e) {
+        if (isDragging) return;
+        if (!pol.inCanvas) {
+          var occupied = magneticPolaroids.filter(function(p) { return p.inCanvas; }).length;
+          var slots = [{x:10,y:12},{x:45,y:8},{x:22,y:48},{x:52,y:40},{x:30,y:68}];
+          var pos = slots[occupied % slots.length];
+          pol.inCanvas = true;
+          pol.xPct = pos.x;
+          pol.yPct = pos.y;
+          pol.rot = MAGNETIC_ANGLES[parseInt(el.getAttribute('data-idx')) % MAGNETIC_ANGLES.length];
+          pol.zIdx = magZCounter++;
+          el.classList.add('in-canvas');
+          el.style.cssText = 'position:absolute;left:' + pos.x + '%;top:' + pos.y + '%;z-index:' + pol.zIdx + ';transform:rotate(' + pol.rot + 'deg);transition:transform 0.25s cubic-bezier(0.18,0.89,0.32,1.28);';
+          canvasEl.appendChild(el);
+          el.classList.add('magnetic-snap-anim');
+          setTimeout(function() { el.classList.remove('magnetic-snap-anim'); }, 320);
+          playMagneticSnap();
+          if (navigator.vibrate) { try { navigator.vibrate(12); } catch(ex2) {} }
+        }
+      });
     }
 
     /* ═══════════════════════════════════════════════════════
